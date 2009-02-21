@@ -1,0 +1,108 @@
+\name{BA.est}
+\alias{BA.est}
+\alias{VC.est}
+\title{Bias and variance components for a Bland-Altman plot.}
+\description{
+  A variance component model is fitted to method comparison data with replicate
+  measurements in each method by item stratum. The purpose is to simplify the
+  construction of a correct Bland-Altman-plot when replicate measurements are
+  available, and to give the REML-estimates of the relevant variance components.
+  }
+\usage{
+  BA.est( data, linked=TRUE, IxR=linked,
+                             MxI=TRUE,
+                          varMxI=TRUE, bias=TRUE, alpha=0.05 )
+  VC.est( data,
+           IxR = has.repl(data), linked = IxR,
+           MxI = has.repl(data), matrix = MxI,
+        varMxI = TRUE, bias = TRUE, print = FALSE )
+  }
+\arguments{
+  \item{data}{A data frame representing method comparison data with replicate
+    measurements, i.e. with columns \code{meth}, \code{item}, \code{repl} and
+    \code{y}.}
+  \item{linked}{Logical. Are the replicated linked within item across methods?}
+  \item{IxR}{Logical. Should in item by repl interaction be included in
+    the model. This is needed when the replicates are linked within item
+    across methods, so it is just another name for the \code{linked} argument.} 
+  \item{MxI}{Logical. Should the method by item interaction (matrix effect) be
+    included in the model.}
+  \item{matrix}{Logical. Alias for \code{MxI}.}
+  \item{varMxI}{Logical. Should the method by item interaction have a
+    variance that varies between methods. Ignored if only two methods
+    are compared.}
+  \item{bias}{Logical. Should a systematic bias between methods be estimated?
+    If \code{FALSE} no bias between methods are assumed, i.e.
+    \eqn{\alpha_m=0, m=1,\ldots M}{alpha_m=0, m=1,...,M}.}
+  \item{alpha}{Numerical. Significance level. By default the value 2 is
+    used when computing prediction intervals, otherwise the 1-alpha/2
+    t-quantile is used. The number of d.f. is taken as the number of units
+    minus the number of items minus the number of methods minus 1.}
+	\item{print}{Logical. Should the estimated bias and variance components be
+    printed?}
+  }
+\details{
+  The model fitted is:
+  \deqn{y=\alpha_m + \mu_i + c_{mi} + a_{ir} + e_{mir},
+        \quad \text{var}(c_{mi})=\tau_m^2,
+        \quad \text{var}(a_{ir})=\omega^2,
+        \quad \text{var}(e_{mir})=\sigma_m^2,
+         }{y=alpha_m + mu_i + c_mi + a_ir + e_ir,
+             var(c_mi)=tau_m^2,
+             var(a_ir)=omega^2,
+             var(e_mir)=sigma_m^2}
+  We can only fit separate variances for the \eqn{\tau s}{tau's} if more than
+  two methods are compared (i.e. \code{nM} > 2), hence varMxI is ignored when
+  \code{nM}==2.
+
+  The function \code{VC.est} is the workhorse; \code{BA.est} just calls it.
+  \code{VC.est} figures out which model to fit by \code{lme}, and returns the
+  estimates. \code{VC.est} is also used as part of the fitting algorithm in
+  \code{\link{AltReg}}, where each iteration step requires fit of this model.
+  }
+\value{
+  A list with four elements; \code{BA.est} returns a list with elements
+  \code{Bias}, \code{VarComp}, \code{LoA}, \code{RepCoef};
+  \code{VC.est} returns (invisibly!) a list with elements
+  \code{Bias}, \code{VarComp}, \code{Mu}, \code{RanEff}.
+  These list componenets are:
+  \item{Bias}{Vector of estimates of \eqn{\alpha_m}{alpha_m},
+              the first element is always 0.}
+  \item{VarComp}{A matrix of variance components (on the SD scale)
+                 with methods as rows and variance components "IxR", "MxI" and
+                 "res" as columns.}
+  \item{LoA}{Four-column matrix with mean difference, lower and upper limit of
+             agreement and prediction SD. Each row in the matrix represents
+             a pair of methods.}
+  \item{RepCoef}{Two-column matrix of repeatability SDs and repeatability
+                 coefficients. The SDs are the standard deviation of the
+                 difference between two measurements by the same method on the
+                 item inder identical circumstances; the repeatability
+                 coefficient the numerical extent of the prediction interval
+                 for this difference.}
+  \item{Mu}{Estimates of the item-specific parameters.}
+  \item{RanEff}{Estimates of the randome effects form thr model (BLUPS).
+                 This is a (possibly empty) list with possible elements named
+                 \code{MxI} and \code{IxR} according to whether these random
+                 effects are in the model.}
+  }
+\references{Carstensen, Simpson & Gurrin: Statistical models for assessing
+            agreement in method comparison studies with replicate measurements,
+            The International Journal of Biostatistics: Vol. 4 : Iss. 1,
+            Article 16.
+            \url{http://www.bepress.com/ijb/vol4/iss1/16}.}
+\author{Bendix Carstensen}
+\seealso{\code{\link{BA.plot}},
+         \code{\link{perm.repl}}}
+\examples{
+data( ox )
+BA.est( ox )
+BA.est( ox, linked=FALSE )
+data( sbp )
+BA.est( sbp )
+BA.est( sbp, linked=FALSE )
+# Check what you get from VC.est
+str( VC.est( sbp ) )
+}
+\keyword{models}
+\keyword{design}

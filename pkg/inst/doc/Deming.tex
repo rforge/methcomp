@@ -1,0 +1,411 @@
+\documentclass[a4paper,twoside,12pt]{article}
+%\usepackage[ae,hyper]{Rd}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+% \usepackage{times}
+\usepackage{rotating,booktabs,picins,graphicx,amsmath,verbatim,fancyhdr,url,a4wide}
+% \usepackage{C:/Stat/R/R-2.3.0/share/texmf/Sweave}
+% \usepackage{mslapa}
+% \usepackage{makeidx}
+
+\oddsidemargin 1mm
+\evensidemargin 1mm
+\topmargin -5mm
+\headheight 6mm
+\headsep 8mm
+\textheight 230mm
+\textwidth 165mm
+%\footheight 5mm
+\footskip 15mm
+
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.95}
+\DeclareGraphicsExtensions{.pdf,.jpg}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{c:/util/Tex/useful.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\raggedleft
+\pagestyle{empty}
+\Huge 
+{\bf Deming regression}\\[3mm]
+\large
+\texttt{MethComp package}\\[1em]
+May 2007
+\small
+\vfill
+\noindent
+\raggedleft
+\begin{tabular}{rl}
+Anders Christian Jensen
+  & Steno Diabetes Center, Gentofte, Denmark\\
+  & \texttt{acjs@steno.dk}
+\end{tabular}\hfill
+\normalsize
+\newpage
+\tableofcontents
+\newpage
+\raggedright
+\parindent 1em
+\parskip 0em
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markboth{\thesection #1}{\thesection \ #1}}
+\fancyhead[OL]{\sl Deming regression\ }
+\fancyhead[ER]{\sl \rightmark}
+\fancyhead[EL,OR]{\bf \thepage}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.1pt}
+%\setcounter{}
+\setcounter{tocdepth}{3}
+\setcounter{page}{1}
+%\pagenumbering
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+This document is related to the \texttt{Deming} function in the
+package \texttt{MethComp} and contains the derivation of the maximum
+likelihood estimates related to the Deming regression model. It is
+based on the book 'Models in regression and related topics' (chapter
+three), from 1969 by Peter Sprent, but with more detailed calculations
+included.
+\section{Deming regression}
+The mathematical model $\eta=\alpha+\beta\xi$ describes a linear
+relationship between two variables $\xi$ and $\eta$. Observations $x$
+and $y$ of two variables are usually desribed by a regression of $y$
+on $x$ where $x$ is assumed to be observed without error (or,
+equivantly using the conditional distribution of $y$ given $x$). In
+linear regression with observations subject to additive random
+variation on both $x$ and $y$ and observed values for individuals
+$(x_i,y_i), i=1,\ldots,n$, a model may be written
+\begin{eqnarray*}
+  &&x_i=\xi_i+e_{xi},\\[1em]
+&&y_i=\eta_i+e_{yi}=\alpha+\beta\xi_i+e_{yi},
+\end{eqnarray*}
+where $e_{xi}$ and $e_{y_i}$ denotes the random part of the model.
+This is known as a functional relationship because the $\xi_i$'s are
+assumed to be fixed parameters, as oppposed to a structural
+relationship where some distribution for the $\xi_i$'s is assumed. In
+the following it is assumed that the $e_{xi}$s are iid with
+$e_{yi}\sim N(0,\sigma^2)$, and that the $e_{yi}$s are iid with
+$e_{yi} \sim N(0,\lambda\sigma^2)$, for some $\lambda>0$. Furthermore
+$e_{xi}$ is assumed to be independent of $e_{yi}$.
+
+The aim of this document is to derive the maximum
+likelihood estimates for $\alpha, \beta, \xi_i$ and $\sigma^2$ in the functional model stated above.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{The likelihood function}
+The likelihood function
+$f_{x_1,x_2,\ldots,x_n,y_1,y_2,\ldots,y_n}(\alpha,\beta,\xi_1,\xi_2,\ldots,\xi_n,\sigma^2)$
+denoted $f$ is
+\begin{eqnarray*}
+f
+&=&
+\prod_{i=1}^n
+\left(2\pi\sigma^2\right)^{-\frac{1}{2}}\exp\left(-\frac{(x_i-\xi_i)^2}{2\sigma^2}\right)
+\left(2\pi\lambda\sigma^2\right)^{-\frac{1}{2}}\exp\left(-\frac{(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}\right)
+\end{eqnarray*}
+and the loglikelihood, denoted L, is
+\begin{eqnarray*}
+L
+&=&
+\sum_{i=1}^n
+-\frac{1}{2}\log\left(2\pi\sigma^2\right)-\frac{(x_i-\xi_i)^2}{2\sigma^2}-\frac{1}{2}\log\left(2\pi\lambda\sigma^2\right)-\frac{(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}\\[1em]
+&=&
+-\frac{n}{2}\log\left(4\pi^2\right)-\frac{n}{2}\log\left(\lambda\sigma^4\right)
+-\frac{\sum_{i=1}^n(x_i-\xi_i)^2}{2\sigma^2}-\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}.
+\end{eqnarray*}
+It follows that the likelihood function is not bounded from above when $\sigma^2$ goes to $0$, so in the following it is assumed that $\sigma^2>0$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Solving for $\xi_i$}
+Differentiation of $L$ with respect to $\xi_i$ gives
+\begin{eqnarray*}
+\frac{\partial L}{\partial \xi_i}
+&=&
+\frac{\partial}{\partial
+  \xi_i}\left(-\frac{\sum_{i=1}^n(x_i-\xi_i)^2}{2\sigma^2}-\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}\right)\\[1em]
+&=&
+\frac{(x_i-\xi_i)}{\sigma^2}+\frac{\beta(y_i-\alpha-\beta\xi_i)}{\lambda\sigma^2}.
+\end{eqnarray*}
+Setting $\frac{\partial L}{\partial \xi_i}$ equal to zero yields
+\begin{eqnarray}\label{xi}
+\frac{\partial L}{\partial \xi_i}=0
+&\Rightarrow&
+\xi_i=\frac{\lambda\sigma^2x_i+\beta\sigma^2y_i-\beta\alpha\sigma^2}{\lambda\sigma^2+\beta^2\sigma^2}=\frac{\lambda
+  x_i+\beta(y_i-\alpha)}{\lambda+\beta^2}.
+\end{eqnarray}
+So to estimate $\xi_i$, estimates for $\beta$ and $\alpha$ are needed. Therefore focus is turned to the derivation of $\hat{\alpha}$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Solving for $\alpha$}
+Differentiation of $L$ with respect to $\alpha$ gives
+\begin{eqnarray*}
+\frac{\partial L}{\partial\alpha}
+&=&
+\frac{\partial}{\partial\alpha}\left(
+-\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}\right)\\[1em]
+&=&
+\frac{\sum_{i=1}^n (y_i-\alpha-\beta\xi_i)}{\lambda\sigma^2},
+\end{eqnarray*}
+and putting $\frac{\partial L}{\partial \alpha}$ equal to zero yields
+\begin{eqnarray*}%\label{alpha}
+\frac{\partial L}{\partial \alpha}=0
+&\Rightarrow&
+\alpha=\frac{1}{n}\sum_{i=1}^n(y_i-\beta\xi_i).
+\end{eqnarray*}
+%From (\ref{alpha}) we have an expression for $\hat{\alpha}$. 
+Now one can use (\ref{xi}) to dispense with $\xi_i$ 
+\begin{eqnarray*}
+\alpha
+&=&
+\frac{1}{n}\sum_{i=1}^n(y_i-\beta\xi_i)\\[1em]
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i-\beta\frac{\lambda
+  x_i+\beta(y_i-\alpha)}{\lambda+\beta^2}\right)\\[1em]
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i-\beta\frac{\lambda x_i+\beta y_i}{\lambda+\beta^2}+\frac{\beta^2\alpha}{\lambda+\beta^2}
+\right)\\[1em]
+&\Updownarrow&\\[1em]
+\alpha\left(1-\frac{\beta^2}{\lambda+\beta^2}\right)
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i-\beta\frac{\lambda x_i+\beta y_i}{\lambda+\beta^2}
+\right)\\[1em]
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i\left(1-\frac{\beta^2}{\lambda+\beta^2}\right)-x_i\frac{\beta\lambda}{\lambda+\beta^2}
+\right)\\[1em]
+&\Updownarrow&\\[1em]
+\alpha
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i-x_i\frac{\beta\lambda}{\lambda+\beta^2}\frac{\lambda+\beta^2}{\lambda}
+\right)\\[1em]
+&=&
+\frac{1}{n}\sum_{i=1}^n\left(y_i-x_i\beta\right)\\[1em]
+&=&
+\overline{y}-\overline{x}\beta.
+\end{eqnarray*}
+Hence the estimate for $\alpha$ becomes
+$$
+\hat{\alpha}=\overline{y}-\overline{x}\hat{\beta}.
+$$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Solving for $\beta$}
+Differentiation of $L$ with respect to $\beta$ gives
+\begin{eqnarray*}
+\frac{\partial L}{\partial\beta}
+&=&
+\frac{\partial}{\partial\beta}\left(
+-\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}\right)
+=
+\frac{\sum_{i=1}^n (y_i-\alpha-\beta\xi_i)\xi_i}{\lambda\sigma^2}.
+\end{eqnarray*}
+Setting $\frac{\partial L}{\partial \beta}$ equal to zero yields 
+\begin{eqnarray*}
+\frac{\partial L}{\partial \beta}=0
+\Leftrightarrow
+\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)\xi_i=0,
+\end{eqnarray*}
+and using (\ref{xi})
+\begin{eqnarray*}
+0
+&=&
+\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)\xi_i\\[1em]
+&=&
+\sum_{i=1}^n\left(y_i-\alpha-\beta\frac{\lambda
+  x_i+\beta(y_i-\alpha)}{\lambda+\beta^2}\right)\frac{\lambda
+  x_i+\beta(y_i-\alpha)}{\lambda+\beta^2}.
+\end{eqnarray*}
+This implies that
+\begin{eqnarray*}
+0
+&=&
+\sum_{i=1}^n\Big(( y_i-\alpha)(\lambda+\beta^2)-\beta\lambda
+  x_i-\beta^2(y_i-\alpha)\Big)\Big(\lambda
+  x_i+\beta(y_i-\alpha)\Big)\\[1em]
+&=&
+\sum_{i=1}^n
+\lambda^2x_i(y_i-\alpha)
++\beta^2\lambda x_i(y_i-\alpha)
+-\beta\lambda^2 x_i^2
+-\beta^2\lambda x_i(y_i-\alpha)+\\[1em]
+&&
+\sum_{i=1}^n\beta\lambda(y_i-\alpha)^2
++\beta^3\lambda(y_i-\alpha)^2
+-\beta^2\lambda x_i(y_i-\alpha)
+-\beta^3(y_i-\alpha)^2\\[1em]
+&=&
+-\beta^2\lambda\Big(\sum_{i=1}^nx_iy_i\Big)
+-\beta\lambda^2\Big(\sum_{i=1}^n x_i^2\Big)
++\lambda^2\Big(\sum_{i=1}^n x_iy_i\Big)\\[1em]
+&&
++\beta^2\lambda\alpha\Big(\sum_{i=1}^nx_i\Big)
++\beta\lambda\Big(\sum_{i=1}^n(y_i-\alpha)^2\Big)
+-\lambda^2\alpha\Big(\sum_{i=1}^nx_i\Big).
+\end{eqnarray*}
+Dividing with $\lambda$ and using the fact that
+$\alpha=\overline{y}.-\overline{x}.\beta$ it is seen that
+\begin{eqnarray*}
+0
+&=&
+-\beta^2\Big(\sum_{i=1}^nx_iy_i\Big)
+-\beta\lambda\Big(\sum_{i=1}^nx_i^2\Big)
++\lambda\Big(\sum_{i=1}^nx_iy_i\Big)
++\beta^2(\overline{y}.-\overline{x}.\beta)\Big(\sum_{i=1}^nx_i\Big)\\[1em]
+&&
++\beta\Big(\sum_{i=1}^n\big(y_i-(\overline{y}.-\overline{x}.\beta)\big)^2\Big)
+-\lambda(\overline{y}.-\overline{x}.\beta)\Big(\sum_{i=1}^nx_i\Big)\\[1em]
+&=&
+-\beta^2\Big(\sum_{i=1}^nx_iy_i\Big)
+-\beta\lambda\Big(\sum_{i=1}^nx_i^2\Big)
++\lambda\Big(\sum_{i=1}^nx_iy_i\Big)
++\beta^2\overline{y}.\Big(\sum_{i=1}^nx_i\Big)\\[1em]
+&&
+-\beta^3\overline{x}.\beta\Big(\sum_{i=1}^nx_i\Big)
++\beta\Big(\sum_{i=1}^ny_i^2\Big)
++\beta\Big(\sum_{i=1}^n\left(\overline{y}.-\overline{x}.\beta\right)^2\Big)\\[1em]
+&&
+-2\beta\Big(\sum_{i=1}^ny_i(\overline{y}.-\overline{x}.\beta)\Big)
+-\lambda\overline{y}.\Big(\sum_{i=1}^nx_i\Big)
++\lambda\overline{x}.\beta\Big(\sum_{i=1}^nx_i\Big).
+\end{eqnarray*}
+Splitting up the sums even more gives
+\begin{eqnarray*}
+0
+&=&
+-\beta^2\Big(\sum_{i=1}^nx_iy_i\Big)
+-\beta\lambda\Big(\sum_{i=1}^nx_i^2\Big)
++\lambda\Big(\sum_{i=1}^nx_iy_i\Big)
++\beta^2\overline{y}.\Big(\sum_{i=1}^nx_i\Big)
+-\beta^3\overline{x}.\beta\Big(\sum_{i=1}^nx_i\Big)\\[1em]
+&&
++\beta\Big(\sum_{i=1}^ny_i^2\Big)
++\beta\Big(\sum_{i=1}^n\overline{y}.^2\Big)
++\beta\Big(\sum_{i=1}^n\left(\overline{x}.\beta\right)^2\Big)
+-2\beta\Big(\sum_{i=1}^n\overline{y}.\overline{x}.\beta\Big)
+-2\beta\Big(\sum_{i=1}^ny_i\overline{y}.\Big)\\[1em]
+&&
++2\beta\Big(\sum_{i=1}^ny_i\overline{x}.\beta\Big)
+-\lambda\overline{y}.\Big(\sum_{i=1}^nx_i\Big)
++\lambda\overline{x}.\beta\Big(\sum_{i=1}^nx_i\Big).
+\end{eqnarray*}
+Finally the terms are sorted and collected according to powers of $\beta$:
+\begin{eqnarray*}
+0
+&=&
+\beta^3\Bigg(
+\sum_{i=1}^n\overline{x}.^2
+-\overline{x}.\sum_{i=1}^nx_i\Bigg)\\[1em]
+&&
++\beta^2\left(
+\overline{y}.\sum_{i=1}^nx_i
+-\sum_{i=1}^nx_iy_i
+-2\sum_{i=1}^n\overline{y}.\overline{x}.
++2\sum_{i=1}^ny_i\overline{x}.\right)\\[1em]
+&&
++\beta\left(
+\sum_{i=1}^ny_i^2
+-\lambda\sum_{i=1}^nx_i^2
++\sum_{i=1}^n\overline{y}.^2
+-2\sum_{i=1}^ny_i\overline{y}.
++\lambda\overline{x}.\sum_{i=1}^nx_i\right)\\[1em]
+&&
++\lambda\left(
+\sum_{i=1}^nx_iy_i
+-\overline{y}.\sum_{i=1}^nx_i\right).
+\end{eqnarray*}
+Since 
+\begin{itemize}
+\item
+$\sum_{i=1}^n\overline{x}.^2
+-\overline{x}.\sum_{i=1}^nx_i=0$
+\item
+$\overline{y}.\sum_{i=1}^nx_i
+-\sum_{i=1}^nx_iy_i
+-2\sum_{i=1}^n\overline{y}.\overline{x}.
++2\sum_{i=1}^ny_i\overline{x}.=-\SPD_{xy}$
+\item
+$\sum_{i=1}^ny_i^2
+-\lambda\sum_{i=1}^nx_i^2
++\sum_{i=1}^n\overline{y}.^2
+-2\sum_{i=1}^ny_i\overline{y}.
++\lambda\overline{x}.\sum_{i=1}^nx_i
+=\SSD_y-\lambda\SSD_x$
+\item
+$\sum_{i=1}^nx_iy_i
+-\overline{y}.\sum_{i=1}^nx_i=\SPD_{xy}$
+\end{itemize}
+it is clear that the derivation of $\beta$ comes down to solve
+\begin{eqnarray}\label{equation}
+-\beta^2\SPD_{xy}+\beta(\SSD_y-\lambda\SSD_x)+\lambda\SPD_{xy}=0.
+\end{eqnarray}
+For $\SPD_{xy}\neq 0$ this implies that
+\begin{eqnarray*}
+\beta
+&=&
+\frac{-(\SSD_y-\lambda\SSD_x)\pm\sqrt{(\SSD_y-\lambda\SSD_x)^2-4(-\SPD_{xy})\lambda\SPD_{xy}}}{-2\SPD_{xy}}\\[1em]
+&=&
+\frac{\SSD_y-\lambda\SSD_x\pm\sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}}{2\SPD_{xy}}.
+\end{eqnarray*}
+Since $\SSD_y-\lambda\SSD_x\leq
+\sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}$ there is always a
+positive and a negative solution to (\ref{equation}). The desired solution should always have the same sign as $\SPD_{xy}$, hence the solution with the positive numerator is selected. Therefore 
+\begin{eqnarray*}
+\hat{\beta}=\frac{\SSD_y-\lambda\SSD_x+\sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}}{2\SPD_{xy}}.
+\end{eqnarray*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Solving for $\xi_i$ - again}
+With estimates for $\beta$ and $\alpha$ it is now possible to estimate $\xi_i$ using (\ref{xi}):
+\begin{eqnarray*}
+\hat{\xi}_i=\frac{\lambda x_i+\hat{\beta}(y_i-\hat{\alpha})}{\lambda+\hat{\beta}^2}.
+\end{eqnarray*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Solving for $\sigma^2$}
+Differentiation of $L$ with respect to $\sigma^2$ gives
+\begin{eqnarray*}
+\frac{\partial L}{\partial\sigma^2}
+&=&
+\frac{\partial}{\partial\sigma^2}\left(
+-\frac{n}{2}\log(\lambda\sigma^4)-\frac{\sum_{i=1}^n(x_i-xi_i)^2}{2\sigma^2}-\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^2}
+\right)\\[1em]
+&=&
+\frac{-n\sigma^2}{\sigma^4}+\frac{\sum_{i=1}^n(x_i-xi_i)^2}{2\sigma^4}+\frac{\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^4}\\[1em]
+&=&
+\frac{-2\lambda n\sigma^2+\lambda\sum_{i=1}^n(x_i-xi_i)^2+\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda\sigma^4},
+\end{eqnarray*}
+and setting $\frac{\partial L}{\partial \sigma^2}$ equal to zero yields
+\begin{eqnarray*}
+\frac{\partial L}{\partial \sigma^2}=0
+&\Rightarrow&
+-2\lambda n\sigma^2+\lambda\sum_{i=1}^n(x_i-xi_i)^2+\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2=0\\[1em]
+&\Rightarrow&
+\sigma^2=\frac{\lambda\sum_{i=1}^n(x_i-\xi_i)^2+\sum_{i=1}^n(y_i-\alpha-\beta\xi_i)^2}{2\lambda n}.
+\end{eqnarray*}
+To get a central estimate of $\sigma^2$ one must divide by $n-2$
+instead of $2n$ since there are $n+2$ parameters to be estimated,
+namely $\xi_1,\xi_2,\ldots,\xi_n,\alpha$ and $\beta$. Hence the
+degrees of freedom are $2n-(n+2)=n-2$. Therefore
+$$
+\hat{\sigma}^2=\frac{\lambda\sum_{i=1}^n(x_i-\hat{\xi}_i)^2+\sum_{i=1}^n(y_i-\hat{\alpha}-\hat{\beta}\hat{\xi}_i)^2}{2\lambda (n-2)}.
+$$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summing up}
+\begin{eqnarray*}
+\hat{\alpha} &=& \overline{y}-\overline{x}\hat{\beta}\\
+\hat{\beta}    &=& \frac{\SSD_y-\lambda\SSD_x+\sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}}{2\SPD_{xy}}\\
+\hat{\sigma}   &=& \sqrt{\frac{\lambda\sum_{i=1}^n(x_i-\hat{\xi}_i)^2+\sum_{i=1}^n(y_i-\hat{\alpha}-\hat{\beta}\hat{\xi}_i)^2}{2\lambda (n-2)}}\\
+\hat{\xi}_i    &=& \frac{\lambda x_i+\hat{\beta}(y_i-\hat{\alpha})}{\lambda+\hat{\beta}^2}
+\end{eqnarray*}
+These formula are implemented in the \texttt{Deming} function in the \texttt{MethComp} package.
+\clearpage
+\section{The \texttt{Deming} function}
+\insout{../../R/deming.R}
+\end{document}
