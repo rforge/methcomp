@@ -1,0 +1,49 @@
+export(
+AltReg,
+BA.est,
+BA.plot,
+BlandAltman,
+Deming,
+DA.reg,
+          Meth,
+  summary.Meth, 
+     plot.Meth,    
+   subset.Meth,
+   sample.Meth,
+transform.Meth,
+          Meth.sim,
+        MCmcmc,
+summary.MCmcmc,
+ subset.MCmcmc,
+  print.MCmcmc,
+   mcmc.MCmcmc,
+  trace.MCmcmc,
+   post.MCmcmc,
+  pairs.MCmcmc,
+   plot.MCmcmc,
+   plot.VarComp,
+abconv,
+corr.measures,
+middle, ends,
+bothlines,
+ has.repl,       
+make.repl,
+perm.repl,
+to.wide,
+to.long,
+TDI,
+VC.est )
+# register S3 methods
+S3method(plot, Meth)
+S3method(summary, Meth)
+S3method(subset, Meth)
+S3method(sample, Meth)
+S3method(transform, Meth)
+S3method(plot, MCmcmc)
+S3method(print, MCmcmc)
+S3method(summary, MCmcmc)
+S3method(subset, MCmcmc)
+S3method(mcmc, MCmcmc)
+S3method(trace, MCmcmc)
+S3method(post, MCmcmc)
+S3method(pairs, MCmcmc)

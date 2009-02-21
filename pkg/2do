@@ -1,0 +1,22 @@
+o Finalize the plotting functions, including acf
+
+o Make a name-space and proper methods. DONE
+
+o Convert examples to use the included mcmc.list objects. DONE
+
+o Implement Kristian Linnet's proportional errors method in the Deming unction
+
+o Include a check of slope in BA.est and BA.plot.
+
+o Include check of heteroschedasticity in the BA.est BA.plot &cetera
+
+o Enable a transformation in BA.plot and BA.est.
+ 
+o Give a class to BA.est result so that either a Bland-Altman plot or a conversion
+  plot can be produced from the results.  
+
+o Put in datasets from: 
+                       Name  Factor levels:
+  Bland-Altman 1987    PEFR: Wright1, Wright1, Mini1, Mini2 
+  Carter.1984        Enzyme: SucHom,SucPel,Alkphos
+  Barnett.1969       VitCap: StSkil, StNew, ExpSkil, ExpNew

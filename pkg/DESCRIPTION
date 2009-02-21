@@ -1,0 +1,12 @@
+Package: MethComp
+Version: 0.5.2
+Date: 2009-02-13
+Title: Functions for analysis of method comparison studies.
+Author: Bendix Carstensen, Lyle Gurrin.
+Maintainer: Bendix Carstensen <bxc@steno.dk>
+Depends: R (>= 2.0.0), nlme
+Suggests:  R2WinBUGS, coda, BRugs, lattice
+Description: Methods (standard and advanced) for comparison of measurement methods.
+License: GPL Version 2 or newer.
+URL: http://www.pubhealth.ku.dk/~bxc/MethComp/
+Packaged: Sun Feb 15 22:08:39 2009; BXC
