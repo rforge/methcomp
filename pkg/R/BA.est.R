@@ -1,8 +1,8 @@
 BA.est <-
 function( data,
         linked = TRUE,  # Fit a model with replicate by item interaction
-           IxR = linked,# Fit a model with replicate by item interaction 
-           MxI = TRUE,  # To fit the model with a method by item interaction
+           IxR = has.repl(data), # Fit a model with replicate by item interaction
+           MxI = has.repl(data), # To fit the model with a method by item interaction
         varMxI = TRUE,  # Should method by item have method-specific variance?
           bias = TRUE,  # Should we estimate a bias between the methods?
          alpha = 0.05

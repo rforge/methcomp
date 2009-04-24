@@ -8,7 +8,7 @@ if( !Got.coda )
         "the package 'coda' is installed.\n",
         "All installed packages are shown if you type 'library()'." )
 
-MI <- ( "mi" %in% attr( object, "random" ) )
+MI <- ( "MxI" %in% attr( object, "random" ) )
 mnam <- attr( object, "methods" )
 Nm <- length( mnam )
 
@@ -34,8 +34,7 @@ for( ff in 1:Nm ) for( tt in 1:Nm )
                paste(   "beta[",mnam[tt],".",mnam[ff],"]",sep=""),
                paste("sd.pred[",mnam[tt],".",mnam[ff],"]",sep=""))]
 
-     }
-     else
+     } else
      conv.array[ff,tt,] <-
      c( 0, 1,
      medians[paste("sd.pred[",mnam[tt],".",mnam[ff],"]",sep="")] )
@@ -56,6 +55,17 @@ for( ff in 1:Nm ) for( tt in 1:Nm )
 wh <- grep( "sigma", rownames( qnt ) )
 wh <- wh[order( rownames( qnt )[wh] )]
 var.comp <- qnt[wh,]
+# Rearrange as an array
+dnam <- list( method = mnam,
+                  SD = c("IxR","MxI","res","tot"),
+                 qnt = dimnames( qnt )[[2]] )
+VC.arr <- array( 0, dimnames=dnam, dim=lapply(dnam,length) )
+if( "IxR" %in% attr( object, "random" ) )
+  VC.arr[,"IxR",] <- var.comp[grep("sigma.ir" ,rownames(var.comp)),]
+if( "MxI" %in% attr( object, "random" ) )
+  VC.arr[,"MxI",] <- var.comp[grep("sigma.mi" ,rownames(var.comp)),]
+VC.arr[,"res",] <- var.comp[grep("sigma.res",rownames(var.comp)),]
+VC.arr[,"tot",] <- var.comp[grep("sigma.tot",rownames(var.comp)),]
 
 # The mean value parameters
 alphas <- cbind( qnt[grep("alpha",rownames(qnt)),],
@@ -68,6 +78,7 @@ mean.par <- rbind( alphas, betas )
 
 invisible( list( conv.array = conv.array,
                    var.comp = var.comp,
+                    VarComp = VC.arr,
                    mean.par = mean.par ) )
 }
 

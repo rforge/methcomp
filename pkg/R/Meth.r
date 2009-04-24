@@ -85,15 +85,6 @@ class( y ) <- c("Meth", "data.frame")
 # In order to reduce the factor levels to the ones actually present, use Meth()
 return( Meth(y) )
 }
-  
-sample.Meth <-
-function( x, size, ... )
-{
-if( !inherits( x, "Meth" ) ) stop( "\n1st argument must be a Meth object.\n" )
-if( size < 1 ) size <- round( size * nlevels( x$item ) )
-wh.i <- sample( levels(x$item), size, replace=FALSE )
-return( Meth( x[!is.na( match( x$item, wh.i ) ),]) )
-}
 
 transform.Meth <-
 function( `_data`, ...)

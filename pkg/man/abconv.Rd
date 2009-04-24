@@ -4,8 +4,9 @@
   Derive linear conversion coefficients from a set of indeterminate coefficients
   }
 \description{
-  If a method comparison model is defined as $y_{mi} = \alpha_m + \beta_m \mu_i$,
-  $m=1,2$ the coefficients of the linear conversion form method 1 to 2
+  If a method comparison model is defined as
+  \eqn{y_{mi} = \alpha_m + \beta_m \mu_i, m=1,2}{y_mi = alpha_m + beta_m*mu_i, m=1,2}
+  the coefficients of the linear conversion form method 1 to 2
   are computed as well as the point where the linear conversion function
   intersects the identity line. The function is designed to work on
   numerical vectors of posterior samples from BUGS output.

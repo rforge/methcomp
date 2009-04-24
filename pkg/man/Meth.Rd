@@ -18,14 +18,18 @@
              print = FALSE)
 \method{summary}{Meth}( object, ... )
 \method{plot}{Meth}( x, y = NULL,
-                   col.LA = "blue",
+                  col.LoA = "blue",
+                   col.pt = "black",
                  cex.name = 2,
                 var.range,
                diff.range,
                 var.names = FALSE,
                       ... )
 \method{subset}{Meth}(x, ... )
-\method{sample}{Meth}(x, size, ... )
+\method{sample}{Meth}( x,
+                     how = "random",
+                       N = if( how=="items" ) nlevels( x$item ) else nrow(x),
+                     ... )
 \method{transform}{Meth}(`_data`, ... )
 }
 \arguments{
@@ -41,7 +45,8 @@
   \item{print}{Logical: Should a summary result be printed?}
   \item{object}{A \code{Meth} object.}
   \item{x}{A \code{Meth} object.}
-  \item{col.LA}{What color should be used for the limits of agreement.}
+  \item{col.LoA}{What color should be used for the limits of agreement.}
+  \item{col.pt}{What color should be used for the points.}
   \item{cex.name}{Character expansion factor for plotting method names }
   \item{var.range}{The range of the axes in the scatter plot and
                    the x-axis in the Bland-Altman plot be?}
@@ -50,11 +55,14 @@
   \item{var.names}{If logical: should the individual panels be labelled with the
                    variable names?. If character, then the values of the character
                    will be used to label the methods.}
-  \item{size}{The number or fraction (if \code{size}<1) of items to sample.}
+  \item{how}{What sampling strategy should be used. Charater strion, one of
+             \code{"random"}, \code{"linked"} or \code{"item"}. Only the first
+             letter is significant. See details for explanation.}
+  \item{N}{How many observations should be sampled?}
   \item{_data}{A \code{Meth} object.}
-  \item{...}{Ignored by the \code{Meth} and the \code{summary} functions.
-             In the \code{plot} function, parameters passed on the panel
-             function plotting methods against each other, as well as those
+  \item{...}{Ignored by the \code{Meth} and the \code{summary} and \code{sample}
+             functions. In the \code{plot} function, parameters passed on the
+             panel function plotting methods against each other, as well as those
              plotting differences against means.}
  }
 \details{
@@ -64,14 +72,24 @@
   dataframe, and gives it a class, \code{Meth}, for which there is a number of
   methods: \code{tab} - tabulation, \code{plot} - plotting and a couple of
   analysis methods (not fixed yet).
+  
+  \code{sample.Meth} samples a \code{\link{Meth}} object with replacement.
+  If \code{how=="random"}, a random sample of the rows are sampled, the existing
+  values of \code{meth}, \code{item} and \code{y} are kept but new replicate
+  numbers are generated.
+  If \code{how=="linked"}, a random sample of the linked observations (i.e.
+  observations with identical \code{item} and \code{repl} values) are sampled
+  with replacement.
+
   }
 \value{ The \code{Meth} function returns a \code{Meth} object which is a
   dataframe with columns \code{meth}, \code{item}, (\code{repl}) and \code{y}.
   \code{summary.Meth} returns a table classified by method and no. of
   replicate measurements, extended with columns of the total number of items,
   total number of observations and the range of the measurements.
-  The \code{sample} returns a subset of the \code{Meth} object with complete
+  The \code{subset} returns a subset of the \code{Meth} object with complete
   interformtion a sample of the items.
+  \code{sample}
   }
 \author{Bendix Carstensen, \email{bxc@steno.dk} }
 \examples{

@@ -49,7 +49,7 @@ cat( "AltReg uses", nrow(dfr),
 meth <- factor( dfr$meth )
 item <- factor( dfr$item )
 repl <- factor( dfr$repl )
-y    <-        dfr$y
+y    <-         dfr$y
 # dimnenisons needed later
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
@@ -68,7 +68,7 @@ rownames(cf) <- Mn
 cr <- matrix ( 0, Nm, Nm*2+3 )
 colnames(cr) <- c( paste( "Intercept:", Mn[1] ), Mn[-1],
                    paste( "Slope:"    , Mn[1] ), Mn[-1],
-                   "IxR sd.", "MxI sd.", "res.sd." )
+                   "IxR", "MxI", "res" )
 rownames(cr) <- Mn
 # Initialise the "old" verison of the coefficients to 0
 cr.old <- cr
@@ -87,6 +87,7 @@ iter <- 0
 while( crit > eps & iter < maxiter )
 {
 iter <- iter +1
+
 # First step, estimate alpha, beta, sigma using zeta.xpand
 for( m in 1:nlevels(meth) )
    {
@@ -112,21 +113,26 @@ VCE <- VC.est( data.frame( meth=meth, item=item, repl=repl, y=wk.y ),
             varMxI = varMxI,
               bias = FALSE,
              print = FALSE )
+             
 # Extract the variance components and put them on the correct scale
 # - and correct the MxI using the correct d.f.
 vcmp <- VCE$VarComp
-if( IxR ) cr[,"IxR sd."] <- vcmp[,"IxR"]*cf[,2]
-if( MxI ) cr[,"MxI sd."] <- vcmp[,"MxI"]*cf[,2]*Ni/(Ni-2)
-          cr[,"res.sd."] <- vcmp[,"res"]*cf[,2]
+if( IxR ) cr[,"IxR"] <- vcmp[,"IxR"]*cf[,2]
+if( MxI ) cr[,"MxI"] <- vcmp[,"MxI"]*cf[,2]*Ni/(Ni-2)
+          cr[,"res"] <- vcmp[,"res"]*cf[,2]
+          
 # Get the estimated random effects
 if( IxR ) a.ir <- VCE$RanEff$IxR
 if( MxI ) c.mi <- VCE$RanEff$MxI
+
 # Get the estimated mu's
 inam <- gsub("item","",names(VCE$Mu))
 zeta.xpand <- VCE$Mu[match(item,inam)] + a.ir + c.mi
+
 # Convert to unique mean parameters when assessing convergence
 abc <- ABconv( cf[,1], cf[,2], int.loc=GM )
 cr[,1:(2*Nm)] <- cbind( abc[[1]], abc[[2]] )
+
 # Check convergence
 conv <- abs( (cr - cr.old)/cr )
 conv[,2*Nm+1:3] <- conv[,2*Nm+1:3]*(cr.old[,2*Nm+1:3]>sd.lim)
@@ -139,6 +145,7 @@ if( trace )
   flush.console()
   }
 }
+
 # Convert to specified int.loc
 conv.new <- ABconv(cr[,1],cr[,1+Nm],int.loc=int.loc)
 cr[,   1:Nm] <- conv.new[[1]]

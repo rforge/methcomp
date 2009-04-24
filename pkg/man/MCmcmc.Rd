@@ -81,13 +81,14 @@ bugs.code.file = "model.txt",
         initial values for the chains. \code{list.ini} is a list of length
         \code{n.chains}. Each element of which is a list with the following
         vectors as elements:
-        {\item \code{mu} - length I
-         \item \code{alpha} - length M
-         \item \code{beta} - length M
-         \item \code{sigma.mi} - length M - if M is 2 then length 1
-         \item \code{sigma.ir} - length 1
-         \item \code{sigma.mi} - length M
-         \item \code{sigma.res} -length M}
+        \describe{
+         \item{\code{mu}}{- length I}
+         \item{\code{alpha}}{- length M}
+         \item{\code{beta}}{- length M}
+         \item{\code{sigma.mi}}{- length M - if M is 2 then length 1}
+         \item{\code{sigma.ir}}{- length 1}
+         \item{\code{sigma.mi}}{- length M}
+         \item{\code{sigma.res}}{- length M}}
         If \code{code.only==TRUE}, \code{list.ini} indicates
         whether a list of initial values is returned (invisibly) or not.
         If \code{code.only==FALSE}, \code{list.ini==FALSE} is ignored.
@@ -104,7 +105,8 @@ bugs.code.file = "model.txt",
   \item{alpha}{1 minus the the confidence level}
   \item{x}{A \code{MCmcmc} object}
   \item{across}{Should the summary of conversion formulae be printed with
-                $\alpha$, $\beta$ and prediction sd. across or down?}
+                \eqn{\alpha}{alpha}, \eqn{\beta}{beta} and prediction sd.
+                across or down?}
   \item{digits}{Number of digits after the decimal point when printing.}
   \item{subset}{Numerical, character or list giving the variables to keep.
                 If numerical, the variables in the \code{MCmcmc} object with
@@ -119,8 +121,8 @@ bugs.code.file = "model.txt",
   The model set up for an observation \eqn{y_{mir}}{y_mir} is:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) +
     e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir} 
-  where $b_{ir}$ is a random \code{item} by \code{repl} interaction (included if
-  \code{"ir" \%in\% random}) and $c_{mi}$ is a random \code{meth} by \code{item}
+  where \eqn{b_{ir}}{b_ir} is a random \code{item} by \code{repl} interaction (included if
+  \code{"ir" \%in\% random}) and \eqn{c_{mi}}{c_mi} is a random \code{meth} by \code{item}
   interaction (included if \code{"mi" \%in\% random}). The \eqn{\mu_i}{mu_i}'s are
   parameters in the model but are not monitored --- only the \eqn{\alpha}{alpha}s,
   \eqn{\beta}{beta}s and the variances of \eqn{b_{ir}}{b_{ir}},
@@ -147,8 +149,7 @@ bugs.code.file = "model.txt",
     \beta_{2\cdot 1})}{median(alpha.1.2)=median(-alpha.2.1/beta.2.1)}
   and hence no guarantee that the parameters derived as posterior medians
   produce conversion lines that are the same in both directions. Therefore,
-  \code{summary.MCmcmc} computes the estimate for \eqn{\alpha_{2\cdot 1}}
-  {alpha.2.1} as
+  \code{summary.MCmcmc} computes the estimate for \eqn{\alpha_{2\cdot 1}}{alpha.2.1} as
   \deqn{(\text{median}(\alpha_{1\cdot 2})-\text{median}(\alpha_{2\cdot 1})
   /\text{median}(\beta_{2\cdot 1}))/2}{(median(alpha.1.2)-median(alpha.2.1)/
   median(beta.2.1))/2}

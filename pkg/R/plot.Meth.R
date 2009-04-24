@@ -1,6 +1,7 @@
 plot.Meth <-
 function( x, y = NULL,
-        col.LA = "blue",
+        col.LoA = "blue",
+        col.pt = "black",
       cex.name = 2,
      var.range,
     diff.range,
@@ -26,7 +27,7 @@ pnl <-
 function( x, y, ... )
 {
 abline( 0, 1, col="black" )
-points( x, y, pch=16, ... )
+points( x, y, pch=16, col=col.pt, ... )
 }
 
 pnu <-
@@ -34,9 +35,9 @@ function( x, y, ... )
 {
 sdd <-   sd( (y-x), na.rm=TRUE )
 mnd <- mean( (y-x), na.rm=TRUE )
-abline( h=mnd+(-1:1)*2.00*sdd, col=col.LA )
+abline( h=mnd+(-1:1)*2.00*sdd, col=col.LoA )
 abline( h=0,col="black" )
-points( (x+y)/2, y-x, pch=16, ... )
+points( (x+y)/2, y-x, pch=16, col=col.pt, ... )
 }
 
 pldat <- data[,which]

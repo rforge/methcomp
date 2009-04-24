@@ -123,6 +123,6 @@ for( ic in 1:(Nm-1) )
        }
      }
     }
-on.exit( par(oldpar) )
+# on.exit( par(oldpar) )
 invisible( NULL )
 }

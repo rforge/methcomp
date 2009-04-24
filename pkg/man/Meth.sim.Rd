@@ -61,13 +61,13 @@
   Data are simulated according to the following model for an observation
   \eqn{y_{mir}}{y_mir}:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) + e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir}
-  where $b_{ir}$ is a random \code{item} by \code{repl} interaction
+  where \eqn{b_{ir}}{b_ir} is a random \code{item} by \code{repl} interaction
   (with standard deviation for method \eqn{m} the corresponding component of the
   vector \eqn{\sigma_ir}{sigma_ir}), \eqn{c_{mi}}{c_mi} is a random \code{meth}
   by \code{item} interaction (with standard deviation for method \eqn{m} the
   corresponding component of the vector \eqn{\sigma_mi}{sigma_mi}) and
   \eqn{e_{mir}}{e_mir} is a residual error term (with standard deviation
-  for method $m$ the corresponding component of the vector
+  for method \eqn{m}{m} the corresponding component of the vector
   \eqn{\sigma_mir}{sigma_mir}).  The \eqn{\mu_i}{mu_i}'s are uniformly spaced
   in a range specified by \code{mu.range}.
   }

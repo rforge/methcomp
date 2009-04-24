@@ -9,8 +9,8 @@
   available, and to give the REML-estimates of the relevant variance components.
   }
 \usage{
-  BA.est( data, linked=TRUE, IxR=linked,
-                             MxI=TRUE,
+  BA.est( data, linked=TRUE, IxR=has.repl(data),
+                             MxI=has.repl(data),
                           varMxI=TRUE, bias=TRUE, alpha=0.05 )
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
