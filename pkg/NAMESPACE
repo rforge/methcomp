@@ -22,6 +22,13 @@ summary.MCmcmc,
   pairs.MCmcmc,
    plot.MCmcmc,
    plot.VarComp,
+        MethComp,
+  print.MethComp,
+   plot.MethComp,
+  lines.MethComp,
+ points.MethComp,
+check.trans,
+choose.trans,
 abconv,
 corr.measures,
 middle, ends,
@@ -47,3 +54,8 @@ S3method(mcmc, MCmcmc)
 S3method(trace, MCmcmc)
 S3method(post, MCmcmc)
 S3method(pairs, MCmcmc)
+S3method(plot, MethComp)
+S3method(print, MethComp)
+S3method(plot, MethComp)
+S3method(lines, MethComp)
+S3method(points, MethComp)

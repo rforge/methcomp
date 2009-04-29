@@ -18,11 +18,19 @@ bugs.code.file = "model.txt",
       list.ini = TRUE,
            org = FALSE,
        program = "BRugs",
+     Transform = NULL,
+     trans.tol = 1e-6,
            ... )
 {
 # Is the supplied dataframe a Meth object? If not make it!
 if( !inherits( data, "Meth" ) ) data <- Meth( data )
-
+# Transform the response if necessary
+Transform <- choose.trans( Transform )
+if( !is.null(Transform) )
+  {
+  check.trans( Transform, data$y, trans.tol=trans.tol )
+  data$y <- Transform$trans( data$y )
+  }
 # Check the availability of required packages
 Got.coda <- require( coda )
 Got.R2WB <- require( R2WinBUGS )
@@ -219,6 +227,7 @@ class( MCobj ) <- c( "MCmcmc", class( MCobj ) )
 attr( MCobj, "random" )  <- c( if(MxI) "MxI", if(IxR) "IxR" )
 attr( MCobj, "methods" ) <- Mn
 attr( MCobj, "data" )    <- data
+attr( MCobj, "Transform" ) <- Transform
 attr( MCobj, "mcmc.par" )<- list( n.chains = n.chains,
                                     n.iter = n.iter,
                                   n.burnin = n.burnin,

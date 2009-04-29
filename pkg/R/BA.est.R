@@ -5,10 +5,9 @@ function( data,
            MxI = has.repl(data), # To fit the model with a method by item interaction
         varMxI = TRUE,  # Should method by item have method-specific variance?
           bias = TRUE,  # Should we estimate a bias between the methods?
-         alpha = 0.05
-      # , plot = TRUE  # To be used for calling some kind of plotting function,
-                       # possibly a variant of plot.Meth or generalized version
-                       # of BA.plot.
+         alpha = 0.05,
+     Transform = NULL,
+     trans.tol = 1e-6
         )
 {
 # Check that data has item, method and repl
@@ -24,6 +23,13 @@ cl.fact <- ifelse( missing(alpha),
                    qt( 1-alpha/2,
                        nrow(data) - length(table(data$meth))
                                   - length(table(data$item)) - 1 ) )
+# Transform the response if required
+Transform <- choose.trans( Transform )
+if( !is.null(Transform) )
+  {
+  check.trans( Transform, data$y, trans.tol=trans.tol )
+  data$y <- Transform$trans( data$y )
+  }
 # Fit the relevant model
 model.fit <- VC.est( data = data,
                       IxR = IxR,
@@ -62,8 +68,34 @@ RC <- cbind( LoA[diags,4], cl.fact*LoA[diags,4] )
 colnames( RC ) <- c("SD","Coef.")
 if( !missing(alpha) ) colnames( RC )[2] <- paste( "Coef.(alpha=", alpha, ")", sep="" )
 rownames( RC ) <- Mnam
-list( Bias = Bias,
-   VarComp = Vcmp,
-       LoA = LoA[-diags,,drop=FALSE],
-   RepCoef = RC )
+
+dnam <- list( "To:" = Mnam,
+            "From:" = Mnam,
+                      c("alpha","beta","sd.pred") )
+Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
+Conv[,,2] <- 1
+Conv[,,1] <- outer( Bias, Bias, "-" )
+# Derive the prediction errors --- for the same method it is only the
+# replications errors
+for( i in 1:Nm ) for( j in 1:Nm )
+   Conv[i,j,3] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)"MxI","res")]^2))
+
+res <- list( Conv = Conv,
+          VarComp = Vcmp,
+              LoA = LoA[-diags,,drop=FALSE],
+          RepCoef = RC,
+             data = data )
+class( res ) <- c("MethComp","BA.est")
+attr( res, "Transform" ) <- Transform
+res
+}
+
+bias.BA.est <-
+function( obj, ref=1, ... )
+{
+if( is.character( ref ) ) ref <- match(ref,dimnames(obj$Conv)[[1]])
+if( is.na(ref) ) stop( "Wrong reference levels given, the methods are:\n  ",
+                       paste( dimnames(obj$Conv)[[1]], collapse=", " ) )
+if( inherits(obj,"BA.est") ) return( obj$Conv[,1,1]-obj$Conv[ref,1,1] )
+else stop( "'bias' is only meaningful for objects of class BA.est" )
 }

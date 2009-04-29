@@ -110,11 +110,11 @@ print( round( ftable( summx$conv.array,
                       row.vars = if(across) 2 else c(2,3) ),
                       digits ) )
 cat( "\nVariance components with", (1-alpha)*100, "% cred.int.:\n" )
-print( round( summx$var.comp, digits ) )
+print( round( ftable( summx$VarComp, row.vars=2 ), digits ) )
 cat( "\nMean parameters with", (1-alpha)*100, "% cred.int.:\n" )
 print( round( summx$mean.par, digits ) )
 cat("\n Note that intercepts in conversion formulae are adjusted to get",
-    "\n conversion fromulae that represent the same line both ways,",
+    "\n conversion formulae that represent the same line both ways,",
     "\n - therefore are the median of the alphas above not identical",
     "\n to the intercepts given in the conversion formulae.\n")
 }

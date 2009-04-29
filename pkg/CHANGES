@@ -1,57 +1,14 @@
 2do:
+Let MethComp applied on a Meth object call one of the analysis functions.
 
-Define a new MethComp function that will do anythiqng we like on any dataset
-with the classical structure:
+In version 0.5.3
 
-A new MethComp function that will do anything we like on any dataset
-with the classical structure (which I contemplate to define as a Meth
-object, where meth and item are factors) would look like:
+o Transform= argument added to BA.est, AltReg og MCmcmc
 
-MethComp( data, # Dataset in Meth form i.e with columns:
-                # meth, item, (repl), y
-          # Model specification:           with aliases for service/convenience
-          alpha = TRUE,                      bias = alpha,
-           beta = FALSE,                    slope = beta,  
-            MxI = TRUE,                    matrix = MxI,
-            IxR = "repl" %in% names(data), linked = IxR,
-          # Transformation to be used for data
-          trans = I, 
-          # Estimation algorithm
-           meth = c("REML","MCMC"),
-            ... # parameters passed on to MCmcmc or AltReg )
+o MethComp-class, defined by a MethComp function added, handling printing
+  and plotting of results from BA.est, AltReg and MCmcmc.
 
-The from this function is a MethComp object, which is a list with components:
 
-  Model: Description of the model used.
-  Trans: List of the transformation and the inverse used prior to modelling.
-Convert: M x 5 matrix med en række per metode og søjler alpha, beta,
-         MxI, IxR, Res 
-   Data: Orginal dataset.
- AltReg: Output from AltReg if this was used: 
-         A list with components: 
-   mcmc: Output from MCmcmc if this was used: 
-         A mcmc.list object, i.e. a list with n.chains elements, each
-         of which is a mcmc object. 
-
-The following methods will be defined for a MethComp object:
-
-summary - computes all pairwise conversions with prediction SDs
-print   - prints the summary in an intelligent way 
-plot    - makes plots of the conversions between methods.
-          optionally also a Bland-Altman plot
-
-- and specifically for MethComp objects that comes from the mcmc estimation:
-
-check - calls either trace or post for assessing mcmc convergence
-trace - traces of the parameters to check the mcmc convergence. 
-post  - posterior densities of parameters.
-pairs - two-dimensional posteriors.
-
-o BA.est, AltReg og MethComp must have a trans= argument for
-  transformation of data. This should be returned in the object for
-  use with the appropriate plotting functions.
-
-------------------------------------------------------------------------------------
 In version 0.5.2
 
 o The way the two methods are ordered in BA.plot is reversed. Like in BA.est and
@@ -62,6 +19,7 @@ o summary.Meth() gives the median and range of measurements for each method too.
 o The result from AltReg now have names for the dimnames to improve readability.
 
 o A sample function for sampling the items from Meth object is added.
+
 
 In version 0.5.1
 
@@ -172,3 +130,5 @@ Changes in 0.1.13
 o The default for the y-limit in the BlandAltman function now defaults to
   that the y-axis should have the same extent as the x-axis, symmetrically
   around 0, unless the differences or the limits of agreement are larger.
+
+  

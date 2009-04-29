@@ -1,0 +1,44 @@
+\name{choose.trans}
+\Rdversion{1.1}
+\alias{choose.trans}
+\alias{check.trans}
+\title{Functions to handle transformations of measuremnt results.
+}
+\description{
+  Choose a function and inverse based on a text string; check whether two
+  functions actually are each others inverse.
+  }
+\usage{
+  choose.trans( tr )
+  check.trans( trans, y, trans.tol = 1e-05 )
+  }
+\arguments{
+  \item{tr}{A charcter string, or a list of two functions, each others inverse.}
+  \item{trans}{A list of two functions, each others inverse.}
+  \item{y}{Vector of numerical values where the functions should be each other's
+           inverse.}
+  \item{trans.tol}{Numerical constant indication how precise the evaulation
+                   should be.}
+  }
+\value{\code{choos.trans} returns a list with two elements, both functions which
+  are each others inverse. This is intended to be stored
+                 as an attribute \code{"Transform"} with the resulting object
+                 and used in plotting and reporting. All results will be on
+                 the transformed scale. Can also be a character constant, in
+                 which case the appropriate list will be generated.
+                 Possibilities are: "exp", "log", "logit", "pctlogit"
+                 (transforms percentages by the logit), "sqrt", "sq" (square),
+                 "cll" (complementary log-minus-log), "ll" (log-minus-log).
+  If there is no match \code{NULL} is returned.
+  
+  \code{check.trans} returns nothing.
+  }
+\author{Bendix Carstensen, Steno Diabetes Center,
+  \url{http://www.biostat.ku.dk/~bxc},
+  Lyle Gurrin, University of Melbourne,
+  \url{http://www.epi.unimelb.edu.au/about/staff/gurrin-lyle}.
+  }
+\examples{
+choose.trans( "logit" )
+}
+

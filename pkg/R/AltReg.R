@@ -31,10 +31,11 @@ function( data,           # Data frame in meth format
         varMxI = FALSE,   # Var of matrix effect varies with method?
            eps = 0.001,   # Convergence criterion
        maxiter = 50,      # Max no. iterations
-       int.loc = 0,       # Where should the intercept reported be evaluated?
          trace = FALSE,   # Should estimation trace be printed on screen?
-        sd.lim = 0.01     # Below this limit changes in sd estimates are ignored
+        sd.lim = 0.01,    # Below this limit changes in sd estimates are ignored
                           # in the convergence criterion
+     Transform = NULL,    # Transformation to be applied to data
+     trans.tol = 1e-6
         )
 {
 # Only complete cases
@@ -50,7 +51,14 @@ meth <- factor( dfr$meth )
 item <- factor( dfr$item )
 repl <- factor( dfr$repl )
 y    <-         dfr$y
-# dimnenisons needed later
+# Transform the response if required
+Transform <- choose.trans( Transform )
+if( !is.null(Transform) )
+  {
+  check.trans( Transform, y, trans.tol=trans.tol )
+  y <- Transform$trans( y )
+  }
+# Dimensions needed later
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
 Ni <- nlevels( item )
@@ -70,6 +78,7 @@ colnames(cr) <- c( paste( "Intercept:", Mn[1] ), Mn[-1],
                    paste( "Slope:"    , Mn[1] ), Mn[-1],
                    "IxR", "MxI", "res" )
 rownames(cr) <- Mn
+
 # Initialise the "old" verison of the coefficients to 0
 cr.old <- cr
 
@@ -140,16 +149,37 @@ crit <- max( conv[!is.na(conv)] )
 cr.old <- cr
 if( trace )
   {
-  cat( "\n\niteration", iter, "criterion:", crit, "\n" )
+  cat( "\niteration", iter, "criterion:", crit, "\n" )
   print(round(cbind(cf,cr),3))
   flush.console()
   }
 }
 
-# Convert to specified int.loc
-conv.new <- ABconv(cr[,1],cr[,1+Nm],int.loc=int.loc)
+# Convert to intercept 0
+conv.new <- ABconv(cr[,1],cr[,1+Nm],int.loc=0)
 cr[,   1:Nm] <- conv.new[[1]]
 cr[,Nm+1:Nm] <- conv.new[[2]]
 names( dimnames( cr ) ) <- c("To","From")
-invisible( cr )
+
+dnam <- list( "To:" = Mn,
+            "From:" = Mn,
+                      c("alpha","beta","sd.pred") )
+Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
+Conv[,,1] <- cr[1:Nm,1:Nm]
+Conv[,,2] <- cr[1:Nm,1:Nm+Nm]
+for( i in 1:Nm )
+for( j in 1:Nm )
+   {
+   Conv[i,j,3] <- sqrt(sum(cr[c(i,j),c(if(i!=j)"MxI","res")]^2))
+   }
+VarComp <- cr[,2*Nm+1:3]
+names(dimnames(VarComp)) <- c("Method","  s.d.")
+
+res <- list( Conv = Conv,
+          VarComp = VarComp,
+             data = data )
+
+class( res ) <- c("MethComp","AltReg")
+attr( res, "Transform" ) <- Transform
+invisible( res )
 }

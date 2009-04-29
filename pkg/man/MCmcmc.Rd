@@ -30,6 +30,8 @@ bugs.code.file = "model.txt",
       list.ini = TRUE,
            org = FALSE,
        program = "BRugs",
+     Transform = NULL,
+     trans.tol = 1e-6,
            ... )
 \method{summary}{MCmcmc}( object, alpha=0.05, \dots)
 \method{print}{MCmcmc}( x, across, digits=3, alpha=0.05, \dots )
@@ -100,6 +102,10 @@ bugs.code.file = "model.txt",
   \item{program}{Which program should be used for the MCMC simulation.
                  Possible values are "brugs","openbugs","ob" (openBUGS),
                  "winbugs","wb" (WinBUGS).}
+  \item{Transform}{Transformation of data (\code{y}) before analysis.
+                   See \code{\link{choose.trans}}.}
+  \item{trans.tol}{The tolerance used to check whether the supplied
+                   transformation and its inverse combine to the identity.}
   \item{...}{Additional arguments passed on to \code{\link[R2WinBUGS]{bugs}}.}
   \item{object}{A \code{MCmcmc} object}
   \item{alpha}{1 minus the the confidence level}
@@ -141,17 +147,17 @@ bugs.code.file = "model.txt",
   
   The function \code{summary.MCmcmc} method gives estimates of the conversion
   parameters that are consistent. Clearly,
-  \deqn{\text{median}(\beta_{1\cdot 2})=
-      1/\text{median}(\beta_{2\cdot 1})}{median(beta.1.2)=1/median(beta.2.1)}
+  \deqn{\mathrm{median}(\beta_{1\cdot 2})=
+      1/\mathrm{median}(\beta_{2\cdot 1})}{median(beta.1.2)=1/median(beta.2.1)}
   because the inverse is a monotone transformation, but there is no guarantee
   that
-  \deqn{\text{median}(\alpha_{1\cdot 2})= \text{median}(-\alpha_{2\cdot 1}/
+  \deqn{\mathrm{median}(\alpha_{1\cdot 2})= \mathrm{median}(-\alpha_{2\cdot 1}/
     \beta_{2\cdot 1})}{median(alpha.1.2)=median(-alpha.2.1/beta.2.1)}
   and hence no guarantee that the parameters derived as posterior medians
   produce conversion lines that are the same in both directions. Therefore,
   \code{summary.MCmcmc} computes the estimate for \eqn{\alpha_{2\cdot 1}}{alpha.2.1} as
-  \deqn{(\text{median}(\alpha_{1\cdot 2})-\text{median}(\alpha_{2\cdot 1})
-  /\text{median}(\beta_{2\cdot 1}))/2}{(median(alpha.1.2)-median(alpha.2.1)/
+  \deqn{(\mathrm{median}(\alpha_{1\cdot 2})-\mathrm{median}(\alpha_{2\cdot 1})
+  /\mathrm{median}(\beta_{2\cdot 1}))/2}{(median(alpha.1.2)-median(alpha.2.1)/
   median(beta.2.1))/2}
   and the estimate of \eqn{\alpha_{1\cdot 2}}{alpha.1.2} correspondingly. The
   resulting parameter estimates defines the same lines.

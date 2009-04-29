@@ -15,12 +15,14 @@ regressions.
         varMxI = FALSE,
            eps = 0.001,
        maxiter = 50,
-       int.loc = 0,
          trace = FALSE,
-        sd.lim = 0.01 )
+        sd.lim = 0.01,
+     Transform = NULL,
+     trans.tol = 1e-6 )
 }
 \arguments{
-  \item{data}{Data frame with the data in the usual \code{Meth} format,
+  \item{data}{Data frame with the data in long format,
+    (or a \code{\link{Meth}} object)
     i.e. it must have columns \code{meth}, \code{item}, \code{repl} and \code{y}}
   \item{linked}{Logical. Are the replicates linked across methods? If
     true, a random \code{item} by \code{repl} is included in the model.}
@@ -32,25 +34,29 @@ regressions.
   \item{eps}{Convergence criterion, the test is the max of the relative
     change since last iteration in both mean and variance parameters.}
   \item{maxiter}{Maximal number of iterations.}
-  \item{int.loc}{Scalar. The location where the intercept is evaluated
-    when returning the linear conversion paramaters between methods.}
   \item{trace}{Should a trace of the iterations be printed? If
     \code{TRUE} iteration number, convergence criterion and current
     estimates of means and sds are printed.}
   \item{sd.lim}{Estimated standard deviations below \code{sd.lim} are
     disregarded in the evaluation of convergence. See details.} 
+  \item{Transform}{Transformation of data before analysis.
+                   See \code{\link{choose.trans}}.}
+  \item{trans.tol}{The tolerance used to check whether the supplied
+                   transformation and its inverse combine to the identity.}
   }
 \value{
-  A matrix with one row per method compared.
-  There are columns for intercept and slope for each of the methods,
-  as well as columns for each of the three variance components.
-
-  Suppose methods are labelled \code{m1},  \code{m2} and  \code{m3}.
-  Prediction of a measurement \code{y1} by method \code{m1} from an
-  observation \code{y2} by method \code{m2} is obtained as
-  \code{y1= A + B y2} where \code{A} and \code{B} are from the row
-  labelled \code{m1}, columns labelled \code{a m1} and labelled
-  \code{b m1}, respectivlely.
+  An object of class \code{c("MethComp","AltReg")}, which is a list with three
+  elements:
+  \item{Conv}{A 3-way array with the 2 first dimensions named "To:" and "From:",
+              with methods as levels. The third dimension  is classifed by
+              the linear parameters "alpha", "beta", and "sd.pred".}
+  \item{VarComp}{A matrix with methods as rows and variance components as
+                 columns. Entries are the estimated standrd deviations.}
+  \item{data}{The orginal data used for the analysis. Needed for plotting
+              purposes.}
+  Moreover, if a transformation was applied before analysis, an attribute
+  "Transform" is present; a list with two elements \code{trans} and \code{inv},
+  both of which are functions, the first the transform, the last the inverse.
   }
 \details{When fitting a model with both IxR and MxI interactions it may become
   very unstable to have different variances of the MxI random effects for each
@@ -81,7 +87,8 @@ regressions.
 \seealso{
 \code{\link{BA.est}}
 \code{\link{Meth.sim}}
-  }
+\code{\link{MethComp}}
+        }
 \examples{
 dfr <- Meth.sim( Ni = 30,
                  Nm = 3,

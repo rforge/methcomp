@@ -1,5 +1,6 @@
 \name{BA.est}
 \alias{BA.est}
+\alias{bias.BA.est}
 \alias{VC.est}
 \title{Bias and variance components for a Bland-Altman plot.}
 \description{
@@ -11,7 +12,10 @@
 \usage{
   BA.est( data, linked=TRUE, IxR=has.repl(data),
                              MxI=has.repl(data),
-                          varMxI=TRUE, bias=TRUE, alpha=0.05 )
+                          varMxI=TRUE, bias=TRUE, alpha=0.05,
+                Transform = NULL,
+                trans.tol = 1e-6 )
+  \method{bias}{BA.est}( obj, ref=1, \dots )
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
            MxI = has.repl(data), matrix = MxI,
@@ -38,15 +42,24 @@
     used when computing prediction intervals, otherwise the 1-alpha/2
     t-quantile is used. The number of d.f. is taken as the number of units
     minus the number of items minus the number of methods minus 1.}
+  \item{Transform}{Transformation of data (\code{y}) before analysis.
+                   See \code{\link{check.trans}}.}
+  \item{trans.tol}{The tolerance used to check whether the supplied
+                   transformation and its inverse combine to the identity.}
+  \item{obj}{A \code{BA.est} object from which to extract the biases between
+             methods.}
+  \item{ref}{Numeric or character. The reference method for the biases: the
+             method with bias 0.}
 	\item{print}{Logical. Should the estimated bias and variance components be
     printed?}
+  \item{\dots}{Further argumenst passed on. Curently ignored.}
   }
 \details{
   The model fitted is:
   \deqn{y=\alpha_m + \mu_i + c_{mi} + a_{ir} + e_{mir},
-        \quad \text{var}(c_{mi})=\tau_m^2,
-        \quad \text{var}(a_{ir})=\omega^2,
-        \quad \text{var}(e_{mir})=\sigma_m^2,
+        \quad \mathrm{var}(c_{mi})=\tau_m^2,
+        \quad \mathrm{var}(a_{ir})=\omega^2,
+        \quad \mathrm{var}(e_{mir})=\sigma_m^2,
          }{y=alpha_m + mu_i + c_mi + a_ir + e_ir,
              var(c_mi)=tau_m^2,
              var(a_ir)=omega^2,
@@ -61,13 +74,19 @@
   \code{\link{AltReg}}, where each iteration step requires fit of this model.
   }
 \value{
-  A list with four elements; \code{BA.est} returns a list with elements
-  \code{Bias}, \code{VarComp}, \code{LoA}, \code{RepCoef};
+  \code{BA.est} returns an object of class \code{c("\link{MethComp}","BA.est")},
+  a list with four elements
+  \code{Conv}, \code{VarComp}, \code{LoA}, \code{RepCoef};
   \code{VC.est} returns (invisibly!) a list with elements
   \code{Bias}, \code{VarComp}, \code{Mu}, \code{RanEff}.
-  These list componenets are:
-  \item{Bias}{Vector of estimates of \eqn{\alpha_m}{alpha_m},
-              the first element is always 0.}
+  These list components are:
+  \item{Conv}{3-dimensional array with dimensions "To", "From" and unnamed.
+              The first two doemsions have the methods compared as levels,
+              that last one \code{c("alpha","beta","sd")}. It represnets the
+              mean conversions between methods and the prediciton standard
+              deviation. Where "To" and "From" take the same value the value
+              of the "sd" component is \eqn{\sqrt(2)}{sqrt(2)} times the
+              residual variation for the method.}
   \item{VarComp}{A matrix of variance components (on the SD scale)
                  with methods as rows and variance components "IxR", "MxI" and
                  "res" as columns.}
