@@ -134,9 +134,8 @@ subset.Meth <-
 function( x, ... )
 {
 y <- base:::subset.data.frame(x, ...)
-class( y ) <- c("Meth", "data.frame")
 # In order to reduce the factor levels to the ones actually present, use Meth()
-return( Meth(y,keep.vars=TRUE) )
+return( Meth(y,keep.vars=TRUE,print=FALSE) )
 }
 
 transform.Meth <-
