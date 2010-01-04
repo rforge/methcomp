@@ -1,11 +1,11 @@
 plot.MCmcmc <-
 function( x,
         axlim = range( attr(x,"data")$y, na.rm = TRUE ),
-        which,
+        wh.cmp,
      lwd.line = c(3,1), col.line = rep("black",2), lty.line=rep(1,2),
           eqn = TRUE, digits = 2,
          grid = FALSE, col.grid=gray(0.8),
-       pl.obs = FALSE,
+       points = FALSE,
       col.pts = "black", pch.pts = 16, cex.pts = 0.8,
           ... )
 {
@@ -16,7 +16,7 @@ if( !Got.coda )
         "All installed packages are shown if you type 'library()'." )
 
 # Extract the conversion formulae
-conv.array <- summary.MCmcmc( x )$conv.array
+conv.array <- summary.MCmcmc(x)$conv.array
 
 # A function to plot the single panels --- argument definition is
 # limited, since the functions is defined inside plot.MCmcmc,
@@ -82,18 +82,18 @@ lwd.line <- rep( lwd.line, 2 )
 #-------------------------------------------------------------------------------
 # Names for plotting
 Mnames <- attr( x, "methods" )
-     if( missing(      which ) ) wh <- 1:length(Mnames)
-else if( is.numeric(   which ) ) wh <- which
-else if( is.character( which ) ) wh <- match( which, Mnames )
+     if( missing(      wh.cmp ) ) wh <- 1:length(Mnames)
+else if( is.numeric(   wh.cmp ) ) wh <- wh.cmp
+else if( is.character( wh.cmp ) ) wh <- match( wh.cmp, Mnames )
 Nm <- length( wh )
 
 # Points to be plotted
-if( is.logical( pl.obs ) ) pl.obs <- if( pl.obs ) "repl" else ""
-if( pl.obs=="repl" )
+if( is.logical( points ) ) points <- if( points ) "repl" else ""
+if( points=="repl" )
   {
   pts <- with( attr( x, "data" ), tapply( y, list( interaction(item,repl), meth ), mean ) )
   }
-if( pl.obs=="mean" )
+if( points=="mean" )
   {
   pts <- with( attr( x, "data" ), tapply( y, list( item, meth ), mean ) )
   }
@@ -109,7 +109,7 @@ for( ic in 1:(Nm-1) )
      plot( NA, xlim=axlim, ylim=axlim, xlab="", ylab="", axes=FALSE )
      conv.pair( conv.array[wh[ic],wh[ir],],
                 Mnames[c(wh[ic],wh[ir])],
-                pts = if( pl.obs %in% c("repl","mean") )
+                pts = if( points %in% c("repl","mean") )
                         cbind( pts[,wh[ic]], pts[,wh[ir]] ) )
      if( ic==1 )
        {

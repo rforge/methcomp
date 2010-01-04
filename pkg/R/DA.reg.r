@@ -1,16 +1,30 @@
 DA.reg <-
-function( data )
+function( data,
+     Transform = NULL,    # Transformation to be applied to y
+     trans.tol = 1e-6 )
 {
-# Makes regression of differences on averages for all pairs of methods
+# This function makes regression of differences on averages for all pairs
+# of methods and makes ad-hoc test for slope=1 and constant variance
+
+# Check that the supplied data is actually a Meth object
+dfr <- data <- Meth( data, print=FALSE )
+
+# Transform the response if required
+Transform <- choose.trans( Transform )
+if( !is.null(Transform) )
+  {
+  check.trans( Transform, data$y, trans.tol=trans.tol )
+  data$y <- Transform$trans( data$y )
+  }
 
 # Names and number of methods
 Mn <-  levels( data$meth )
 Nm <- nlevels( data$meth )
 
 # Array to hold the conversion parameters
-dnam <- list( "From:" = Mn,
-                "To:" = Mn,
-                c("alpha","beta","sd.pred","beta=1","s.d.=K") )
+dnam <- list( "To:" = Mn,
+            "From:" = Mn,
+                      c("alpha","beta","sd.pred","beta=1","s.d.=K") )
 conv <- array( NA, dim=sapply(dnam,length), dimnames=dnam )
 
 # Fill in the array
@@ -18,20 +32,23 @@ for( i in 1:Nm ) conv[i,i,] <- c(0,1,NA,NA,NA)
 for( i in 1:(Nm-1) ) for( j in (i+1):Nm )
    {
    sb <- data[data$meth %in% Mn[c(i,j)],]
-# Why does this not work:
-#   sb <- subset( data, meth %in% Mn[c(i,j)] )
-# - it produces the error:
-# Error in inherits(x, "factor") : object "i" not found
    cf <- da.reg1( sb )
-   conv[i,j,] <- c(  -cf[1]   /(1+cf[2]/2),
+   conv[j,i,] <- c(  -cf[1]   /(1+cf[2]/2),
                    (1-cf[2]/2)/(1+cf[2]/2),
                       cf[3]   /(1+cf[2]/2),cf[4],cf[5])
-   conv[j,i,] <- c(  +cf[1]   /(1-cf[2]/2),
+   conv[i,j,] <- c(  +cf[1]   /(1-cf[2]/2),
                    (1+cf[2]/2)/(1-cf[2]/2),
                       cf[3]   /(1-cf[2]/2),cf[4],cf[5])
    }
-   
-return( conv )
+
+# Collect the results
+res <- list( Conv = conv,
+          VarComp = NULL,
+             data = dfr )
+
+class( res ) <- "MethComp"
+attr( res, "Transform" ) <- Transform
+res
 }
 
 da.reg1 <-

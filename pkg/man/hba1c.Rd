@@ -38,5 +38,10 @@ Biostatistics 5, pp. 399--413, 2004.
 \examples{
 data(hba1c)
 str(hba1c)
+hb1  <- with( hba1c,
+              Meth( meth = interaction(dev,type),
+                    item = item,
+                    repl = d.ana-d.samp,
+                       y = y, print=TRUE ) )
 }
 \keyword{datasets}

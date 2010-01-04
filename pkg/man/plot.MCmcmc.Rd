@@ -8,18 +8,18 @@
 \usage{
 plot.MCmcmc( x,
              axlim = range( attr(x,"data")$y, na.rm=TRUE ),
-             which,
+            wh.cmp,
           lwd.line = c(3,1), col.line = rep("black",2), lty.line=rep(1,2),
                eqn = TRUE, digits = 2,
               grid = FALSE, col.grid=gray(0.8),
-            pl.obs = FALSE,
+            points = FALSE,
            col.pts = "black", pch.pts = 16, cex.pts = 0.8,
                ... )
 }
 \arguments{
   \item{x}{A \code{\link{MCmcmc}} object}
   \item{axlim}{The limits for the axes in the panels}
-  \item{which}{Numeric vector or vector of method names.
+  \item{wh.cmp}{Numeric vector or vector of method names.
                Which of the methods should be included in the plot?}
   \item{lwd.line}{Numerical vector of length 2. The width of the conversion
                   line and the prediction limits. If the second values is 0,
@@ -35,7 +35,7 @@ plot.MCmcmc( x,
   \item{grid}{Should a grid be drawn? If a numerical vector is given, the grid
               is drawn at those values.}
   \item{col.grid}{What color should the grid have?}
-  \item{pl.obs}{Logical or character. Should the points be plotted. If
+  \item{points}{Logical or character. Should the points be plotted. If
                 \code{TRUE} or \code{"repl"} paired values of single replicates
                 are plotted. If \code{"perm"}, replicates are randomly permuted
                 within (item, method) befor plotting. If \code{"mean"}, means

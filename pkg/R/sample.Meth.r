@@ -37,7 +37,7 @@ if( tolower(substr(how,1,1))=="i" )
                             new.item=i ) )
      }
   old.item <- new.x$item
-  new.x <- cbind( Meth( transform( new.x, item=new.item ) ),
+  new.x <- cbind( Meth( transform( new.x, item=i.id ) ),
                   old.item=old.item )
   class( new.x ) <- c("Meth","data.frame")
   }

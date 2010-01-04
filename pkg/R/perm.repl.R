@@ -12,7 +12,7 @@ new.order <- order( data$meth, data$item, random )
 data <- data[new.order,]
 
 # Make the replicates in the new ordering
-Meth( make.repl( data ) )
+Meth( make.repl( data ), print=FALSE )
 }
 
 make.repl <-

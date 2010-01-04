@@ -119,8 +119,14 @@ list( x=xx, y=yy )
   beta  <- coef(m0)[2]
   sigma <- summary(m0)$sigma
   p.b.1 <- summary(m0)$coef[2,4]
-  p.values <- c( p.b.1, p.no.diff )
-  names( p.values ) <- c("Slope=1","Diff=0|Slope=1")
+  # Regress the absolute residuals on the averages to check if variance is
+  # constant
+  if( mult ) mv <- lm( abs(residuals(m0)) ~ log10(average) )
+  else       mv <- lm( abs(residuals(m0)) ~       average  )
+  p.const.var <- summary(mv)$coef[2,4]
+  # Collect the p-values
+  p.values <- c( p.no.diff, p.b.1, p.const.var )[3:1]
+  names( p.values ) <- c("Diff=0|Slope=1","Slope=1","Var. const.")[3:1]
 # Extract the relevant quantities
   if( mult )
     {
@@ -259,11 +265,25 @@ if( print )
   }
 
 # Return list of relevant results
-invisible( list( lim.agree = res,
-                  p.values = p.values,
-                   reg.res = reg.res ) )
+res <-  list( LoA = res,
+         p.values = p.values,
+          reg.res = reg.res )
+class( res ) <- "BA.check"
+invisible( res )
 }
 
+print.BA.check <-
+function( x, digits=4, ... )
+{
+cat("Approximate tests of assumptions:\n")
+pval <- cbind( x$p.values )
+colnames( pval ) <- "p value"
+print( round( pval, digits ) )
+cat("\nResults from the regression of averages on differences:\n")
+print( round( x$reg.res, digits ) )
+cat("\nLimits of agreement:\n")
+print( round( x$LoA, digits ) )
+}
 
 
 

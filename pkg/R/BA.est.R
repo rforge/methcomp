@@ -16,7 +16,8 @@ if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) < 3 ) stop(
 "\nThe supplied dataframe misses columns named ", rq.nam[is.na(wh)], ".\n" )
 if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) == 3 ) stop(
 "\nThe supplied dataframe misses the column named ", rq.nam[is.na(wh)], ".\n" )
-
+# Exchangeability:
+if( !missing(linked) ) IxR <- linked
 # Should we use 2 or some t-quantile ( df = no. units minus no. param. )
 cl.fact <- ifelse( missing(alpha),
                    2,
@@ -71,7 +72,7 @@ rownames( RC ) <- Mnam
 
 dnam <- list( "To:" = Mnam,
             "From:" = Mnam,
-                      c("alpha","beta","sd.pred") )
+                      c("alpha","beta","sd") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 Conv[,,2] <- 1
 Conv[,,1] <- outer( Bias, Bias, "-" )

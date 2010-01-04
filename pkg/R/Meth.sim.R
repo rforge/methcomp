@@ -41,7 +41,7 @@ else reps <-    rep(    Nr, length(meth) )
 # Make a dataframe and expand it by indexing rows
 dfr <- data.frame( meth=meth, item=item )[rep(1:length(meth),reps),]
 # Use the standard function to generate replication numbers
-# (make.repl was changed so that it does not check for "y")
+# make.repl does not check for "y"
 dfr <- make.repl( dfr )
 # We need a copies of the repl in the current workspace later:
 meth <- dfr$meth
@@ -76,5 +76,5 @@ i.thin <- i.thin[dfr$item]
 thin <- m.thin * i.thin
 thin <- as.logical( rbinom( length(thin), 1, thin ) )
 dfr <- dfr[thin,]
-Meth( dfr )
+Meth( dfr, print=FALSE )
 }

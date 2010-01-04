@@ -15,7 +15,7 @@
           bias = "linear",
            IxR = has.repl(data), linked = IxR,
            MxI = TRUE,           matrix = MxI,
-        varMxI = TRUE,
+        varMxI = nlevels(factor(data$meth)) > 2,
       n.chains = 4,
         n.iter = 2000,
       n.burnin = n.iter/2,
@@ -24,7 +24,6 @@ bugs.directory = getOption("bugs.directory"),
          debug = FALSE,
 bugs.code.file = "model.txt",
        clearWD = TRUE,
-        bugsWD = "bugsWD",
      code.only = FALSE,
       ini.mult = 2,
       list.ini = TRUE,
@@ -34,7 +33,7 @@ bugs.code.file = "model.txt",
      trans.tol = 1e-6,
            ... )
 \method{summary}{MCmcmc}( object, alpha=0.05, \dots)
-\method{print}{MCmcmc}( x, across, digits=3, alpha=0.05, \dots )
+\method{print}{MCmcmc}( x, digits=3, alpha=0.05, \dots )
 \method{subset}{MCmcmc}( x, subset=NULL, allow.repl=FALSE, chains=NULL, \dots )
 \method{mcmc}{MCmcmc}( x, \dots )
   }
@@ -69,8 +68,6 @@ bugs.code.file = "model.txt",
     \code{bugs}.} 
   \item{clearWD}{Should the working directory be cleared for junk files after
                  the running of WinBUGS --- passed on to \code{bugs}.}
-  \item{bugsWD}{Name of the folder where the bugs files are put. The code file
-                is also put in this folder.}
   \item{bugs.code.file}{Where should the bugs code go?}
   \item{code.only}{Should \code{MCmcmc} just create a bugs code file and a set
                    of inits? See the \code{list.ini} argument.}
@@ -110,9 +107,6 @@ bugs.code.file = "model.txt",
   \item{object}{A \code{MCmcmc} object}
   \item{alpha}{1 minus the the confidence level}
   \item{x}{A \code{MCmcmc} object}
-  \item{across}{Should the summary of conversion formulae be printed with
-                \eqn{\alpha}{alpha}, \eqn{\beta}{beta} and prediction sd.
-                across or down?}
   \item{digits}{Number of digits after the decimal point when printing.}
   \item{subset}{Numerical, character or list giving the variables to keep.
                 If numerical, the variables in the \code{MCmcmc} object with
@@ -179,7 +173,8 @@ bugs.code.file = "model.txt",
   \item{original}{If \code{org=TRUE}, an \code{\link[coda]{mcmc.list}} object
                   with the posterior of the original model parameters, i.e.
                   the variance components and the unidentifiable mean parameters.}
-
+  \item{Transform}{The transformation used to the measurements before the
+                   analysis.}
   If \code{code.only==TRUE}, a list containing the initial values is
            generated.
   }

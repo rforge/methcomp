@@ -31,7 +31,6 @@
               mult = FALSE,
              alpha,
                ... )
-
   BA.plot( y1, y2,
        meth.names = NULL,
         mean.repl = FALSE,
@@ -89,10 +88,13 @@
              used for fine-tuning the appearance of the plot.}
 }
 \value{
-  A list with 2 elements:
-  \item{lim.agree}{A vector of length 3 with Limits of Agreement.}
-  \item{p.value}{P-value for the hypothesis that the mean difference is 0.
-                 Usually a lame thing to use.}
+  An object of class \code{BA.check}; list with 3 elements:
+  \item{LoA}{A vector of length 3 with Limits of Agreement.}
+  \item{p.value}{P-values for three hypothese: 1) Constant variance - this is
+                 the test of 0 slope in the regression of absolute residuals
+                 on averages. 2) Constant difference - this is the test of 0
+                 slop in the regression of differences on averages. 3)
+                 Difference equal to 0 - this is usually a lame thig to use.}
 }
 \references{
 JM Bland and DG Altman: Statistical methods for assessing agreement between

@@ -5,12 +5,15 @@ if( inherits( obj, "MethComp" ) )
   {
   Conv    <- obj$Conv
   VarComp <- obj$VarComp
+  dfr     <- data
   }
 else
 if( inherits( obj, "MCmcmc" ) )
   {
+  dfr <- attr( obj, "data" )
   obj <- summary( obj )
-  ca <- obj$conv.array
+  ca  <- obj$conv.array
+  # Store the array in a different layout [This is crazy]
   names( dimnames( ca ) )[1:2] <- names( dimnames( ca ) )[2:1]
   Conv <- ca
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
@@ -20,24 +23,29 @@ if( inherits( obj, "MCmcmc" ) )
 else stop( "Input object (argument) must have class 'MethComp' or 'MCmcmc'.\n",
            "It has class ", class( obj ) )
 res <- list( Conv = Conv,
-          VarComp = VarComp )
+          VarComp = VarComp,
+             data = dfr )
 class( res ) <- "MethComp"
 attr( res, "Transform" ) <- attr( obj, "Transform" )
 return( res )
 }
 
 ################################################################################
-## print for MethComp
+## print method for MethComp
 ################################################################################
 print.MethComp <-
-function( x, digits=4, ... )
+function( x, digits=3, ... )
 {
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
        paste( body(trans$trans) ), "\n\n" )
 print( round( ftable( x$Conv ), digits ) )
-cat("\n")
-print( round( x$VarComp, digits ) )
+# Account for the results from DA.reg where variances are not estimated
+if( !is.null( x$VarComp ) )
+  {
+  cat("\n")
+  print( round( x$VarComp, digits ) )
+  }
 }
 
 ################################################################################
@@ -53,14 +61,23 @@ function( x,
        N.grid = 10,
      col.grid = grey(0.9),
     col.lines = "black",
+   col.points = "black",
+          eqn = pl.type=="conv" & is.null(attr(x,"Transform")),
+      col.eqn = col.lines,
+     font.eqn = 2,
+       digits = 1,
           ... )
 {
-Mn <- dimnames( x[[1]] )[[1]]
+# All method names
+Mn <- dimnames( x[["Conv"]] )[[1]]
+
+# Those two plotted here in the right order
+Mn <- Mn[wh.cmp[1:2]]
+
 if( pl.type == "conv" ) # Conversion plot
   {
   plot( NA, xlim=axlim, ylim=axlim, type="n",
-            xlab=Mn[wh.cmp[1]],
-            ylab=Mn[wh.cmp[2]] )
+            xlab=Mn[1], ylab=Mn[2] )
   # Grid?
   if( is.logical( grid ) ) if( grid )
     grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
@@ -69,25 +86,63 @@ if( pl.type == "conv" ) # Conversion plot
 else # Bland-Altman type plot
   {
   plot( NA, xlim=axlim, ylim=axlim-mean(axlim), type="n",
-            xlab=paste( "(", Mn[wh.cmp[1]], "+",
-                             Mn[wh.cmp[2]], ") / 2" ),
-            ylab=paste( Mn[wh.cmp[2]], "-", Mn[wh.cmp[1]] ) )
+            xlab=paste( "(", Mn[1], "+",
+                             Mn[2], ") / 2" ),
+            ylab=paste( Mn[2], "-", Mn[1] ) )
   # Grid?
-  if( is.logical( grid ) ) if( grid )
-                             {
-           grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
-          hgrid <- pretty( axlim-mean(axlim),
-                           n = if( length(N.grid)>1 ) length(N.grid)
-                               else N.grid )
-                             }
-  abline( h=hgrid, v=grid, col=col.grid )
+  if( is.logical( grid ) )
+    if( grid )
+      {
+       grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
+      hgrid <- pretty( axlim-mean(axlim),
+                       n = if( length(N.grid)>1 ) length(N.grid)
+                           else N.grid )
+      abline( h=hgrid, v=grid, col=col.grid )
+      }
   }
 box()
-options( MethComp.pl.type = pl.type,
-         MethComp.wh.cmp = wh.cmp )
 
+if( eqn )
+  {
+  A <- x[["Conv"]][Mn[2],Mn[1],"alpha"]
+  B <- x[["Conv"]][Mn[2],Mn[1], "beta"]
+  S <- x[["Conv"]][Mn[2],Mn[1],   "sd"]
+  y.x <- paste( Mn[2], "=\n",
+                formatC( A, format="f", digits=digits ), "+",
+                formatC( B, format="f", digits=digits ),
+                Mn[1], "\n  (",
+                formatC( S, format="f", digits=digits ), ")" )
+  x.y <- paste( Mn[1], "=\n",
+                formatC( -A/B, format="f", digits=digits ), "+",
+                formatC(  1/B, format="f", digits=digits ),
+                Mn[2], "\n  (",
+                formatC(  S/B, format="f", digits=digits ), ")" )
+  # Heights and widths of the equations
+  wul <- strwidth ( y.x, font=2 )
+  hul <- strheight( y.x, font=2 )
+  wlr <- strwidth ( x.y, font=2 )
+  hlr <- strheight( x.y, font=2 )
+  if( is.numeric(grid) )
+    {
+    rect( par("usr")[1], par("usr")[4],
+          par("usr")[1]+wul+0.2*hul, par("usr")[4]-1.2*hul,
+          border=col.grid, col="white" )
+    rect( par("usr")[2], par("usr")[3],
+          par("usr")[2]-wlr-0.2*hlr, par("usr")[3]+1.2*hlr,
+          border=col.grid, col="white" )
+    }
+  text( par("usr")[1]+0.1*hul    , par("usr")[4]-0.1*hul, y.x,
+        adj=c(0,1), font=font.eqn, col=col.eqn )
+  text( par("usr")[2]-0.1*hlr-wlr, par("usr")[3]+0.1*hlr, x.y,
+        adj=c(0,0), font=font.eqn, col=col.eqn )
+  }
+
+options( MethComp.pl.type = pl.type,
+          MethComp.wh.cmp = wh.cmp )
+
+if( points ) points.MethComp( x, col.points= col.points, ... )
               lines.MethComp( x, col.lines = col.lines, ... )
-if( points ) points.MethComp( x, ... )
+box()
 }
 
 ################################################################################
@@ -97,11 +152,12 @@ lines.MethComp <-
 function( x,
        wh.cmp = getOption("MethComp.wh.cmp"),
       pl.type = getOption("MethComp.pl.type"),
-        axlim = par("usr")[1:2],
     col.lines = "black",
+          lwd = c(3,1),
           ... )
 {
 Mn <- dimnames( x[[1]] )[[1]]
+
 # Define the transformation
 if( is.null( attr( x, "Transform" ) ) )
   trf <- itr <- function( x ) x
@@ -109,20 +165,28 @@ else {
   trf <- attr( x, "Transform" )$trans
   itr <- attr( x, "Transform" )$inv
      }
-# Define the points to plot
-  m1 <- seq(axlim[1],axlim[2],,100)
+
+# The slope and the sd, used to plot the lines
+A <- x$Conv[wh.cmp[2],wh.cmp[1],"alpha"]
+B <- x$Conv[wh.cmp[2],wh.cmp[1], "beta"]
+S <- x$Conv[wh.cmp[2],wh.cmp[1],   "sd"]
+
+# Define the method 1 points to use making sure that the points span also the
+# range of the BA-type plots:
+axlim <- par("usr")[1:2]
+# m1 is on the original scale, so is axlim; bt A, B and S are for transformed
+# mesurements
+  m1 <- seq( axlim[1], axlim[2],, 200 )
 trm1 <- trf( m1 )
-trm2 <- cbind( x$Conv[wh.cmp[2],wh.cmp[1],  "alpha"] +
-               x$Conv[wh.cmp[2],wh.cmp[1],   "beta"] * trm1,
-               x$Conv[wh.cmp[2],wh.cmp[1],"sd.pred"] ) %*% rbind( c(1, 1, 1),
-                                                                c(0,-2, 2) )
+trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
+                                        c(0,-2, 2) )
   m2 <- itr( trm2 )
 
 if( pl.type == "conv" )
      matlines( m1, m2,
-               lwd=c(3,1,1), lty=1, col=col.lines )
+               lwd=lwd[c(1,2,2)], lty=1, col=col.lines )
 else matlines( (m1+m2)/2, m2-m1,
-               lwd=c(3,1,1), lty=1, col=col.lines )
+               lwd=lwd[c(1,2,2)], lty=1, col=col.lines )
 }
 
 ################################################################################
@@ -132,15 +196,18 @@ points.MethComp <-
 function( x,
        wh.cmp = getOption("MethComp.wh.cmp"),
       pl.type = getOption("MethComp.pl.type"),
+   col.points = "black",
           ... )
 {
 Mn <- dimnames( x[[1]] )[[1]]
 wide <- to.wide( x$data )
 if( pl.type == "conv" ) # Conversion plot
-  points( wide[,Mn[wh.cmp[1]]], wide[,Mn[wh.cmp[2]]], ... )
+  points( wide[,Mn[wh.cmp[1]]], wide[,Mn[wh.cmp[2]]],
+          col = col.points, ... )
 else # Bland-Altman type plot
   points( (wide[,Mn[wh.cmp[1]]]+wide[,Mn[wh.cmp[2]]])/2,
-           wide[,Mn[wh.cmp[2]]]-wide[,Mn[wh.cmp[1]]], ... )
+           wide[,Mn[wh.cmp[2]]]-wide[,Mn[wh.cmp[1]]],
+           col = col.points, ... )
 }
 
 ################################################################################
@@ -154,10 +221,14 @@ function( tr )
 if( is.character(tr) )
   {
   ltr <- switch( tr,
-                 log = list( trans = log, inv = exp ),
-                 exp = list( trans = exp, inv = log ),
-                sqrt = list( trans = sqrt, inv = function(x) x^2 ),
-                  sq = list( trans = function(x) x^2, inv = sqrt ),
+                 log = list( trans = log,
+                               inv = exp ),
+                 exp = list( trans = exp,
+                               inv = log ),
+                sqrt = list( trans = sqrt,
+                               inv = function(x) x^2 ),
+                  sq = list( trans = function(x) x^2,
+                               inv = sqrt ),
                logit = list( trans = function(p) log(p/(1-p)),
                                inv = function(x) 1/(1+exp(-x)) ),
             pctlogit = list( trans = function(p) log(p/(100-p)),
@@ -167,7 +238,7 @@ if( is.character(tr) )
                   ll = list( trans = function(p) log(-log(p)),
                                inv = function(x) exp(-exp(x)) ),
                   NULL )
-  if( is.null(ltr) ) cat('Transformation "', paste("\b",trans,sep=""),
+  if( is.null(ltr) ) cat('Transformation "', paste("\b",tr,sep=""),
                          '\b" not known --- none applied.\n')
   }
 else
@@ -186,9 +257,9 @@ invisible( ltr )
 check.trans <-
 function( trans, y, trans.tol=10e-6 )
 {
-if( any( abs( y - trans$inv(trans$trans(y)) ) > trans.tol ) )
+if( any( abs( dif <- y - trans$inv(trans$trans(y)) ) > trans.tol ) )
   stop( "The transformation and its inverse seems not to agree:\n",
         "y - inv(trans(y)) has range ",
-        paste( range(difference), collapse=" to " ),
+        paste( range(dif), collapse=" to " ),
         "\nyou may want to to change the current trans.tol=", trans.tol )
 }

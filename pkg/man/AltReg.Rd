@@ -39,21 +39,27 @@ regressions.
     estimates of means and sds are printed.}
   \item{sd.lim}{Estimated standard deviations below \code{sd.lim} are
     disregarded in the evaluation of convergence. See details.} 
-  \item{Transform}{Transformation of data before analysis.
-                   See \code{\link{choose.trans}}.}
+  \item{Transform}{A character string, or a list of two functions, each other's
+                   inverse. The measurements are transformed by this before
+                   analysis. Possibilities are: "exp", "log", "logit",
+                   "pctlogit" (transforms percentages by the logit), "sqrt",
+                   "sq" (square), "cll" (complementary log-minus-log), "ll"
+                   (log-minus-log). For further details see
+                   \code{\link{choose.trans}}.}
   \item{trans.tol}{The tolerance used to check whether the supplied
-                   transformation and its inverse combine to the identity.}
+                   transformation and its inverse combine to the identity.
+                   Only used if \code{Transform} is a list of two functions.}
   }
 \value{
   An object of class \code{c("MethComp","AltReg")}, which is a list with three
   elements:
   \item{Conv}{A 3-way array with the 2 first dimensions named "To:" and "From:",
               with methods as levels. The third dimension  is classifed by
-              the linear parameters "alpha", "beta", and "sd.pred".}
+              the linear parameters "alpha", "beta", and "sd".}
   \item{VarComp}{A matrix with methods as rows and variance components as
                  columns. Entries are the estimated standrd deviations.}
-  \item{data}{The orginal data used for the analysis. Needed for plotting
-              purposes.}
+  \item{data}{The original data used in the analysis, with untransformed
+              measuremnts. This is needed for plotting purposes.}
   Moreover, if a transformation was applied before analysis, an attribute
   "Transform" is present; a list with two elements \code{trans} and \code{inv},
   both of which are functions, the first the transform, the last the inverse.
@@ -82,15 +88,18 @@ regressions.
   measurement. Biostatistics (2004), 5, 3, pp. 399--413.
   }
 \author{
-  Bendix Carstensen, \email{bxc@steno.dk}
-  }
+  Bendix Carstensen, Steno Diabetes Center,
+  \email{bxc@steno.dk},
+  \url{http://www.biostat.ku.dk/~bxc}.
+}
 \seealso{
 \code{\link{BA.est}}
+\code{\link{DA.reg}}
 \code{\link{Meth.sim}}
 \code{\link{MethComp}}
         }
 \examples{
-dfr <- Meth.sim( Ni = 30,
+dfm <- Meth.sim( Ni = 30,
                  Nm = 3,
                beta = c(0.9,0.8,1.1),
           sigma.mi  = c(4,5,8),
@@ -98,14 +107,16 @@ dfr <- Meth.sim( Ni = 30,
           sigma.mir = c(5,4,3),
              m.thin = 1,
              i.thin = 1 )
-levels(dfr$meth) <- paste( "m",1:3,sep="" )
-str(dfr)
-summary(dfr)
-plot(dfr,var.names=TRUE)
-# AltReg( dfr, linked=TRUE, trace=TRUE )
-# AltReg( dfr, linked=TRUE, varMxI=TRUE, trace=TRUE )
-data( sbp )
-# AltReg( dfr, linked=TRUE, varMxI=TRUE, trace=TRUE )
+levels(dfm$meth) <- paste( "m",1:3,sep="" )
+str(dfm)
+summary(dfm)
+plot(dfm,var.names=TRUE)
+# AltReg( dfm, linked=TRUE, trace=TRUE )
+# AltReg( dfm, linked=TRUE, varMxI=TRUE, trace=TRUE )
+data( ox )
+ox.AR <- AltReg( ox, linked=TRUE, trace=TRUE, Transform="pctlogit" )
+str( ox.AR )
+ox.AR
 }
 \keyword{models}
 \keyword{regression}

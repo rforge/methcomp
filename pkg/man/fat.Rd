@@ -16,8 +16,8 @@ are exchangeable within (person,observer)=(item,method)
     \item{\code{Id}}{Person id.}
     \item{\code{Obs}}{Observers, a factor with levels \code{KL} and \code{SL}.}
     \item{\code{Rep}}{Replicate --- exchangeable within person and observer.}
-    \item{\code{Sub}}{Subcutaneous fat measured in mm.}
-    \item{\code{Vic}}{Visceral fat measured in mm.}
+    \item{\code{Sub}}{Subcutaneous fat measured in cm.}
+    \item{\code{Vic}}{Visceral fat measured in cm.}
   }
 }
 %\source{

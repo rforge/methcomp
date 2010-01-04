@@ -14,7 +14,7 @@ Nm <- length( mnam )
 
 dnam <- list( "From:" = mnam,
                 "To:" = mnam,
-                        c("alpha","beta","sd.pred") )
+                        c("alpha","beta","sd") )
 conv.array <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 qnt <- t( apply( as.matrix( object ),
                  2,
@@ -84,7 +84,6 @@ invisible( list( conv.array = conv.array,
 
 print.MCmcmc <-
 function( x,
-     across,
      digits = 3,
       alpha = 0.05,
         ... )
@@ -98,23 +97,19 @@ if( !Got.coda )
 # Check
 if( !inherits( x, "MCmcmc" ) )
     stop( "\nThe argument to print.MCmcmc must be of class MCmcmc." )
-# How should we print the conversion table
-if( missing( across ) ) across <- ( length( attr( x, "methods" ) ) < 3 )
+
+# Print a nice summary of the conversion formulae
+print.MethComp( MethComp( x ), digits=digits )
 
 # Compute the summary
 summx <- summary.MCmcmc( x, alpha=alpha, ... )
 
-# Print a nice summary of the conversion formulae
-cat( "\nConversion formula:\n y_to = alpha + beta * y_from +/- 2*sd.pred:\n\n" )
-print( round( ftable( summx$conv.array,
-                      row.vars = if(across) 2 else c(2,3) ),
-                      digits ) )
 cat( "\nVariance components with", (1-alpha)*100, "% cred.int.:\n" )
 print( round( ftable( summx$VarComp, row.vars=2 ), digits ) )
 cat( "\nMean parameters with", (1-alpha)*100, "% cred.int.:\n" )
 print( round( summx$mean.par, digits ) )
 cat("\n Note that intercepts in conversion formulae are adjusted to get",
     "\n conversion formulae that represent the same line both ways,",
-    "\n - therefore are the median of the alphas above not identical",
-    "\n to the intercepts given in the conversion formulae.\n")
+    "\n and hence the median interceps in the posterior do not agree",
+    "\n exactly with those given in the conversion formulae.\n" )
 }

@@ -54,6 +54,6 @@ reshape( data, direction = "long",
                  timevar = "meth",
                    idvar = "item" )
 rownames( new )  <- NULL
-new <- Meth( new )
+new <- Meth( new, print=FALSE )
 new
 }

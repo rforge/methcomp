@@ -9,29 +9,38 @@
 Summarize the conversion equations and prediciton intervals between methods.
 }
 \description{Takes the results from \code{\link{BA.est}}, \code{\link{AltReg}}
-             or \code{\link{MCmcmc}} and returns \code{MethComp} object,
-             suitable for displaying the relationship between methods.
-}
+             or \code{\link{MCmcmc}} and returns a \code{MethComp} object,
+             suitable for displaying the relationship between methods in print
+             pr graphic form.}
 \usage{
 MethComp(obj)
-\method{print}{MethComp}(x, digits=4, ... )
-\method{plot}{MethComp}(x, wh.cmp = 1:2,
-                          pl.type = "conv",
-                            axlim = range(x$data$y,na.rm=TRUE),
-                           points = FALSE,
-                             grid = TRUE,
-                           N.grid = 10,
-                         col.grid = grey(0.9),
-                        col.lines = "black",
-                                ... )
-\method{lines}{MethComp}(x, wh.cmp = getOption("MethComp.wh.cmp"),
-                           pl.type = getOption("MethComp.pl.type"),
-                             axlim = par("usr")[1:2],
-                         col.lines = "black",
-                               ... )
-\method{points}{MethComp}(x, wh.cmp = getOption("MethComp.wh.cmp"),
-                            pl.type = getOption("MethComp.pl.type"),
-                                ... )
+\method{print}{MethComp}(x, digits=3, ... )
+\method{plot}{MethComp}(x,
+                   wh.cmp = 1:2,
+                  pl.type = "conv",
+                    axlim = range(x$data$y,na.rm=TRUE),
+                   points = FALSE,
+                     grid = TRUE,
+                   N.grid = 10,
+                 col.grid = grey(0.9),
+                col.lines = "black",
+               col.points = "black",
+                      eqn = pl.type=="conv" & is.null(attr(x,"Transform")),
+                  col.eqn = col.lines,
+                 font.eqn = 2,
+                   digits = 1,
+                        ... )
+\method{lines}{MethComp}(x,
+                    wh.cmp = getOption("MethComp.wh.cmp"),
+                   pl.type = getOption("MethComp.pl.type"),
+                 col.lines = "black",
+                       lwd = c(3,1),
+                       ... )
+\method{points}{MethComp}(x,
+                     wh.cmp = getOption("MethComp.wh.cmp"),
+                    pl.type = getOption("MethComp.pl.type"),
+                 col.points = "black",
+                        ... )
 }
 \arguments{
   \item{obj}{A \code{MethComp} or \code{\link{MCmcmc}} object.}
@@ -49,22 +58,41 @@ MethComp(obj)
                 be taken as the position of the gridlines.}
   \item{col.grid}{Color of the gridlines.}
   \item{col.lines}{Color of the conversion lines.}
+  \item{lwd}{Numerical vector of length 2. Width of the conversion line and the
+             prediction limits respectively.}
+  \item{col.points}{Color of the points.}
+  \item{eqn}{Logical. Should the conversion equation be printed on the plot.}
+  \item{col.eqn}{Color of the conversion formula}
+  \item{font.eqn}{font for the conversion formula}
   \item{...}{Further arguments.}
 }
 \details{
+Using \code{MethComp} on the results from \code{\link{BA.est}} or
+\code{\link{AltReg}} is not necessary, as these two functions already return
+objetcs of class \code{MethComp}.
+
 \code{plot.MethComp} plots the conversion function with prediction limits. It also
 sets the options \code{"MethComp.wh.cmp"} indicating which two methods are
 plotted and \code{"MethComp.pl.type"} indicating whether a plot of methods
 against each other or a Bland-Altman type plot of differences versus averages.
+By default the conversion lines are plotted.
 
 \code{lines.MethComp} and \code{points.MethComp} adds conversion lines with
 prediction limits and points to a plot.
 }
 \value{
-\code{MethComp} returns a \code{MethComp} object, which is a list with two
+\code{MethComp} returns a \code{MethComp} object, which is a list with three
 elements, \code{Conv}, a three-way array giving the linear conversion equations
-between methods and \code{VarComp}, a two-way array classified by methods and
-variance components.
+between methods, \code{VarComp}, a two-way array classified by methods and
+variance components and \code{data}, a copy of the original \code{\link{Meth}}
+object supplied.
+
+A \code{MethComp} object has an attribute \code{Transform},
+which is either NULL, or a named list with elements \code{trans} and \code{inv},
+both of which are functions. The first is the transformation applied
+to measurements before analysis; the results are all given on the transformed
+scale. The second is the inverse transformation; this is only used when plotting
+the resulting relationship between methods.
 
 The methods return nothing.
 }
@@ -78,7 +106,10 @@ Bendix Carstensen, Steno Diabetes Center, \email{bxc@steno.dk}.
 }
 \examples{
 data( ox )
-BA.ox <- BA.est( ox, linked=T )
+BA.ox <- BA.est( ox, linked=TRUE )
 print( BA.ox )
+AR.ox <- AltReg( ox, linked=TRUE  )
+print( AR.ox )
+plot( AR.ox )
 }
 \keyword{design}

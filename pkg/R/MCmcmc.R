@@ -3,7 +3,7 @@ function( data,
           bias = "linear",
            IxR = has.repl(data), linked = IxR,
            MxI = TRUE,           matrix = MxI,
-        varMxI = TRUE,
+        varMxI = nlevels(factor(data$meth)) > 2,
       n.chains = 4,
         n.iter = 2000,
       n.burnin = n.iter/2,
@@ -12,7 +12,6 @@ bugs.directory = getOption("bugs.directory"),
          debug = FALSE,
 bugs.code.file = "model.txt",
        clearWD = TRUE,
-        bugsWD = "bugsWD",
      code.only = FALSE,
       ini.mult = 2,
       list.ini = TRUE,
@@ -23,7 +22,7 @@ bugs.code.file = "model.txt",
            ... )
 {
 # Is the supplied dataframe a Meth object? If not make it!
-if( !inherits( data, "Meth" ) ) data <- Meth( data )
+if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
 # Transform the response if necessary
 Transform <- choose.trans( Transform )
 if( !is.null(Transform) )
@@ -43,7 +42,7 @@ if( !Got.coda | ! Got.R2WB | !Got.BRugs )
 
 if(  is.null(bugs.directory) &&
     !is.null(bugs.dir <- getOption("R2WinBUGS.bugs.directory")) )
-bugs.directory <- bugs.dir
+  bugs.directory <- bugs.dir
    
 # Check that a dataframe is supplied
 if( !is.data.frame(data) | missing( data ) )
@@ -128,10 +127,6 @@ cat( if( code.only ) "\nBugs program for a model with"
 # Make sure that it is printed before WinBUGS is fired up
 flush.console()
 
-# Make up name for a directory for all the junk files to be used by
-# WinBUGS and read.bugs
-shell( paste("mkdir",bugsWD) )
-
 # Compute the range of the y's, and expand it to the range
 # used for the "true" values for each item and for sd's
 u.range <- range( data$y ) + c(-1,1) * 0.1 * diff( range( data$y ) )
@@ -139,12 +134,8 @@ u.range <- range( data$y ) + c(-1,1) * 0.1 * diff( range( data$y ) )
 # Write the BUGS gode to a file (or optionally the screen)
 write.bugs.code( int=int, slope=slope, MxI=MxI, IxR=IxR, varMxI=varMxI,
                  N=N, Nm=Nm, Ni=Ni, Nr=Nr, u.range=u.range,
-                 file = if( code.only )
-                          {
-                          if( missing(bugs.code.file) ) ""
-                          else bugs.code.file
-                          }
-                        else paste(bugsWD,bugs.code.file,sep="/") )
+                 file = if( code.only & missing(bugs.code.file) ) ""
+                        else bugs.code.file )
 
 # Generate the appropriate list of inits for the chains if not given:
 # (This first part is to allow list.ini=TRUE and code.only=TRUE to
@@ -175,13 +166,12 @@ flush.console()
 res <- bugs( data = data.list,
             param = names( list.ini[[1]] ),
             inits = list.ini,
-       model.file = bugs.code.file,
+       model.file = paste( getwd(), bugs.code.file, sep="/" ),
          n.chains = n.chains,
            n.iter = n.iter,
          n.burnin = n.burnin,
            n.thin = n.thin,
          bugs.dir = bugs.directory,
-      working.directory = bugsWD,
             debug = debug,
           program = program,
           codaPkg = TRUE )
@@ -192,9 +182,6 @@ if( program == "winbugs"  )
   res <- read.bugs( res, quiet=TRUE )
 if( program == "openbugs" )
   res <- sims.array.2.mcmc.list( res$sims.array )
-
-# Having read all the data, we don't need the junk directory any more
-if( clearWD ) shell( paste("rmdir /S/Q", bugsWD ) )
 
 # Now produce a mcmc object with the relevant parameters
 
@@ -313,6 +300,7 @@ list.add <- rm.null(
               "sigma.res" = sig.res* ini.mult^sample(-1:1,Nm,replace=TRUE) ) )
 list.ini <- c( list.ini, list( list.add ) )
 }
+list.ini
 }
 
 ################################################################################

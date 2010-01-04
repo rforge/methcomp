@@ -1,3 +1,9 @@
+# The new method functions (pirs is already a method
+# NOTE: "trace" is a debugging function from the base package
+#       which will be masked by this one
+trace <- function (obj, ...) UseMethod("trace")
+post  <- function (obj, ...) UseMethod("post")
+
 trace.MCmcmc <-
 function( obj, what="sd",
        scales = c("same","free"),
@@ -121,7 +127,7 @@ function( obj,
           ... )
 {
 fm <- find.mean( obj, layout=layout, par.type=par.type )
-xyplot( subset( obj, fm$sb ),
+xyplot( subset.MCmcmc( obj, fm$sb ),
                    scales = list(x=list(relation=scales[1]),
                                  y=list(relation=scales[2])),
                    layout = fm$layout,
@@ -237,15 +243,46 @@ densityplot( obj,
 }
 
 pairs.MCmcmc <-
-function( x, subset, col=NULL, pch=16, cex=0.2, ... )
+function( x, what = "sd",
+           subset = NULL,
+              col = NULL,
+              pch = 16,
+              cex = 0.2,
+           scales = "free",
+              ... )
 {
-if( subset %in% c("sd","sigma") )  subset <- c("mi","ir","res")
-if( length(grep("all",subset))>0 &
-    length(grep( "sd",subset))>0 ) subset <- c("mi","ir","res","tot")
-if( subset %in% c("mn","mean") )   subset <- c("alpha","beta")
-sobj <- subset.MCmcmc( x, subset=subset )
-pairs( as.matrix( sobj ), gap=0, pch=pch, cex=cex,
-       col=if( !is.null(col) ) col
-           else rep(rainbow(nchain(x)),niter(x)), ... )
+# Select colunms from posterior based on what=
+sbset <- NULL
+if( any( what %in% c("sd","sigma") ) ) sbset <- c(sbset,"mi","ir","res")
+if( any( what %in% c("all")        ) ) sbset <- c(sbset,"tot")
+if( any( what %in% c("mn","mean")  ) ) sbset <- c(sbset,"alpha","beta")
+# Select columns from posterior based on subset=
+if( is.character(subset) )
+  {
+  sbset <- NULL
+  for( i in 1:length(subset) )
+     sbset <- c( sbset, grep( subset[i], colnames(x[[1]]) ) )
+  }
+if( is.numeric(subset) ) sbset <- subset
+sobj <- subset.MCmcmc( x, subset=sbset )
+sobj <- as.matrix( sobj )
+sobj <- sobj[,order(colnames(sobj))]
+if( !is.null(col) )
+  {
+  col <- if( length(col)==nrow(sobj) ) col
+         else
+         if( length(col)==nchain(x) ) rep(col,each=niter(x))
+         else
+         rep( col[1], nrow(sobj) )
+  }
+else col <- rep(rainbow(nchain(x)),niter(x))
+if( toupper(scales)=="SAME" )
+  {
+  rg <- range( sobj )
+  sobj <- rbind( sobj, rg[1], rg[2] )
+  col <- c(col,rep("transparent",2))
+  }
+
+pairs( sobj, gap=0, pch=pch, cex=cex, col=col, ... )
 invisible( varnames( sobj ) )
 }

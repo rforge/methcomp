@@ -28,7 +28,8 @@
   \item{linked}{Logical. Are the replicated linked within item across methods?}
   \item{IxR}{Logical. Should in item by repl interaction be included in
     the model. This is needed when the replicates are linked within item
-    across methods, so it is just another name for the \code{linked} argument.} 
+    across methods, so it is just another name for the \code{linked} argument.
+    If \code{linked=} is gven, this is ignored.}
   \item{MxI}{Logical. Should the method by item interaction (matrix effect) be
     included in the model.}
   \item{matrix}{Logical. Alias for \code{MxI}.}
@@ -42,8 +43,8 @@
     used when computing prediction intervals, otherwise the 1-alpha/2
     t-quantile is used. The number of d.f. is taken as the number of units
     minus the number of items minus the number of methods minus 1.}
-  \item{Transform}{Transformation of data (\code{y}) before analysis.
-                   See \code{\link{check.trans}}.}
+  \item{Transform}{Transformation applied to data (\code{y}) before analysis.
+                   See \code{\link{check.trans}} for possible values.}
   \item{trans.tol}{The tolerance used to check whether the supplied
                    transformation and its inverse combine to the identity.}
   \item{obj}{A \code{BA.est} object from which to extract the biases between
@@ -81,7 +82,7 @@
   \code{Bias}, \code{VarComp}, \code{Mu}, \code{RanEff}.
   These list components are:
   \item{Conv}{3-dimensional array with dimensions "To", "From" and unnamed.
-              The first two doemsions have the methods compared as levels,
+              The first two dimensions have the methods compared as levels,
               that last one \code{c("alpha","beta","sd")}. It represnets the
               mean conversions between methods and the prediciton standard
               deviation. Where "To" and "From" take the same value the value
@@ -101,9 +102,12 @@
                  for this difference.}
   \item{Mu}{Estimates of the item-specific parameters.}
   \item{RanEff}{Estimates of the randome effects form thr model (BLUPS).
-                 This is a (possibly empty) list with possible elements named
-                 \code{MxI} and \code{IxR} according to whether these random
-                 effects are in the model.}
+                This is a (possibly empty) list with possible elements named
+                \code{MxI} and \code{IxR} according to whether these random
+                effects are in the model.}
+  The returned object has an attribute, \code{Transform} with the
+  transformation applied to data before analysis, and its inverse --- see
+  \code{\link{choose.trans}}.
   }
 \references{Carstensen, Simpson & Gurrin: Statistical models for assessing
             agreement in method comparison studies with replicate measurements,
@@ -115,8 +119,11 @@
          \code{\link{perm.repl}}}
 \examples{
 data( ox )
+ox <- Meth( ox )
+summary( ox )
 BA.est( ox )
 BA.est( ox, linked=FALSE )
+BA.est( ox, linked=TRUE, Transform="pctlogit" )
 data( sbp )
 BA.est( sbp )
 BA.est( sbp, linked=FALSE )

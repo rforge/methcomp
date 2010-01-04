@@ -1,15 +1,30 @@
-2do:
-Let MethComp applied on a Meth object call one of the analysis functions.
+Version 1.1.0
 
-In version 0.5.3
+o Removed the possibility to explicitly give the working directory for the
+  BUGS program. Due to problems in R2WinBUGS's openbugs function.
+
+Version 1.0.1
+
+o Improved output from Meth.
+
+o Argument names have been made consistent between plot.MethComp and
+  plot.MCmcmc, the common ones are now called 'points=', 'wh.cmp='.
+
+Version 1.0.0
+
+o Meth function, defining a Meth object have been rewritten, using a different
+  syntax. Now allowing vectors to be combined into a Meth object, and arbitratry
+  columns of a dataframe to be selected for the four essential columns of a
+  Meth object.
+
+In version 0.6.0
 
 o Transform= argument added to BA.est, AltReg og MCmcmc
 
 o MethComp-class, defined by a MethComp function added, handling printing
   and plotting of results from BA.est, AltReg and MCmcmc.
 
-
-In version 0.5.2
+Version 0.5.2
 
 o The way the two methods are ordered in BA.plot is reversed. Like in BA.est and
   VC.est, the FIRST method is now the reference; LoA are thus for M2-M1.
@@ -20,8 +35,7 @@ o The result from AltReg now have names for the dimnames to improve readability.
 
 o A sample function for sampling the items from Meth object is added.
 
-
-In version 0.5.1
+Version 0.5.1
 
 o A Meth class has been defined, making sure that meth, item and repl
   all are factors. It has summary, print, plot, subset and summary methods. 

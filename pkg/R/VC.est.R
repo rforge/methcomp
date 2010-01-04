@@ -11,7 +11,7 @@ function( data,
 # lme-invocations    
 {
 # Is the supplied dataframe a Meth object? If not make it!
-if( !inherits( data, "Meth" ) ) data <- Meth( data )
+if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
 
 # Fill in the variance components arguments:
 if( missing(MxI) ) MxI <- matrix

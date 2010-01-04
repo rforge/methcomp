@@ -51,20 +51,24 @@ meth <- factor( dfr$meth )
 item <- factor( dfr$item )
 repl <- factor( dfr$repl )
 y    <-         dfr$y
+
 # Transform the response if required
 Transform <- choose.trans( Transform )
 if( !is.null(Transform) )
   {
   check.trans( Transform, y, trans.tol=trans.tol )
-  y <- Transform$trans( y )
+  dfr$y <- y <- Transform$trans( y )
   }
+
 # Dimensions needed later
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
 Ni <- nlevels( item )
 Nr <- nrow( dfr )/(Nm*Ni)
-# Needed to set the point for calculation of the intercept in the conv. crit.
+
+# Set the point for calculation of the intercept in the conv. crit.
 GM <- mean( y )
+
 # Vectors to store the residuals (well, BLUPS, posterior estimates...)
 c.mi  <- rep( 0, length(y) )
 a.ir  <- rep( 0, length(y) )
@@ -79,7 +83,7 @@ colnames(cr) <- c( paste( "Intercept:", Mn[1] ), Mn[-1],
                    "IxR", "MxI", "res" )
 rownames(cr) <- Mn
 
-# Initialise the "old" verison of the coefficients to 0
+# Initialise the "old" version of the coefficients to 0
 cr.old <- cr
 
 # Construct initial values for the zetas
@@ -95,7 +99,7 @@ iter <- 0
 # The actual iteration loop
 while( crit > eps & iter < maxiter )
 {
-iter <- iter +1
+iter <- iter + 1
 
 # First step, estimate alpha, beta, sigma using zeta.xpand
 for( m in 1:nlevels(meth) )
@@ -115,7 +119,7 @@ alpha.m <- cf[where.m,1]
  beta.m <- cf[where.m,2]
    wk.y <- ( y - alpha.m ) / beta.m
 
-# Use the working units to estimate the mus and the variance componets
+# Use the working units to estimate the mus and the variance components
 VCE <- VC.est( data.frame( meth=meth, item=item, repl=repl, y=wk.y ),
                IxR = IxR,
                MxI = MxI,
@@ -147,12 +151,16 @@ conv <- abs( (cr - cr.old)/cr )
 conv[,2*Nm+1:3] <- conv[,2*Nm+1:3]*(cr.old[,2*Nm+1:3]>sd.lim)
 crit <- max( conv[!is.na(conv)] )
 cr.old <- cr
+
+# Print the current estimates if required
 if( trace )
   {
   cat( "\niteration", iter, "criterion:", crit, "\n" )
   print(round(cbind(cf,cr),3))
   flush.console()
   }
+
+# End of iteration loop
 }
 
 # Convert to intercept 0
@@ -161,20 +169,26 @@ cr[,   1:Nm] <- conv.new[[1]]
 cr[,Nm+1:Nm] <- conv.new[[2]]
 names( dimnames( cr ) ) <- c("To","From")
 
+# Construct array to hold the conversion parameters
 dnam <- list( "To:" = Mn,
             "From:" = Mn,
-                      c("alpha","beta","sd.pred") )
+                      c("alpha","beta","sd") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
+# Fill in the values
 Conv[,,1] <- cr[1:Nm,1:Nm]
 Conv[,,2] <- cr[1:Nm,1:Nm+Nm]
 for( i in 1:Nm )
 for( j in 1:Nm )
    {
-   Conv[i,j,3] <- sqrt(sum(cr[c(i,j),c(if(i!=j)"MxI","res")]^2))
+   Conv[i,j,3] <- sqrt(sum(c(cr[i,c(if(i!=j)"MxI","res")]^2,
+                (Conv[i,j,2]*cr[j,c(if(i!=j)"MxI","res")])^2)))
    }
+   
+# Extract the estimated variance components
 VarComp <- cr[,2*Nm+1:3]
 names(dimnames(VarComp)) <- c("Method","  s.d.")
 
+# Collect the results
 res <- list( Conv = Conv,
           VarComp = VarComp,
              data = data )

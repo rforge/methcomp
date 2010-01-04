@@ -64,6 +64,7 @@
   }
 \author{
   Bendix Carstensen, Steno Diabetes Center,
+  \email{bxc@steno.dk},
   \url{http://www.biostat.ku.dk/~bxc}.
   }
 \seealso{
