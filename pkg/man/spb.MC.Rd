@@ -1,0 +1,48 @@
+\name{sbp.MC}
+\alias{sbp.MC}
+\docType{data}
+\title{A MCmcmc object from the sbp data}
+\description{
+This object is included for illustrative purposes. It is a result of
+using MCmcmc, with \code{n.iter=100000}.
+}
+\usage{data(sbp.MC)}
+\format{
+  The format is a \code{\link{MCmcmc}} object.
+}
+\details{
+  The basic data are measurements of systolic blood pressure from the
+  \code{\link{sbp}} dataset. Measurements are taked to be linked within replicate.
+  The code used to generate the object was:
+  \preformatted{
+  library(MethComp)
+  data( sbp )
+  spb <- Meth( sbp )
+  sbp.MC <- MCmcmc( sbp, linked=TRUE, n.iter=100000 ) )
+  }
+  }
+\examples{
+data(sbp.MC)
+# How was the data generated
+attr(sbp.MC,"mcmc.par")
+# Conversion between methods and variance components
+print.MCmcmc(sbp.MC)
+# Traceplots
+trace.MCmcmc(sbp.MC)
+trace.MCmcmc(sbp.MC,"beta")
+# A MCmcmc object also has class mcmc.list, so we can use the
+# standard coda functions for covergence diagnostics:
+acfplot( subset.MCmcmc(sbp.MC,subset="sigma") )
+# Have a look at the correlation between the 9 variance parameters
+pairs.MCmcmc( sbp.MC )
+# Have a look at wheter the MxI variance componnts are the same between methods:
+pairs.MCmcmc( sbp.MC, subset=c("ir"), eq=TRUE,
+              panel=function(x,y,...)
+                    {
+                    abline(0,1)
+                    abline(v=median(x),h=median(y),col="gray")
+                    points(x,y,...)
+                    }
+             )
+}
+\keyword{datasets}
