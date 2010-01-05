@@ -36,7 +36,7 @@ was.Meth <- inherits( data, "Meth" )
 xx <- as.integer( factor( interaction( data$meth, data$item ) ) )
 data$repl <- as.vector( 1:nrow(data) -
                         tapply( 1:nrow(data), xx, min )[xx] + 1 )
-if( was.Meth ) Meth( data ) else data
+if( was.Meth ) Meth( data, print=FALSE ) else data
 }
 
 has.repl <-
@@ -46,6 +46,6 @@ function( data )
 # in the dataframe x
 if( !inherits( data, "data.frame" ) )
   stop( "argument must be a data frame (preferably a Meth object)")
-if( !inherits( data, "Meth" ) ) data <- Meth( data )
+if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
 any( table( data$meth, data$item ) > 1 )
 }
