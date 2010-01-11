@@ -1,9 +1,8 @@
 \SweaveOpts{results=verbatim,keep.source=TRUE,eps=FALSE,include=FALSE}
-%\VignetteIndexEntry{Follow-up data with the Epi package}
+%\VignetteIndexEntry{Introduction to the MethComp package}
 \documentclass[a4paper,twoside,12pt]{article}
-
 \usepackage[english]{babel}
-\usepackage{rotating,booktabs,picins,amsmath,verbatim,fancyhdr,graphicx,makeidx,datetime,Sweave}
+\usepackage{rotating,booktabs,amsmath,verbatim,fancyhdr,graphicx,makeidx,datetime,Sweave}
 \usepackage[colorlinks,linkcolor=red,urlcolor=blue]{hyperref}
 \usepackage{Rd}
 \renewcommand{\topfraction}{0.95}
