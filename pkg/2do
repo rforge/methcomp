@@ -45,9 +45,7 @@ trace - traces of the parameters to check the mcmc convergence.
 post  - posterior densities of parameters.
 pairs - two-dimensional posteriors.
 
-
-
-o Finalize the plotting functions, including acf DONE
+o Cleanup the working of BA.plot and BlandAltman --- shoudl be one function.
 
 o Make a name-space and proper methods. DONE
 
@@ -57,12 +55,12 @@ o Implement Kristian Linnet's proportional errors method in the Deming function
 
 o Include a check of slope in BA.est and BA.plot. DONE
 
-o Include check of heteroschedasticity in the BA.est BA.plot &cetera DONE
+o Include check of heteroschedasticity in the BA.est BA.plot &cetera. DONE
 
-o Enable a transformation in BA.plot and BA.est.
+o Enable a transformation in BA.plot and BA.est. DONE
  
-o Give a class to BA.est result so that either a Bland-Altman plot or a conversion
-  plot can be produced from the results.  
+o Give a class to BA.est result so that either a Bland-Altman plot or a
+  conversion plot can be produced from the results. DONE
 
 o Put in datasets from: 
                        Name  Factor levels:

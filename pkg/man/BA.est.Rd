@@ -12,7 +12,9 @@
 \usage{
   BA.est( data, linked=TRUE, IxR=has.repl(data),
                              MxI=has.repl(data),
-                          varMxI=TRUE, bias=TRUE, alpha=0.05,
+                          varMxI=TRUE,
+                          IxR.pr=FALSE,
+                            bias=TRUE, alpha=0.05,
                 Transform = NULL,
                 trans.tol = 1e-6 )
   \method{bias}{BA.est}( obj, ref=1, \dots )
@@ -26,7 +28,7 @@
     measurements, i.e. with columns \code{meth}, \code{item}, \code{repl} and
     \code{y}.}
   \item{linked}{Logical. Are the replicated linked within item across methods?}
-  \item{IxR}{Logical. Should in item by repl interaction be included in
+  \item{IxR}{Logical. Should an item by repl interaction be included in
     the model. This is needed when the replicates are linked within item
     across methods, so it is just another name for the \code{linked} argument.
     If \code{linked=} is gven, this is ignored.}
@@ -36,6 +38,8 @@
   \item{varMxI}{Logical. Should the method by item interaction have a
     variance that varies between methods. Ignored if only two methods
     are compared.}
+  \item{IxR.pr}{Logical. Should the item by repl interaction variation be included in
+                the prediction standard deviation?}
   \item{bias}{Logical. Should a systematic bias between methods be estimated?
     If \code{FALSE} no bias between methods are assumed, i.e.
     \eqn{\alpha_m=0, m=1,\ldots M}{alpha_m=0, m=1,...,M}.}
@@ -83,11 +87,13 @@
   These list components are:
   \item{Conv}{3-dimensional array with dimensions "To", "From" and unnamed.
               The first two dimensions have the methods compared as levels,
-              that last one \code{c("alpha","beta","sd")}. It represnets the
+              that last one \code{c("alpha","beta","sd","LoA: lower","upper")}.
+              It represents the
               mean conversions between methods and the prediciton standard
               deviation. Where "To" and "From" take the same value the value
               of the "sd" component is \eqn{\sqrt(2)}{sqrt(2)} times the
-              residual variation for the method.}
+              residual variation for the method. If \code{IxR.pr=TRUE} the
+              variation between replicates are included too.}
   \item{VarComp}{A matrix of variance components (on the SD scale)
                  with methods as rows and variance components "IxR", "MxI" and
                  "res" as columns.}

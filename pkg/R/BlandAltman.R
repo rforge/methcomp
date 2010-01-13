@@ -281,8 +281,8 @@ colnames( pval ) <- "p value"
 print( round( pval, digits ) )
 cat("\nResults from the regression of averages on differences:\n")
 print( round( x$reg.res, digits ) )
-cat("\nLimits of agreement:\n")
-print( round( x$LoA, digits ) )
+# cat("\nLimits of agreement:\n")
+# print( round( x$LoA, digits ) )
 }
 
 

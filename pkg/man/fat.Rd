@@ -20,14 +20,11 @@ are exchangeable within (person,observer)=(item,method)
     \item{\code{Vic}}{Visceral fat measured in cm.}
   }
 }
-%\source{
-%  ~~ reference to a publication or URL from which the data were obtained ~~
-%}
-%\references{
-%  ~~ possibly secondary sources and usages ~~
-%}
 \examples{
 data(fat)
 str(fat)
+vic <- Meth( fat, meth=2, item=1, repl="Rep", y="Vic" )
+str(vic)
+BA.est( vic, linked=FALSE )
 }
 \keyword{datasets}

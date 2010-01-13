@@ -99,24 +99,15 @@ regressions.
 \code{\link{MethComp}}
         }
 \examples{
-dfm <- Meth.sim( Ni = 30,
-                 Nm = 3,
-               beta = c(0.9,0.8,1.1),
-          sigma.mi  = c(4,5,8),
-          sigma.ir  = 3,
-          sigma.mir = c(5,4,3),
-             m.thin = 1,
-             i.thin = 1 )
-levels(dfm$meth) <- paste( "m",1:3,sep="" )
-str(dfm)
-summary(dfm)
-plot(dfm,var.names=TRUE)
-# AltReg( dfm, linked=TRUE, trace=TRUE )
-# AltReg( dfm, linked=TRUE, varMxI=TRUE, trace=TRUE )
 data( ox )
+ox <- Meth( ox )
 ox.AR <- AltReg( ox, linked=TRUE, trace=TRUE, Transform="pctlogit" )
 str( ox.AR )
 ox.AR
+# plot the resulting conversion between methods
+plot(ox.AR,pl.type="conv",axlim=c(20,100),points=TRUE,xaxs="i",yaxs="i",pch=16)
+# - or the rotated plot
+plot(ox.AR,pl.type="BA",axlim=c(20,100),points=TRUE,xaxs="i",yaxs="i",pch=16)
 }
 \keyword{models}
 \keyword{regression}

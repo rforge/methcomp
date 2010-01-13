@@ -39,12 +39,19 @@ function( x, digits=3, ... )
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
        paste( body(trans$trans) ), "\n\n" )
+cat("\n Conversion between methods:\n")
 print( round( ftable( x$Conv ), digits ) )
 # Account for the results from DA.reg where variances are not estimated
 if( !is.null( x$VarComp ) )
   {
-  cat("\n")
+  cat("\n Variance components (sd):\n")
   print( round( x$VarComp, digits ) )
+  }
+# Print limits of agreement for BA.est objects
+if( inherits( x, "BA.est" ) )
+  {
+  cat("\n Limits of agreement:\n")
+  print( round( x$LoA, digits ) )
   }
 }
 
@@ -171,16 +178,26 @@ A <- x$Conv[wh.cmp[2],wh.cmp[1],"alpha"]
 B <- x$Conv[wh.cmp[2],wh.cmp[1], "beta"]
 S <- x$Conv[wh.cmp[2],wh.cmp[1],   "sd"]
 
-# Define the method 1 points to use making sure that the points span also the
+# Define the method 1 points to use, making sure that the points span also the
 # range of the BA-type plots:
 axlim <- par("usr")[1:2]
-# m1 is on the original scale, so is axlim; bt A, B and S are for transformed
-# mesurements
+# m1 is on the original scale, so is axlim;
+# but A, B and S are for transformed measurements
   m1 <- seq( axlim[1], axlim[2],, 200 )
 trm1 <- trf( m1 )
 trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
                                         c(0,-2, 2) )
   m2 <- itr( trm2 )
+# There is no guarantee that this will give lines that also span the
+# range for (m1+m2)/2 so we do the inverse too:
+  i1 <- seq( axlim[1], axlim[2],, 200 )
+tri1 <- trf( i1 )
+tri2 <- cbind( -A/B+1/B*tri1, S/B ) %*% rbind( c(1, 1, 1),
+                                               c(0,-2, 2) )
+  i2 <- itr( tri2 )
+  od <- order( c(m1,i1) )
+  m1 <- c(m1,i1)[od]
+  m2 <- c(m2,i2)[od]
 
 if( pl.type == "conv" )
      matlines( m1, m2,

@@ -4,6 +4,7 @@ function( data,
            IxR = has.repl(data), # Fit a model with replicate by item interaction
            MxI = has.repl(data), # To fit the model with a method by item interaction
         varMxI = TRUE,  # Should method by item have method-specific variance?
+        IxR.pr = FALSE, # Should the IxR varation be included with the prediction var?
           bias = TRUE,  # Should we estimate a bias between the methods?
          alpha = 0.05,
      Transform = NULL,
@@ -58,8 +59,8 @@ for( i in 1:Nm ) for( j in 1:i )
   rownames( LoA )[row.no] <- paste( Mnam[i], "-", Mnam[j], " " )
   LoA[row.no,1] <- Bias[i] - Bias[j]
   pred.var <- sigma[i]^2 + sigma[j]^2
-  if( i!=j & MxI ) pred.var <- pred.var + tau[i]^2 + tau[j]^2
-  if( i==j & IxR ) pred.var <- pred.var + 2*omega[i]^2
+  if( i!=j & MxI    ) pred.var <- pred.var + tau[i]^2 + tau[j]^2
+  if( i==j & IxR.pr ) pred.var <- pred.var + 2*omega[i]^2
   LoA[row.no,4] <- sqrt( pred.var )
   LoA[row.no,2] <- LoA[row.no,1] - cl.fact*LoA[row.no,4]
   LoA[row.no,3] <- LoA[row.no,1] + cl.fact*LoA[row.no,4]
@@ -72,15 +73,20 @@ rownames( RC ) <- Mnam
 
 dnam <- list( "To:" = Mnam,
             "From:" = Mnam,
-                      c("alpha","beta","sd") )
+                      c("alpha","beta","sd","  LoA: lower", "upper") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 Conv[,,2] <- 1
 Conv[,,1] <- outer( Bias, Bias, "-" )
-# Derive the prediction errors --- for the same method it is only the
-# replications errors
+# Derive the prediction errors;
+# For the same method it is replications errors,
+# plus variation betrween replicates if required
 for( i in 1:Nm ) for( j in 1:Nm )
-   Conv[i,j,3] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)"MxI","res")]^2))
-
+   {
+   Conv[i,j,3] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)          "MxI",
+                                         if(i==j & IxR.pr) "IxR",
+                                                           "res")]^2))
+   Conv[i,j,4:5] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
+   }
 res <- list( Conv = Conv,
           VarComp = Vcmp,
               LoA = LoA[-diags,,drop=FALSE],
@@ -88,6 +94,8 @@ res <- list( Conv = Conv,
              data = data )
 class( res ) <- c("MethComp","BA.est")
 attr( res, "Transform" ) <- Transform
+attr( res, "Repeatability" ) <- if( IxR.pr ) "Replication included"
+                                else         "Replication excluded"
 res
 }
 
