@@ -61,15 +61,16 @@ if( inherits( x, "BA.est" ) )
 plot.MethComp <-
 function( x,
        wh.cmp = 1:2,
-      pl.type = "conv",
+      pl.type = "convert",
         axlim = range(x$data$y,na.rm=TRUE),
+       diflim = axlim-mean(axlim),
        points = FALSE,
          grid = TRUE,
        N.grid = 10,
      col.grid = grey(0.9),
     col.lines = "black",
    col.points = "black",
-          eqn = pl.type=="conv" & is.null(attr(x,"Transform")),
+          eqn = tolower(substr(pl.type,1,1))=="c" & is.null(attr(x,"Transform")),
       col.eqn = col.lines,
      font.eqn = 2,
        digits = 1,
@@ -77,25 +78,26 @@ function( x,
 {
 # All method names
 Mn <- dimnames( x[["Conv"]] )[[1]]
-
 # Those two plotted here in the right order
 Mn <- Mn[wh.cmp[1:2]]
 
-if( pl.type == "conv" ) # Conversion plot
+if( tolower(substr(pl.type,1,1)) == "c" )
+  # Conversion plot
   {
   plot( NA, xlim=axlim, ylim=axlim, type="n",
-            xlab=Mn[1], ylab=Mn[2] )
+            xlab=Mn[1], ylab=Mn[2], ... )
   # Grid?
   if( is.logical( grid ) ) if( grid )
     grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
   abline( h=grid, v=grid, col=col.grid )
   }
-else # Bland-Altman type plot
+else
+  # Bland-Altman type plot
   {
-  plot( NA, xlim=axlim, ylim=axlim-mean(axlim), type="n",
+  plot( NA, xlim=axlim, ylim=diflim, type="n",
             xlab=paste( "(", Mn[1], "+",
                              Mn[2], ") / 2" ),
-            ylab=paste( Mn[2], "-", Mn[1] ) )
+            ylab=paste( Mn[2], "-", Mn[1] ), ... )
   # Grid?
   if( is.logical( grid ) )
     if( grid )
@@ -183,23 +185,14 @@ S <- x$Conv[wh.cmp[2],wh.cmp[1],   "sd"]
 axlim <- par("usr")[1:2]
 # m1 is on the original scale, so is axlim;
 # but A, B and S are for transformed measurements
-  m1 <- seq( axlim[1], axlim[2],, 200 )
+# Expand well beyond the limits to accommodate the differnec-plot too
+  m1 <- seq( axlim[1]-diff(axlim), axlim[2]+diff(axlim),, 500 )
 trm1 <- trf( m1 )
 trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
                                         c(0,-2, 2) )
   m2 <- itr( trm2 )
-# There is no guarantee that this will give lines that also span the
-# range for (m1+m2)/2 so we do the inverse too:
-  i1 <- seq( axlim[1], axlim[2],, 200 )
-tri1 <- trf( i1 )
-tri2 <- cbind( -A/B+1/B*tri1, S/B ) %*% rbind( c(1, 1, 1),
-                                               c(0,-2, 2) )
-  i2 <- itr( tri2 )
-  od <- order( c(m1,i1) )
-  m1 <- c(m1,i1)[od]
-  m2 <- c(m2,i2)[od]
 
-if( pl.type == "conv" )
+if( tolower(substr(pl.type,1,1)) == "c" )
      matlines( m1, m2,
                lwd=lwd[c(1,2,2)], lty=1, col=col.lines )
 else matlines( (m1+m2)/2, m2-m1,
@@ -218,7 +211,7 @@ function( x,
 {
 Mn <- dimnames( x[[1]] )[[1]]
 wide <- to.wide( x$data )
-if( pl.type == "conv" ) # Conversion plot
+if( tolower(substr(pl.type,1,1)) == "c" ) # Conversion plot
   points( wide[,Mn[wh.cmp[1]]], wide[,Mn[wh.cmp[2]]],
           col = col.points, ... )
 else # Bland-Altman type plot
@@ -261,8 +254,13 @@ if( is.character(tr) )
 else
 if( is.list(tr) )
   {
-  if( is.function(tr$trans) & is.function(tr$inv) ) ltr <- tr
-  else stop( "Argument to 'choose.trans' must be character or a list of two functions" )
+  if( is.function(tr[[1]]) & is.function(tr[[2]]) )
+    {
+    ltr <- tr
+    names( ltr ) <- c("trans","inv")
+    }
+  else stop( "Argument to 'choose.trans' must be character or\n",
+             "a list of two functions: the transformtion and its inverse." )
   }
 else ltr <- NULL
 invisible( ltr )
@@ -275,7 +273,7 @@ check.trans <-
 function( trans, y, trans.tol=10e-6 )
 {
 if( any( abs( dif <- y - trans$inv(trans$trans(y)) ) > trans.tol ) )
-  stop( "The transformation and its inverse seems not to agree:\n",
+  stop( "The transformation and its inverse seem not to agree:\n",
         "y - inv(trans(y)) has range ",
         paste( range(dif), collapse=" to " ),
         "\nyou may want to to change the current trans.tol=", trans.tol )

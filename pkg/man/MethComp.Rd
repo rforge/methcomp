@@ -6,7 +6,7 @@
 \alias{lines.MethComp}
 \alias{points.MethComp}
 \title{
-Summarize the conversion equations and prediciton intervals between methods.
+Summarize conversion equations and prediction intervals between methods.
 }
 \description{Takes the results from \code{\link{BA.est}}, \code{\link{AltReg}}
              or \code{\link{MCmcmc}} and returns a \code{MethComp} object,
@@ -17,19 +17,20 @@ MethComp(obj)
 \method{print}{MethComp}(x, digits=3, ... )
 \method{plot}{MethComp}(x,
                    wh.cmp = 1:2,
-                  pl.type = "conv",
+                  pl.type = "convert",
                     axlim = range(x$data$y,na.rm=TRUE),
+                   diflim = axlim-mean(axlim),
                    points = FALSE,
                      grid = TRUE,
                    N.grid = 10,
                  col.grid = grey(0.9),
                 col.lines = "black",
                col.points = "black",
-                      eqn = pl.type=="conv" & is.null(attr(x,"Transform")),
+                      eqn = tolower(substr(pl.type,1,1))=="c" & is.null(attr(x,"Transform")),
                   col.eqn = col.lines,
                  font.eqn = 2,
                    digits = 1,
-                        ... )
+                      ... )
 \method{lines}{MethComp}(x,
                     wh.cmp = getOption("MethComp.wh.cmp"),
                    pl.type = getOption("MethComp.pl.type"),
@@ -51,7 +52,8 @@ MethComp(obj)
   \item{pl.type}{Character. If "conv" it will be a plot of two methods against
                  each other, otherwise it will be a plot of the 2nd minus the
                  1st versus the average; a Bland-Altman type plot.}
-  \item{axlim}{The extent of the axes.}
+  \item{axlim}{The extent of the axes of the measurements.}
+  \item{diflim}{The extent of the axis of the differences.}
   \item{points}{Logical. Should the points be included in the plot.}
   \item{grid}{Logical. Should there be a grid?}
   \item{N.grid}{Numeric. How many gridlines? If a vector of length>1, it will
