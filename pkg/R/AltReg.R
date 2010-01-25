@@ -41,9 +41,6 @@ function( data,           # Data frame in meth format
 # Only complete cases
 dfr <- data[,c("meth","item","repl","y")]
 dfr <- dfr[complete.cases(dfr),]
-cat( "AltReg uses", nrow(dfr),
-     "obs. out of", nrow(data),
-     "in the supplied data.\n" )
 
 # Get the data as vectors in the current environment and make sure they are
 # factors - otherwise we get problems calling lme
@@ -162,6 +159,14 @@ if( trace )
 
 # End of iteration loop
 }
+
+# Inform about convergence
+if( iter == maxiter )
+  cat( "\nAltReg reached maximum no. iterations ", iter,
+       "\nLast convergence criterion was ", crit, " > target:", eps, "\n" )
+else
+  cat( "\nAltReg converged after ", iter, "iterations ",
+       "\nLast convergence criterion was ", crit, "\n" )
 
 # Convert to intercept 0
 conv.new <- ABconv(cr[,1],cr[,1+Nm],int.loc=0)

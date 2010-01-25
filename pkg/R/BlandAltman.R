@@ -24,6 +24,11 @@ function(x, y,
 x.nam <- deparse( substitute( x ) )
 y.nam <- deparse( substitute( y ) )
 
+# were axis lmits supplied?
+no.limx <- is.null( limx )
+no.limy <- is.null( limy )
+no.ymax <- is.null( ymax )
+
 # Check lengths of the supplied variables
 if( length(x) != length(y) )
   stop( "\nx and y must have the same length:\n",
@@ -70,8 +75,7 @@ names( res ) <- c( ylab, paste( round(100*   alpha/2 ,1), "% limit", sep="" ),
                          "SD(diff)" )
 
 # The x and the y limits of the plot (limx, limy)
-if( is.null(limx) ) limx <- range( average, na.rm=TRUE )
-no.ymax <- is.null(ymax)
+if( no.limx ) limx <- range( average, na.rm=TRUE )
 if( no.ymax ) ymax <- max( c( abs( difference ), abs( res ),
                               diff( limx )/2 ), na.rm=TRUE )
 # Should the axes be of equal size?
@@ -81,8 +85,9 @@ if( eqax )
   limy <- c(-1,1)*ifelse( maxax == diff(limx), maxax/2, ymax )
   if( maxax != diff(limx) ) limx <- mean(limx) + c(-1,1)*ymax
   }
-else if( is.null( limy ) ) limy <- if( no.ymax ) range( difference )
-                                   else ymax * c(-1,1)
+else if( no.limy ) limy <- if( no.ymax ) range( difference )
+                           else ymax * c(-1,1)
+
 # If on a log-scale, transform back to display the results
 if( mult )
   {
@@ -90,8 +95,8 @@ if( mult )
   names( res )[4] <- "SD(log-ratio)"
   average <- exp(average)
   difference <- exp(difference)
-  limx <- exp(limx)
-  limy <- exp(limy)
+  if( no.limx ) limx <- exp(limx)
+  if( no.limy ) limy <- exp(limy)
   }
 
 # A function that gives the coordinates of the

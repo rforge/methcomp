@@ -47,12 +47,6 @@ if( !is.null( x$VarComp ) )
   cat("\n Variance components (sd):\n")
   print( round( x$VarComp, digits ) )
   }
-# Print limits of agreement for BA.est objects
-if( inherits( x, "BA.est" ) )
-  {
-  cat("\n Limits of agreement:\n")
-  print( round( x$LoA, digits ) )
-  }
 }
 
 ################################################################################
@@ -185,7 +179,7 @@ S <- x$Conv[wh.cmp[2],wh.cmp[1],   "sd"]
 axlim <- par("usr")[1:2]
 # m1 is on the original scale, so is axlim;
 # but A, B and S are for transformed measurements
-# Expand well beyond the limits to accommodate the differnec-plot too
+# Expand well beyond the limits to accommodate the differnce-plot too
   m1 <- seq( axlim[1]-diff(axlim), axlim[2]+diff(axlim),, 500 )
 trm1 <- trf( m1 )
 trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
@@ -211,10 +205,14 @@ function( x,
 {
 Mn <- dimnames( x[[1]] )[[1]]
 wide <- to.wide( x$data )
-if( tolower(substr(pl.type,1,1)) == "c" ) # Conversion plot
+if( is.function( col.points ) )
+   col.points <- col.points(nlevels(wide$item))[wide$item]
+if( tolower(substr(pl.type,1,1)) == "c" )
+  # Conversion plot
   points( wide[,Mn[wh.cmp[1]]], wide[,Mn[wh.cmp[2]]],
           col = col.points, ... )
-else # Bland-Altman type plot
+else
+  # Bland-Altman type plot
   points( (wide[,Mn[wh.cmp[1]]]+wide[,Mn[wh.cmp[2]]])/2,
            wide[,Mn[wh.cmp[2]]]-wide[,Mn[wh.cmp[1]]],
            col = col.points, ... )

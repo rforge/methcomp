@@ -17,23 +17,27 @@ if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) < 3 ) stop(
 "\nThe supplied dataframe misses columns named ", rq.nam[is.na(wh)], ".\n" )
 if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) == 3 ) stop(
 "\nThe supplied dataframe misses the column named ", rq.nam[is.na(wh)], ".\n" )
+
+# Only complete cases
+dfr <- Meth( data[,c("meth","item","repl","y")], print=FALSE )
+
 # Exchangeability:
 if( !missing(linked) ) IxR <- linked
 # Should we use 2 or some t-quantile ( df = no. units minus no. param. )
 cl.fact <- ifelse( missing(alpha),
                    2,
                    qt( 1-alpha/2,
-                       nrow(data) - length(table(data$meth))
-                                  - length(table(data$item)) - 1 ) )
+                       nrow(data) - length(table(dfr$meth))
+                                  - length(table(dfr$item)) - 1 ) )
 # Transform the response if required
 Transform <- choose.trans( Transform )
 if( !is.null(Transform) )
   {
-  check.trans( Transform, data$y, trans.tol=trans.tol )
-  data$y <- Transform$trans( data$y )
+  check.trans( Transform, dfr$y, trans.tol=trans.tol )
+  dfr$y <- Transform$trans( dfr$y )
   }
 # Fit the relevant model
-model.fit <- VC.est( data = data,
+model.fit <- VC.est( data = dfr,
                       IxR = IxR,
                       MxI = MxI,
                    varMxI = varMxI,
@@ -87,6 +91,7 @@ for( i in 1:Nm ) for( j in 1:Nm )
                                                            "res")]^2))
    Conv[i,j,4:5] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
    }
+# Return data on the original scale
 res <- list( Conv = Conv,
           VarComp = Vcmp,
               LoA = LoA[-diags,,drop=FALSE],
