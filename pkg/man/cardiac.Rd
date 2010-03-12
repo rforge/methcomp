@@ -40,7 +40,9 @@ plot( cardiac )
 plot( perm.repl( cardiac ) )
 BA.est(cardiac)
 # Run MCmcmc using BRugs for an insufficient amount of iterations
-card.mi.ir <- MCmcmc( cardiac, beta=FALSE, random=c("mi","ir"), n.iter=100, trace=T )
-print( card.mi.ir )
+\dontrun{card.mi.ir <- MCmcmc( cardiac,
+                               beta=FALSE, random=c("mi","ir"),
+                               n.iter=100, trace=T )
+print( card.mi.ir )}
 }
 \keyword{datasets}

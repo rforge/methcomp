@@ -11,7 +11,7 @@
 \format{
   A data frame with 198 observations on the following 3 variables.
   \describe{
-    \item{\code{meth}}{a factor with levels \code{Hurley} \code{Nadler}}
+    \item{\code{meth}}{a factor with levels \code{Hurley} and \code{Nadler}}
     \item{\code{item}}{a numeric vector}
     \item{\code{y}}{a numeric vector}
   }

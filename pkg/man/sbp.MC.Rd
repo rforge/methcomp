@@ -1,10 +1,10 @@
 \name{sbp.MC}
 \alias{sbp.MC}
 \docType{data}
-\title{A MCmcmc object from the sbp data}
+\title{A MCmcmc object from the \code{\link{sbp}} data}
 \description{
 This object is included for illustrative purposes. It is a result of
-using MCmcmc, with \code{n.iter=100000}.
+using \code{\link{MCmcmc}}, with \code{n.iter=100000}.
 }
 \usage{data(sbp.MC)}
 \format{
@@ -25,17 +25,22 @@ using MCmcmc, with \code{n.iter=100000}.
 data(sbp.MC)
 # How was the data generated
 attr(sbp.MC,"mcmc.par")
+
 # Conversion between methods and variance components
 print.MCmcmc(sbp.MC)
+
 # Traceplots
 trace.MCmcmc(sbp.MC)
 trace.MCmcmc(sbp.MC,"beta")
+
 # A MCmcmc object also has class mcmc.list, so we can use the
 # standard coda functions for covergence diagnostics:
 acfplot( subset.MCmcmc(sbp.MC,subset="sigma") )
+
 # Have a look at the correlation between the 9 variance parameters
 pairs.MCmcmc( sbp.MC )
-# Have a look at wheter the MxI variance componnts are the same between methods:
+
+# Have a look at whether the MxI variance componnts are the same between methods:
 pairs.MCmcmc( sbp.MC, subset=c("ir"), eq=TRUE,
               panel=function(x,y,...)
                     {

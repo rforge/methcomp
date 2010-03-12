@@ -33,7 +33,9 @@ data(ox)
 \examples{
 data(ox)
 str(ox)
+ox <- Meth(ox)
 with( ox, table(table(item)) )
+# The effect of basing LoA on means over replicates:
 par( mfrow=c(1,2), mar=c(4,4,1,4) )
 BA.plot( ox, ymax=20 )
 BA.plot( ox, ymax=20, mean.repl=TRUE )

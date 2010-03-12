@@ -6,8 +6,21 @@ function( x, y = NULL,
      var.range,
     diff.range,
      var.names = FALSE,
+           pch = 16,
+           cex = 0.7,
+     Transform,
            ... )
 {
+# Should we transform data?
+if( !missing(Transform) )
+  {
+  if( is.character(Transform) ) Transform <- choose.trans(Transform)$trans
+  if( !is.function(Transform) ) stop( "Transform= must be of mode character or function\n" )
+  x$y <- Transform( x$y )
+  }
+# Drop all unneeded variables in order to avoid warnings
+x <- x[,c("meth","item","repl","y")]
+# Wide-ify data to allow plotting
 data <- to.wide( x )
 if( missing( y ) )
     which <- levels( attr( data, "reshapeWide" )$times )
@@ -27,7 +40,7 @@ pnl <-
 function( x, y, ... )
 {
 abline( 0, 1, col="black" )
-points( x, y, pch=16, col=col.pt, ... )
+points( x, y, pch=pch, cex=cex, col=col.pt, ... )
 }
 
 pnu <-
@@ -37,7 +50,7 @@ sdd <-   sd( (y-x), na.rm=TRUE )
 mnd <- mean( (y-x), na.rm=TRUE )
 abline( h=mnd+(-1:1)*2.00*sdd, col=col.LoA )
 abline( h=0,col="black" )
-points( (x+y)/2, y-x, pch=16, col=col.pt, ... )
+points( (x+y)/2, y-x, pch=pch, cex=cex, col=col.pt, ... )
 }
 
 pldat <- data[,which]

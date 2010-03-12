@@ -26,10 +26,8 @@
 \examples{
 data(milk)
 str(milk)
+milk <- Meth(milk)
 plot(milk)
-plot( y[meth=="Trig"]~y[meth=="Gerber"],data=milk,
-      xlab="Fat (g/100 ml; Gerber)",
-      ylab="Fat (g/100 ml; Trig.)")
 abline(0,1)
 }
 \keyword{datasets}

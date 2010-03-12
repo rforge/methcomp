@@ -24,10 +24,10 @@
         varMxI = TRUE, bias = TRUE, print = FALSE )
   }
 \arguments{
-  \item{data}{A data frame representing method comparison data with replicate
-    measurements, i.e. with columns \code{meth}, \code{item}, \code{repl} and
-    \code{y}.}
-  \item{linked}{Logical. Are the replicated linked within item across methods?}
+  \item{data}{A \code{\link{Meth}} object representing method comparison data
+    with replicate measurements, i.e. with columns \code{meth},
+    \code{item}, \code{repl} and \code{y}.}
+  \item{linked}{Logical. Are replicates linked within item across methods?}
   \item{IxR}{Logical. Should an item by repl interaction be included in
     the model. This is needed when the replicates are linked within item
     across methods, so it is just another name for the \code{linked} argument.
@@ -44,12 +44,13 @@
     If \code{FALSE} no bias between methods are assumed, i.e.
     \eqn{\alpha_m=0, m=1,\ldots M}{alpha_m=0, m=1,...,M}.}
   \item{alpha}{Numerical. Significance level. By default the value 2 is
-    used when computing prediction intervals, otherwise the 1-alpha/2
-    t-quantile is used. The number of d.f. is taken as the number of units
-    minus the number of items minus the number of methods minus 1.}
+    used when computing prediction intervals, otherwise the
+    \eqn{1-\alpha/2}{1-alpha/2} t-quantile is used. The number of
+    d.f. is taken as the number of units minus the number of items minus
+    the number of methods minus 1 (\eqn{I-M-1}{I-M-1}).} 
   \item{Transform}{Transformation applied to data (\code{y}) before analysis.
                    See \code{\link{check.trans}} for possible values.}
-  \item{trans.tol}{The tolerance used to check whether the supplied
+  \item{trans.tol}{Numerical. The tolerance used to check whether the supplied
                    transformation and its inverse combine to the identity.}
   \item{obj}{A \code{BA.est} object from which to extract the biases between
              methods.}
@@ -74,9 +75,10 @@
   \code{nM}==2.
 
   The function \code{VC.est} is the workhorse; \code{BA.est} just calls it.
-  \code{VC.est} figures out which model to fit by \code{lme}, and returns the
-  estimates. \code{VC.est} is also used as part of the fitting algorithm in
-  \code{\link{AltReg}}, where each iteration step requires fit of this model.
+  \code{VC.est} figures out which model to fit by \code{lme}, extracts
+  results and returns estimates. \code{VC.est} is also used as part of
+  the fitting algorithm in \code{\link{AltReg}}, where each iteration
+  step requires fit of this model. 
   }
 \value{
   \code{BA.est} returns an object of class \code{c("\link{MethComp}","BA.est")},
@@ -90,10 +92,14 @@
               that last one \code{c("alpha","beta","sd","LoA: lower","upper")}.
               It represents the
               mean conversions between methods and the prediciton standard
-              deviation. Where "To" and "From" take the same value the value
-              of the "sd" component is \eqn{\sqrt(2)}{sqrt(2)} times the
+              deviation.
+
+	      Where "To" and "From" take the same value the value
+              of the "sd" component is \eqn{\sqrt{2}}{sqrt(2)} times the
               residual variation for the method. If \code{IxR.pr=TRUE} the
-              variation between replicates are included too.}
+              variation between replicates are included too,
+              i.e. \eqn{\sqrt{2(\sigma_m^2+\omega^2)}}
+	                {sqrt[2(sigma_m^2+omega^2)]}.} 
   \item{VarComp}{A matrix of variance components (on the SD scale)
                  with methods as rows and variance components "IxR", "MxI" and
                  "res" as columns.}
@@ -103,11 +109,12 @@
   \item{RepCoef}{Two-column matrix of repeatability SDs and repeatability
                  coefficients. The SDs are the standard deviation of the
                  difference between two measurements by the same method on the
-                 item inder identical circumstances; the repeatability
+                 item under identical circumstances; the repeatability
                  coefficient the numerical extent of the prediction interval
-                 for this difference.}
+                 for this difference, i.e. \eqn{2\sqrt{2}}{2\sqrt(2)}}
+              times the sd.
   \item{Mu}{Estimates of the item-specific parameters.}
-  \item{RanEff}{Estimates of the randome effects form thr model (BLUPS).
+  \item{RanEff}{Estimates of the random effects from the model (BLUPS).
                 This is a (possibly empty) list with possible elements named
                 \code{MxI} and \code{IxR} according to whether these random
                 effects are in the model.}

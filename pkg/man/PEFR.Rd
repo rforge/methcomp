@@ -1,10 +1,10 @@
 \name{PEFR}
 \alias{PEFR}
 \docType{data}
-\title{PEFR measurements with wright peak flow and mini wright peak
-  flow meter.}
-\description{Measurement of PEFR with wright peak flow and mini wright
-  peak flow meter on 17 individuals. (PEFR=Peak Expiratory Flow Rate).
+\title{Peak Expiratory Flow Rate (PEFR) measurements with Wright peak
+  flow and mini Wright peak flow meter.}
+\description{Measurement of PEFR with Wright peak flow and mini Wright
+  peak flow meter on 17 individuals.
 }
 \usage{data(PEFR)}
 \format{
@@ -17,7 +17,7 @@
     \item{\code{item}}{Numeric vector, the person ID.}
     \item{\code{y}}{Numeric vector, the measurements, i.e. PEFR for the
       two measurements with a Wright peak flow meter and a mini Wright
-      meter respectively. This is numbers between 165 and 656 l/min}
+      meter respectively. The measurement unit is l/min.}
     \item{repl}{Numeric vector, replicate number. Replicates are
       exchangeable within item.}
   }

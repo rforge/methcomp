@@ -25,7 +25,8 @@ regressions.
     (or a \code{\link{Meth}} object)
     i.e. it must have columns \code{meth}, \code{item}, \code{repl} and \code{y}}
   \item{linked}{Logical. Are the replicates linked across methods? If
-    true, a random \code{item} by \code{repl} is included in the model.}
+    true, a random \code{item} by \code{repl} is included in the model,
+    otherwise not.}
   \item{IxR}{Logical, alias for linked.}
   \item{MxI}{Logical, should the method by item effect (matrix effect)
     be in the model?} 
@@ -57,9 +58,9 @@ regressions.
               with methods as levels. The third dimension  is classifed by
               the linear parameters "alpha", "beta", and "sd".}
   \item{VarComp}{A matrix with methods as rows and variance components as
-                 columns. Entries are the estimated standrd deviations.}
+                 columns. Entries are the estimated standard deviations.}
   \item{data}{The original data used in the analysis, with untransformed
-              measuremnts. This is needed for plotting purposes.}
+              measurements (\code{y}s). This is needed for plotting purposes.}
   Moreover, if a transformation was applied before analysis, an attribute
   "Transform" is present; a list with two elements \code{trans} and \code{inv},
   both of which are functions, the first the transform, the last the inverse.
@@ -93,10 +94,7 @@ regressions.
   \url{http://www.biostat.ku.dk/~bxc}.
 }
 \seealso{
-\code{\link{BA.est}}
-\code{\link{DA.reg}}
-\code{\link{Meth.sim}}
-\code{\link{MethComp}}
+\code{\link{BA.est}}, \code{\link{DA.reg}}, \code{\link{Meth.sim}}, \code{\link{MethComp}}
         }
 \examples{
 data( ox )

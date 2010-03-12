@@ -26,6 +26,10 @@ if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) < 2 ) stop(
 # Was it a Meth object?
 was.Meth <- inherits( data, "Meth" )
 
+# For this to work we must sort the dataframe first
+ord <- order(data$meth,data$item)
+data <- data[order(data$meth,data$item),]
+
 # 0: (xx <- ) uniquely number all combinations of (method,item).
 # 1: (tapply) find the smallest sequence number within each (method,item).
 # 2: subtract this from the sequence number, to get 0,1,... within each (m,i).
@@ -36,6 +40,8 @@ was.Meth <- inherits( data, "Meth" )
 xx <- as.integer( factor( interaction( data$meth, data$item ) ) )
 data$repl <- as.vector( 1:nrow(data) -
                         tapply( 1:nrow(data), xx, min )[xx] + 1 )
+# Then reestablish the sequence:
+data <- data[order(ord),]
 if( was.Meth ) Meth( data, print=FALSE ) else data
 }
 

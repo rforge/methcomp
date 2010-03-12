@@ -2,7 +2,7 @@
 \alias{corr.measures}
 \alias{middle}
 \alias{ends}
-\title{Association measures for method comparison studies. Please don't
+\title{Correlation measures for method comparison studies. Please don't
   use them!}
 \description{
   Computes correlation, mean squared difference, concordance correlation

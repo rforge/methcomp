@@ -149,19 +149,22 @@ list( x=xx, y=yy )
     {
     Da <- alfa
     Db <- beta
-    Ds <- sigma*tvalue
+    Ds <- sigma
     Ya <- -alfa/(1+beta/2)
     Yb <- (1-beta/2)/(1+beta/2)
-    Ys <- sigma*tvalue/(1+beta/2)
+    Ys <- sigma/(1+beta/2)
     Xa <- alfa/(1-beta/2)
     Xb <- (1+beta/2)/(1-beta/2)
-    Xs <- sigma*tvalue/(1-beta/2)
+    Xs <- sigma/(1-beta/2)
     }
 # Put them in matrix for return
-reg.res <- rbind( c( Da, Db, Ds ),
-                  c( Ya, Yb, Ys ),
-                  c( Xa, Xb, Xs ) )
-colnames( reg.res ) <- c("alpha","beta",ifelse( mult,"err.fct.","pr.int.") )
+reg.res <- rbind( c( Da, Db, Ds, Ds*tvalue ),
+                  c( Ya, Yb, Ys, Ys*tvalue ),
+                  c( Xa, Xb, Xs, Xs*tvalue ) )
+colnames( reg.res ) <- c("alpha",
+                         "beta",
+                         "pr.sd.",
+ ifelse( mult,"err.fct.","pr.int.") )
 rownames( reg.res ) <- c( paste( x.name, "-", y.name, "| Avg." ),
                           paste( y.name, "|", x.name ),
                           paste( x.name, "|", y.name ) )

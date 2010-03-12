@@ -64,11 +64,6 @@ plot.MCmcmc( x,
 \dontrun{par( ask=TRUE )}
 \dontrun{plot( hba.MC )}
 \dontrun{plot( hba.MC, pl.obs=TRUE )}
-data( cardiac )
-MCcard <- MCmcmc( cardiac, beta=FALSE, random=c("mi","ir"), n.iter=500 )
-print( MCcard )
-plot( MCcard )
-plot( MCcard, pl.obs=TRUE )
 }
 \keyword{models}
 \keyword{design}

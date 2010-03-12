@@ -16,8 +16,8 @@
   perm.repl( data )
   }
 \arguments{
-  \item{data}{A data frame with columns \code{meth}, \code{item}
-              and \code{y}, possibly a \code{\link{Meth}} object.}
+  \item{data}{A \code{\link{Meth}} object or a data frame with columns
+    \code{meth}, \code{item} and \code{y}.}
   }
 \value{
   \code{make.repl} returns a dataframe with a column, \code{repl} added or

@@ -5,7 +5,7 @@
 
 \description{
   This object is included for illustrative purposes. It is a result of
-  using MCmcmc, with \code{n.iter=20000}.
+  using \code{\link{MCmcmc}}, with \code{n.iter=20000}.
   } 
 
 \usage{data(ox.MC)}
@@ -21,14 +21,15 @@
 \examples{ 
 data(ox.MC)
 attr(ox.MC,"mcmc.par")
-#print.MCmcmc(ox.MC)
-#trace.MCmcmc(ox.MC)
-#trace.MCmcmc(ox.MC,"beta")
-# post.MCmcmc(ox.MC)
-# post.MCmcmc(ox.MC,"beta")
+\dontrun{
+print.MCmcmc(ox.MC)
+trace.MCmcmc(ox.MC)
+trace.MCmcmc(ox.MC,"beta")
+ post.MCmcmc(ox.MC)
+ post.MCmcmc(ox.MC,"beta") }
 # A MCmcmc object also has class mcmc.list, so we can use the
 # coda functions for covergence diagnostics:
-# acfplot( subset.MCmcmc(ox.MC, subset="sigma"))
+\dontrun{ acfplot( subset.MCmcmc(ox.MC, subset="sigma")) }
 }
 
 \keyword{datasets}

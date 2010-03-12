@@ -20,7 +20,10 @@ Meth( data=NULL,
         var.range,
        diff.range,
         var.names = FALSE,
-                      ... )
+              pch = 16,
+              cex = 0.7,
+        Transform,
+              ... )
 \method{subset}{Meth}(x, ... )
 \method{sample}{Meth}( x,
                      how = "random",
@@ -39,11 +42,13 @@ Meth( data=NULL,
   \item{repl}{Vector of replicate numbers, numeric, character or factor.
               Can also be a number or character referring to a column in
               \code{data}.}
-  \item{y}{Vector or dataframe of measurements.
-           If \code{y} is a dataframe or a list it is assumed (and checked)
-           that the list elements are numerical vectors of the same length as
-           the \code{meth}, \code{item} and \code{repl} vectors. The columns
-           are assunmed to represent measurements by differnet methods.
+  \item{y}{Vector of measurements. Can also be a character
+    or numerical vector pointing to columns in \code{data} which
+    contains the measurements by different methods or a dataframe with
+    columns representing  measurements by different methods. In this
+    case the argument \code{meth} is ignored, and the names of the
+    columns are taken as method names.
+    
            For the \code{plot} method the argument is
            either a vector of indices or names of methods to plot.}
   \item{print}{Logical: Should a summary result be printed?}
@@ -54,22 +59,27 @@ Meth( data=NULL,
   \item{col.LoA}{What color should be used for the limits of agreement.}
   \item{col.pt}{What color should be used for the points.}
   \item{cex.name}{Character expansion factor for plotting method names }
-  \item{var.range}{The range of the axes in the scatter plot and
+  \item{var.range}{The range of both axes in the scatter plot and
                    the x-axis in the Bland-Altman plot be?}
   \item{diff.range}{The range of yaxis in the Bland-Altman plot. Defaults to
                     a range as the x-axis, but centered around 0.}
   \item{var.names}{If logical: should the individual panels be labelled with the
                    variable names?. If character, then the values of the character
                    will be used to label the methods.}
-  \item{how}{What sampling strategy should be used. Charater strion, one of
+  \item{pch}{Plot character for points.}		 
+  \item{cex}{Plot charcter expansion for points.}		 
+  \item{Transform}{Transformation used to the measurements prior to
+           plotting. Function or character, see
+           \code{\link{choose.trans}} for possible values.} 
+  \item{how}{Character. What sampling strategy should be used, one of
              \code{"random"}, \code{"linked"} or \code{"item"}. Only the first
              letter is significant. See details for explanation.}
   \item{N}{How many observations should be sampled?}
   \item{_data}{A \code{Meth} object.}
   \item{...}{Ignored by the \code{Meth} and the \code{summary} and \code{sample}
-             functions. In the \code{plot} function, parameters passed on the
-             panel function plotting methods against each other, as well as those
-             plotting differences against means.}
+             functions. In the \code{plot} function, parameters passed
+           on to both the panel function plotting methods against each
+           other, as well as to those plotting differences against means.}
  }
 \details{
   In order to perform analyses of method comparisons it is convenient to have a
@@ -78,22 +88,28 @@ Meth( data=NULL,
   dataframe, and gives it a class, \code{Meth}, for which there is a number of
   methods: \code{summary} - tabulation, \code{plot} - plotting and a couple of
   analysis methods.
+
+  If there are replicates in the values of \code{item} it is assumed
+  that those observations represent replicate measurements and different
+  replicate numbers are given to those.
   
-  \code{sample.Meth} samples a \code{\link{Meth}} object with replacement.
-  If \code{how=="random"}, a random sample of the rows are sampled, the existing
-  values of \code{meth}, \code{item} and \code{y} are kept but new replicate
-  numbers are generated.
-  If \code{how=="linked"}, a random sample of the linked observations (i.e.
-  observations with identical \code{item} and \code{repl} values) are sampled
-  with replacement.
+  \code{sample.Meth} samples a \code{\link{Meth}} object with
+  replacement.  If \code{how=="random"}, a random sample of the rows are
+  sampled, the existing values of \code{meth}, \code{item} and \code{y}
+  are kept but new replicate numbers are generated.  If
+  \code{how=="linked"}, a random sample of the linked observations (i.e.
+  observations with identical \code{item} and \code{repl} values) are
+  sampled with replacement and replicate numbers are kept.  If
+  \code{how=="item"}, items are sampled with replacement, and their
+  observations are included the sampled numner of times.
   }
+
 \value{ The \code{Meth} function returns a \code{Meth} object which is a
   dataframe with columns \code{meth}, \code{item}, (\code{repl}) and \code{y}.
-  \code{summary.Meht} returns a table classified by method and no. of
+  \code{summary.Meth} returns a table classified by method and no. of
   replicate measurements, extended with columns of the total number of items,
   total number of observations and the range of the measurements.
-  The \code{subset.Meth} returns a subset of the \code{Meth} object with
-  complete informtion on a subset of the items.
+  The \code{subset.Meth} returns a subset of the \code{Meth} rows.
   }
 \author{Bendix Carstensen, \email{bxc@steno.dk} }
 \examples{
@@ -104,6 +120,21 @@ Sub2 <- Meth(fat,2,1,3,4,print=TRUE)
 Sub3 <- Meth(fat,meth="Obs",item="Id",repl="Rep",y="Sub",print=TRUE)
 summary( Sub3 )
 plot( Sub3 )
+
+# Use observation in different columns as methods
+data( CardOutput )
+head( CardOutput )
+sv <- Meth( CardOutput, y=c("Svo2","Scvo2") )
+# Note that replicates are generated if a non-unique item-id is used
+sv <- Meth( CardOutput, y=c("Svo2","Scvo2"), item="Age" )
+str( sv )
+# A summary is not created if the the first argument (data=) is not used:
+sv <- Meth( y=CardOutput[,c("Svo2","Scvo2")], item=CardOutput$VO2 )
+summary(sv)
+
+# Sample items
+ssv <- sample.Meth( sv, how="item", N=8 )
+
 # More than two methods
 data( sbp )
 plot( Meth( sbp ) )
@@ -114,4 +145,5 @@ hb1  <- with( hba1c,
 hb2  <- with( subset(hba1c,type=="Cap"),
               Meth( meth=dev, item=item, repl=d.ana-d.samp, y=y, print=TRUE ) )
   }
+  
 \keyword{manip}

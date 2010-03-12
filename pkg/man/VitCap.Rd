@@ -12,8 +12,8 @@
 \format{
   A data frame with 288 observations on the following 5 variables.
   \describe{
-    \item{\code{meth}}{a factor with levels \code{StNew} \code{StSkil}
-      \code{ExpNew} \code{ExpSkil}, representing the instrument by user
+    \item{\code{meth}}{a factor with levels \code{StNew}, \code{StSkil},
+      \code{ExpNew} and \code{ExpSkil}, representing the instrument by user
       combinations. See below.}
     \item{\code{item}}{a numeric vector, the person ID, i.e. the 72 patients}
     \item{\code{y}}{a numeric vector, the measurements, i.e. vital capacity.}
@@ -29,7 +29,8 @@ Biometrics, Mar. 1969, Vol. 25, No. 1, pp. 129-142.
 }
 \examples{
 data(VitCap)
-summary( Vcap <- Meth( VitCap ) )
+Vcap <- Meth( VitCap )
+str( Vcap )
 plot( Vcap )
 }
 \keyword{datasets}

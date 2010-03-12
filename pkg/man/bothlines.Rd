@@ -2,9 +2,10 @@
 \alias{bothlines}
 \title{Add regression lines to a plot}
 \description{
-  Add the regression lines of y on x AND x on y to the plot. Optionally
-  add the line obtained by allowing errors in both variables (Deming regression).
-  }
+  Add the regression lines of \eqn{y}{y} on \eqn{x}{x} AND \eqn{x}{x} on
+  \eqn{y}{y} to the plot. Optionally add the line obtained by allowing
+  errors in both variables (Deming regression).
+}
 \usage{
 bothlines(x, y, Dem = FALSE, sdr = 1, col = "black", ...)
 }

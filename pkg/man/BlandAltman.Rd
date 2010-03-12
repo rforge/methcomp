@@ -68,7 +68,8 @@
                intervals and limits of agreement, i.e. the t(1-alpha/2)
                quantile is used. If not supplied the standard value of 2
                is used for computing LoA.}
-  \item{y1}{Measurements by method 1. Alternatively a dataframe with columns
+	     \item{y1}{Measurements by method 1. Alternatively a
+	       \code{\link{Meth}} object or a dataframe with columns
            \code{meth}, \code{item}, \code{y}, and possibly \code{repl}.}
   \item{y2}{Corresponding measurements by method 2. Ignored if \code{y1}
             is a dataframe.}
@@ -94,7 +95,14 @@
                  the test of 0 slope in the regression of absolute residuals
                  on averages. 2) Constant difference - this is the test of 0
                  slop in the regression of differences on averages. 3)
-                 Difference equal to 0 - this is usually a lame thig to use.}
+                 Difference equal to 0 - this is usually a lame thing to
+		 use.}       
+  \item{reg.res}{A \eqn{3\times 4}{3x4} matrix with (in the first row)
+    the results from regressing the averages on the means, and in the
+    two other rows the derived relationships
+    between methods. In each line the intercept (\code{alpha}), slope
+    (\code{beta}), the prediction standard deviation (\code{pr.sd}) and
+    half the width of the prdiction interval (\code{pr.int}).}  
 }
 \references{
 JM Bland and DG Altman: Statistical methods for assessing agreement between
@@ -103,9 +111,8 @@ JM Bland and DG Altman: Statistical methods for assessing agreement between
 JM Bland and DG Altman. Measuring agreement in method comparison studies.
   Statistical Methods in Medical Research, 8:136-160, 1999.
   
-B Carstensen. Limits of agreement: How to use the regression of differences
-  on averages. Preprint, Department of Biostatistics, University of Copenhagen,
-  \url{http://cms.ku.dk/sund-sites/ifsv-sites/english/about/departments/biostatistics/reports/2008/researchreport08-06.pdf}
+B Carstensen: Comparing methods of measurement: Extending the LoA by
+  regression. Stat Med. 2010 Feb 10;29(3):401-10.
   }
 \author{
   Bendix Carstensen \email{bxc@steno.dk},

@@ -10,7 +10,7 @@ if( tolower(substr(how,1,1))=="r" )
   {
   Nr <- nrow( x )
   new.x <- x[sample(1:Nr,Nr,replace=T),]
-  new.x <- Meth( make.repl( new.x ) )
+  new.x <- Meth( make.repl( new.x ), print=FALSE )
   }
   
 if( tolower(substr(how,1,1))=="l" )
@@ -23,7 +23,7 @@ if( tolower(substr(how,1,1))=="l" )
      {
      new.x <- rbind( new.x, x[IxR==ir.id[i],] )
      }
-  new.x <- Meth( make.repl( new.x ) )
+  new.x <- Meth( make.repl( new.x ), print=FALSE )
   }
   
 if( tolower(substr(how,1,1))=="i" )
@@ -36,10 +36,10 @@ if( tolower(substr(how,1,1))=="i" )
                      cbind( x[x$item==i.id[i],],
                             new.item=i ) )
      }
-  old.item <- new.x$item
-  new.x <- cbind( Meth( transform( new.x, item=i.id ) ),
-                  old.item=old.item )
-  class( new.x ) <- c("Meth","data.frame")
+  new.x$old.item <- new.x$item
+  new.x$item     <- new.x$new.item
+  new.x <- new.x[,-grep("new.item",names(new.x))]
+  new.x <- Meth( make.repl( new.x ), print=FALSE )
   }
 
 new.x

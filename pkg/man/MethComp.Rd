@@ -26,29 +26,33 @@ MethComp(obj)
                  col.grid = grey(0.9),
                 col.lines = "black",
                col.points = "black",
-                      eqn = tolower(substr(pl.type,1,1))=="c" & is.null(attr(x,"Transform")),
+                      eqn = tolower(substr(pl.type,1,1))=="c" &
+                            is.null(attr(x,"Transform")),
                   col.eqn = col.lines,
                  font.eqn = 2,
                    digits = 1,
+%               Transform = FALSE,
                       ... )
 \method{lines}{MethComp}(x,
-                    wh.cmp = getOption("MethComp.wh.cmp"),
-                   pl.type = getOption("MethComp.pl.type"),
-                 col.lines = "black",
-                       lwd = c(3,1),
-                       ... )
+                   wh.cmp = getOption("MethComp.wh.cmp"),
+                  pl.type = getOption("MethComp.pl.type"),
+%               Transform = getOption("MethComp.transform"),
+                col.lines = "black",
+                      lwd = c(3,1),
+                      ... )
 \method{points}{MethComp}(x,
-                     wh.cmp = getOption("MethComp.wh.cmp"),
-                    pl.type = getOption("MethComp.pl.type"),
-                 col.points = "black",
-                        ... )
+                   wh.cmp = getOption("MethComp.wh.cmp"),
+                  pl.type = getOption("MethComp.pl.type"),
+ %              Transform = getOption("MethComp.transform"),
+               col.points = "black",
+                      ... )
 }
 \arguments{
   \item{obj}{A \code{MethComp} or \code{\link{MCmcmc}} object.}
   \item{x}{A \code{MethComp} object.}
   \item{digits}{How many digits should be used when displaying conversion
-                equations and variance componenets.}
-  \item{wh.cmp}{Numeric. Which methods should be plotted.}
+                equations and variance components?}
+  \item{wh.cmp}{Numeric of length 2. Which two methods should be plotted.}
   \item{pl.type}{Character. If "conv" it will be a plot of two methods against
                  each other, otherwise it will be a plot of the 2nd minus the
                  1st versus the average; a Bland-Altman type plot.}
@@ -73,7 +77,8 @@ Using \code{MethComp} on the results from \code{\link{BA.est}} or
 \code{\link{AltReg}} is not necessary, as these two functions already return
 objetcs of class \code{MethComp}.
 
-\code{plot.MethComp} plots the conversion function with prediction limits. It also
+\code{plot.MethComp} plots the conversion function with prediction
+limits; always using the original scale of measurements. It also
 sets the options \code{"MethComp.wh.cmp"} indicating which two methods are
 plotted and \code{"MethComp.pl.type"} indicating whether a plot of methods
 against each other or a Bland-Altman type plot of differences versus averages.
@@ -87,7 +92,7 @@ prediction limits and points to a plot.
 elements, \code{Conv}, a three-way array giving the linear conversion equations
 between methods, \code{VarComp}, a two-way array classified by methods and
 variance components and \code{data}, a copy of the original \code{\link{Meth}}
-object supplied.
+object supplied --- see the description under \code{\link{BA.est}}.
 
 A \code{MethComp} object has an attribute \code{Transform},
 which is either NULL, or a named list with elements \code{trans} and \code{inv},
@@ -96,7 +101,8 @@ to measurements before analysis; the results are all given on the transformed
 scale. The second is the inverse transformation; this is only used when plotting
 the resulting relationship between methods.
 
-The methods return nothing.
+The methods \code{print}, \code{plot}, \code{lines} and \code{points}
+return nothing. 
 }
 \author{
 Bendix Carstensen, Steno Diabetes Center, \email{bxc@steno.dk}.

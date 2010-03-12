@@ -5,9 +5,8 @@
   items using different methods.
   }
 \description{
-  A dataframe is simulated that represents data from a method comparison study
-  based on parameters specified by the user. It is returned as a
-  \code{\link{Meth}} object.
+  Simulates a dataframe representing data from a method comparison
+  study. It is returned as a \code{\link{Meth}} object.
   }
 \usage{
   Meth.sim( Ni = 100,
@@ -78,7 +77,8 @@
   }
 \author{
   Lyle Gurrin, University of Melbourne,
-  \url{http://www.epi.unimelb.edu.au/about/staff/gurrin-lyle},
+  \url{http://www.epi.unimelb.edu.au/about/staff/gurrin-lyle}
+  
   Bendix Carstensen, Steno Diabetes Center,
   \url{http://www.biostat.ku.dk/~bxc}
   }
