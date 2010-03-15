@@ -1,10 +1,11 @@
 \name{sbp.MC}
 \alias{sbp.MC}
 \docType{data}
-\title{A MCmcmc object from the \code{\link{sbp}} data}
+\title{A MCmcmc object from the sbp data}
 \description{
 This object is included for illustrative purposes. It is a result of
-using \code{\link{MCmcmc}}, with \code{n.iter=100000}.
+using \code{\link{MCmcmc}}, with \code{n.iter=100000} on the dataset
+\code{\link{sbp}} from this package.
 }
 \usage{data(sbp.MC)}
 \format{
