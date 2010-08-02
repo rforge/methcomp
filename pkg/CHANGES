@@ -1,3 +1,8 @@
+Version 1.2-1
+
+o Added Passing-Bablok regression, written by Michal Figursky, functions
+  PBreg, with a print and a plotmethod for the resulting "PBreg" class.
+
 Version 1.1.0
 
 o Removed the possibility to explicitly give the working directory for the

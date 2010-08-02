@@ -45,7 +45,7 @@ for( i in 1:N )
    }
 ests <- cbind( c(alpha,beta,sigma.x, sigma.y),
                se <- sqrt( diag( cov( res ) ) ),
-               t( apply( res, 2, quantile, probs=c(0.5,alfa/2,1-alfa/2 ) ) ) )
+               t( apply( res, 2, quantile, probs=c(0.5,alfa/2,1-alfa/2 ), na.rm=T ) ) )
 colnames( res ) <- rownames( ests ) <- pn
 colnames( ests )<- c("Estimate", "S.e.(boot)", colnames(ests)[3:5] )
 if(keep.boot)
