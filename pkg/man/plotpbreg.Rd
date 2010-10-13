@@ -28,7 +28,7 @@
     fit. Plot subtypes 1 through 3 are standard plots from the 1983 paper
     by Passing and Bablok - see the reference.  Plot subtype \bold{4} is
     a histogram (with overlaid density line) of the individual slopes. 
-    The range of this plot is limited to 7 x IQR for better visibility.
+    The range of this plot is limited to 5 x IQR for better visibility.
     }
   \item{\ldots}{other parameters as in \code{"plot"}, some of which are 
     pre-defined for improved appearance. This affects only the subtype 1 plot.}
@@ -47,6 +47,13 @@
                   y=seq(1, 30)*rnorm(mean=1, sd=0.4, n=30))
                   
   ## Call to PBreg
+  x <- PBreg(a)
+  print(x)
+  par(mfrow=c(2,2))
+  plot(x, s=1:4)
+  
+  ## Or the same using "Meth" object
+  a <- Meth(a, y=1:2)
   x <- PBreg(a)
   print(x)
   par(mfrow=c(2,2))
