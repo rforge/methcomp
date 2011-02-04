@@ -1,19 +1,18 @@
-PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2)
+PBreg <-
+function(x, y=NULL, conf.level=0.05, wh.meth=1:2)
 {
-    meths  = c("Method A","Method B")
-    if (is.null(y)) {
-        if (inherits(x, "Meth"))  {
-            meths    = rev(levels(x$meth)[wh.meth])
-            a        = to.wide(x)[,meths]
-            names(a) = c("x","y")
-            }
-        else {
-            a        = x
-            meths    = colnames(a)
-            names(a) = c("x","y")
-            }
-        }
-    else    a        = data.frame(x=x, y=y)
+    meths <- c("x","y")
+    if (is.null(y))
+      {
+      if ( inherits(x,"Meth") )
+         {
+         meths <- levels(x$meth)[wh.meth]
+         a <- to.wide(x)[,meths]
+         }
+      else a = x
+      }
+    else            a = data.frame(x=x, y=y)
+    names(a) = c("x","y")
     nread = nrow(a)
     a     = a[complete.cases(a$x,a$y),]
     n     = nrow(a)
@@ -65,7 +64,8 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2)
                         class="PBreg"))
 }
 
-print.PBreg <- function(x,...)
+print.PBreg <-
+function(x,...)
 {
     cat("\nPassing-Bablok linear regression of", x$meths[2], "on", x$meths[1], "\n\n")
     cat(paste("Observations read: ", x$n[1], ", used: ", x$n[2],"\n", sep=""))
@@ -78,29 +78,37 @@ print.PBreg <- function(x,...)
     cat("\nTest for linearity:")
     # !!! Not working very well !!! 
     cat(if(any((x$cusum<1.36*sqrt(x$adj[5]+x$adj[6]))==FALSE)) " (failed)\n" else " (passed)\n")
-    cat("Linearity test not fully implemented in this version.\n\n")
-} 
+    cat("Linearity test not fully implemented in this version.\n")
+}
     
-plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
+plot.PBreg <-
+function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
     xlab=x$meths[1], ylab=x$meths[2], subtype=1,...)
-    {
-    ints    = c(x$coefficients[3],x$coefficients[1],x$coefficients[5])
-    slos    = c(x$coefficients[4],x$coefficients[2],x$coefficients[6])
+{
+    int     = x$coefficients[1]
+    slo     = x$coefficients[2]
     if (any(subtype==1)) {
-        m       = max(x$model, na.rm=T)
-        xs      = seq(-0.1*m, 1.1*m, length=50)
-        cis     = data.frame(x=xs, lo=NA, hi=NA)
+        prec    = 30
+        m       = max(x$model)
+        cis     = data.frame(x=seq(-0.1*m, 1.1*m, length=50), 
+                             y=int + seq(-0.1*m, 1.1*m, length=50)*slo)
+        cis$hi  = cis$lo = cis$y
+        a       = seq(x$coefficients[3],x$coefficients[5], length=prec)
+        b       = seq(x$coefficients[4],x$coefficients[6], length=prec)
         for (i1 in 1:50) {
-            cis$lo[i1] = min(ints + slos * cis$x[i1])
-            cis$hi[i1] = max(ints + slos * cis$x[i1])
-            }
+            for (i2 in 1:prec) {
+                for (i3 in 1:prec) {
+                    point = a[i2]+cis$x[i1]*b[i3]
+                    if (cis$lo[i1]>point) cis$lo[i1]=point
+                    if (cis$hi[i1]<point) cis$hi[i1]=point
+            }   }   }
         plot(x$model, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="n", ...)
         px = c(-.1*m, cis$x, 1.1*m, 1.1*m, rev(cis$x), -.1*m)
         py = c(-.1*m, cis$hi, 1.1*m, 1.1*m, rev(cis$lo), -.1*m)
         polygon(px,py,col="#ccaaff50", border=NA)
         abline(0,1, lwd=0.5, lty=2)
         points(x$model, pch=pch, bg=bg)
-        abline(ints[2], slos[2], lwd=2, col="blue")
+        abline(int, slo, lwd=2, col="blue")
         }
     if (any(subtype==2)) {
         ranked = x$residuals[order(x$Di)]
@@ -114,11 +122,10 @@ plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=
         abline(0,0, col="#99999955", lwd=1.5)
         }
     if (any(subtype==4)) {
-        S = x$S[x$S> slos[2]-2.5*IQR(x$S) & x$S< slos[2]+2.5*IQR(x$S)]
-        h = hist(S, xlab="Individual slopes (range: 5 x IQR)", col="gray", main="",...)
+        S = x$S[x$S> slo-3.5*IQR(x$S) & x$S< slo+3.5*IQR(x$S)]
+        h = hist(S, xlab="Individual slopes (range: 7 x IQR)", col="gray", main="",...)
         d = density(S)
         d$y = d$y*(max(h$counts)/max(d$y))
         lines(d, lwd=2, col="#8866aaa0")
-        abline(v=slos, col=c("#1222bb99","#bb221299"), lwd=c(0.5,1.5), lty=c(2,1))
         }
 }

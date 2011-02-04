@@ -118,6 +118,9 @@ bugs.code.file = "model.txt",
   \item{chains}{Numerical vector giving the number of the chains to keep.}
   }
 \details{
+  This function uses features currently only available under Windows, so the
+  function returns NULL unless the operating system is Windows.
+
   The model set up for an observation \eqn{y_{mir}}{y_mir} is:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) +
     e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir} 

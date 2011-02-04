@@ -30,6 +30,12 @@ if( !is.null(Transform) )
   check.trans( Transform, data$y, trans.tol=trans.tol )
   data$y <- Transform$trans( data$y )
   }
+# Since we are using Brugs we only continue if on a windows system:
+if( substr(version$os,1,5)!="mingw" )
+  {
+  cat( "The MCmcmc function only works on Windows\n" )
+  return( NULL )
+  }
 # Check the availability of required packages
 Got.coda <- require( coda )
 Got.R2WB <- require( R2WinBUGS )

@@ -11,14 +11,13 @@
   \method{print}{PBreg}(x,...)
 }
 \arguments{
-  \item{x}{a \code{\link{Meth}} object, or a numeric vector of measurements 
-	by method A, alternatively a data frame of exactly two columns, first column 
-	with measurements by method A, second column with measurements by method B. 
-	If \code{x} is a \code{\link{Meth}} object, the methods from that are used 
-	in the regression.}
-  \item{y}{a numeric vector of measurements by method B - must be of the same 
-    length as \code{x}. If not provided, \code{x} must be a \code{\link{Meth}} 
-	object or a data frame of exactly 2 columns.}
+  \item{x}{a numeric vector of measurements by method A, alternatively 
+    a data frame of exactly two columns, first column with measurements
+    by method A, second column with measurements by method B. If \code{x} is a
+    \code{\link{Meth}} object, the methods from that are used in the regression.}
+  \item{y}{a numeric vector of measurements by method B - must be of 
+    the same length as \code{x}. If not provided, \code{x} must be 
+    a data frame of exactly 2 columns.}
   \item{conf.level}{confidence level for calculation of confidence 
     boundaries.}
   \item{wh.meth}{Which of the methods from the \code{Meth} object are used in
@@ -86,14 +85,7 @@
   par(mfrow=c(2,2))
   plot(x, s=1:4)
   
-  ## Or the same using "Meth" object
-  a <- Meth(a, y=1:2)
-  x <- PBreg(a)
-  print(x)
-  par(mfrow=c(2,2))
-  plot(x, s=1:4)
-  
-  ## A real data example
+  # A real data example
   data(milk)
   milk <- Meth(milk)
   summary(milk)
