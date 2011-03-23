@@ -27,9 +27,6 @@ data(sbp.MC)
 # How was the data generated
 attr(sbp.MC,"mcmc.par")
 
-# Conversion between methods and variance components
-print.MCmcmc(sbp.MC)
-
 # Traceplots
 trace.MCmcmc(sbp.MC)
 trace.MCmcmc(sbp.MC,"beta")

@@ -5,19 +5,21 @@ if( inherits( obj, "MethComp" ) )
   {
   Conv    <- obj$Conv
   VarComp <- obj$VarComp
-  dfr     <- data
+  dfr     <- obj$data
   }
 else
 if( inherits( obj, "MCmcmc" ) )
   {
   dfr <- attr( obj, "data" )
-  obj <- summary( obj )
-  ca  <- obj$conv.array
+  # The transformed data are stored in the MCmcmc object so transform back
+  dfr$y <- attr(obj,"Transform")$inv(dfr$y)
+  Obj <- summary( obj )
+  ca  <- Obj$conv.array
   # Store the array in a different layout [This is crazy]
   names( dimnames( ca ) )[1:2] <- names( dimnames( ca ) )[2:1]
   Conv <- ca
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
-  VarComp <- obj$VarComp[,-4,1]
+  VarComp <- Obj$VarComp[,-4,1]
   names(dimnames(VarComp)) <- c("Method","s.d.")
   }
 else stop( "Input object (argument) must have class 'MethComp' or 'MCmcmc'.\n",

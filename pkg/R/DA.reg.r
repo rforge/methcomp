@@ -22,23 +22,24 @@ Mn <-  levels( data$meth )
 Nm <- nlevels( data$meth )
 
 # Array to hold the conversion parameters
+sd.int <- paste( "sd.|A=", gsub(" ","",formatC(median(dfr$y),digits=3)),sep="")
 dnam <- list( "To:" = Mn,
             "From:" = Mn,
-                      c("alpha","beta","sd.pred","beta=1","s.d.=K") )
+                      c("alpha","beta","sd.pred","beta=1",sd.int,"slope(sd)","sd.=K") )
 conv <- array( NA, dim=sapply(dnam,length), dimnames=dnam )
 
 # Fill in the array
-for( i in 1:Nm ) conv[i,i,] <- c(0,1,NA,NA,NA)
+for( i in 1:Nm ) conv[i,i,] <- c(0,1,rep(NA,5))
 for( i in 1:(Nm-1) ) for( j in (i+1):Nm )
    {
    sb <- data[data$meth %in% Mn[c(i,j)],]
    cf <- da.reg1( sb )
    conv[j,i,] <- c(  -cf[1]   /(1+cf[2]/2),
                    (1-cf[2]/2)/(1+cf[2]/2),
-                      cf[3]   /(1+cf[2]/2),cf[4],cf[5])
+                      cf[3]   /(1+cf[2]/2),cf[4:7])
    conv[i,j,] <- c(  +cf[1]   /(1-cf[2]/2),
                    (1+cf[2]/2)/(1-cf[2]/2),
-                      cf[3]   /(1-cf[2]/2),cf[4],cf[5])
+                      cf[3]   /(1-cf[2]/2),cf[4:7])
    }
 
 # Collect the results
@@ -54,7 +55,7 @@ res
 da.reg1 <-
 function( data )
 {
-data$meth <- factor( data$meth )
+data <- subset( data, select=c("meth","item","repl","y") )
 Mn <- levels( data$meth )
 wd <- to.wide( data, warn=FALSE )
 wd <- wd[complete.cases(wd),]
@@ -68,7 +69,9 @@ ms <- lm( abs(residuals(m0)) ~ A )
 res <- c(coef(m0),
          summary(m0)$sigma,
          summary(m0)$coef[2,4],
-         summary(ms)$coef[2,4])
+         rbind(c(1,median(data$y)),c(0,1)) %*%
+         summary(ms)$coef[1:2,1]*sqrt(pi/2),
+         summary(ms)$coef[2,4] )
 return(res)
 }
 }
