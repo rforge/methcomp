@@ -47,7 +47,7 @@ if( methods.in.y )
     item <- match( item, dfr.nam )
   if( is.numeric(item) & length(item)==1 )
     {
-    taken <- item.col <- item
+    taken <- c(taken,item.col<-item)
     item <- data[,item]
     }
   else item <- rows
@@ -58,7 +58,7 @@ if( methods.in.y )
   if( is.numeric(repl) & length(repl)==1 )
     {
     repl <- data[,repl]
-    taken <- repl.col <- repl
+    taken <- c(taken,repl.col<-repl)
     }
   else repl <- make.repl( data.frame(meth=rep(1,Nr),item=item) )$repl
 
@@ -85,7 +85,7 @@ else
     meth <- data[,meth]
     }
   if( is.na(meth)[1] ) stop( "\nmeth not properly specified.")
-  
+
   # Item
   if( is.character(item) )
     item <- match( item, dfr.nam )
@@ -190,7 +190,7 @@ cat( "The following variables from the dataframe\n\"",
                                                paste(dfr.nam[   y.col],collapse=" "),
             "\n" ),
      sep="" )
-            
+
 if( print )  print( summary.Meth( res ) )
 
 if( made.repl )

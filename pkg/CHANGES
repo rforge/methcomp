@@ -3,6 +3,12 @@
 o Allow the plot method to pick up an estimated monotone relationship
   between SD and average.
 
+Version 1.5
+
+o Fixed the real bug which was in Meth. Now removes the columns with
+  measurements by different methods when converting from a wide-form
+  data frame to a Meth object.
+
 Version 1.4
 
 o Fixed a bug in DA.reg, preventing transformed analysis to be made if
