@@ -1,12 +1,9 @@
+% \VignetteIndexEntry{Deming regression}
 \documentclass[a4paper,twoside,12pt]{article}
 %\usepackage[ae,hyper]{Rd}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
-% \usepackage{times}
 \usepackage{rotating,booktabs,picins,graphicx,amsmath,verbatim,fancyhdr,url,a4wide}
-% \usepackage{C:/Stat/R/R-2.3.0/share/texmf/Sweave}
-% \usepackage{mslapa}
-% \usepackage{makeidx}
 
 \oddsidemargin 1mm
 \evensidemargin 1mm
@@ -24,13 +21,11 @@
 \renewcommand{\floatpagefraction}{0.95}
 \DeclareGraphicsExtensions{.pdf,.jpg}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\input{c:/util/Tex/useful.tex}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \raggedleft
 \pagestyle{empty}
-\Huge 
+\Huge
 {\bf Deming regression}\\[3mm]
 \large
 \texttt{MethComp package}\\[1em]
@@ -156,8 +151,8 @@ and putting $\frac{\partial L}{\partial \alpha}$ equal to zero yields
 &\Rightarrow&
 \alpha=\frac{1}{n}\sum_{i=1}^n(y_i-\beta\xi_i).
 \end{eqnarray*}
-%From (\ref{alpha}) we have an expression for $\hat{\alpha}$. 
-Now one can use (\ref{xi}) to dispense with $\xi_i$ 
+%From (\ref{alpha}) we have an expression for $\hat{\alpha}$.
+Now one can use (\ref{xi}) to dispense with $\xi_i$
 \begin{eqnarray*}
 \alpha
 &=&
@@ -203,7 +198,7 @@ Differentiation of $L$ with respect to $\beta$ gives
 =
 \frac{\sum_{i=1}^n (y_i-\alpha-\beta\xi_i)\xi_i}{\lambda\sigma^2}.
 \end{eqnarray*}
-Setting $\frac{\partial L}{\partial \beta}$ equal to zero yields 
+Setting $\frac{\partial L}{\partial \beta}$ equal to zero yields
 \begin{eqnarray*}
 \frac{\partial L}{\partial \beta}=0
 \Leftrightarrow
@@ -317,7 +312,7 @@ Finally the terms are sorted and collected according to powers of $\beta$:
 \sum_{i=1}^nx_iy_i
 -\overline{y}.\sum_{i=1}^nx_i\right).
 \end{eqnarray*}
-Since 
+Since
 \begin{itemize}
 \item
 $\sum_{i=1}^n\overline{x}.^2
@@ -352,7 +347,7 @@ For $\SPD_{xy}\neq 0$ this implies that
 \end{eqnarray*}
 Since $\SSD_y-\lambda\SSD_x\leq
 \sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}$ there is always a
-positive and a negative solution to (\ref{equation}). The desired solution should always have the same sign as $\SPD_{xy}$, hence the solution with the positive numerator is selected. Therefore 
+positive and a negative solution to (\ref{equation}). The desired solution should always have the same sign as $\SPD_{xy}$, hence the solution with the positive numerator is selected. Therefore
 \begin{eqnarray*}
 \hat{\beta}=\frac{\SSD_y-\lambda\SSD_x+\sqrt{(\SSD_y-\lambda\SSD_x)^2+4\lambda\SPD_{xy}^2}}{2\SPD_{xy}}.
 \end{eqnarray*}
@@ -407,5 +402,9 @@ $$
 These formula are implemented in the \texttt{Deming} function in the \texttt{MethComp} package.
 \clearpage
 \section{The \texttt{Deming} function}
-\insout{../../R/deming.R}
+ \scriptsize
+ \renewcommand{\baselinestretch}{0.8}
+ \verbatiminput{\insout{../../R/deming.R}
+ \renewcommand{\baselinestretch}{1.0}
+ \normalsize
 \end{document}

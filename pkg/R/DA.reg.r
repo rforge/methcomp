@@ -22,10 +22,11 @@ Mn <-  levels( data$meth )
 Nm <- nlevels( data$meth )
 
 # Array to hold the conversion parameters
-sd.int <- paste( "sd.|A=", gsub(" ","",formatC(median(dfr$y),digits=3)),sep="")
+sd.int <- paste( " sd.|A=", gsub(" ","",formatC(median(dfr$y),digits=3)),sep="")
 dnam <- list( "To:" = Mn,
             "From:" = Mn,
-                      c("alpha","beta","sd.pred","beta=1",sd.int,"slope(sd)","sd.=K") )
+                      c("alpha","beta","sd.pred"," beta=1",
+                        sd.int," slope(sd)"," sd.=K") )
 conv <- array( NA, dim=sapply(dnam,length), dimnames=dnam )
 
 # Fill in the array

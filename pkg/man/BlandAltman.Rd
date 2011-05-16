@@ -32,9 +32,12 @@
              alpha,
                ... )
   BA.plot( y1, y2,
-       meth.names = NULL,
-        mean.repl = FALSE,
-      comp.levels = 2:1,
+      meth.names = NULL,
+       mean.repl = FALSE,
+       conn.repl = !mean.repl,
+        lwd.conn = 1,
+        col.conn = "black",
+     comp.levels = 2:1,
               ... )
 }
 \arguments{
@@ -80,6 +83,9 @@
                    should the means by \code{item} and \code{meth} be formed
                    before further ado. WARNING: This will give too narrow
                    limits of agreement.}
+  \item{conn.repl}{Logical. Should replicates from the same item be connected?}
+  \item{lwd.conn}{Line width of connecting lines}
+  \item{col.conn}{Color of connecting lines}
   \item{comp.levels}{Levels of the \code{meth} factor to compare. May be used
                      to switch the order of the methods compared by specifying
                      \code{comp.meth=2:1}.}
@@ -96,21 +102,21 @@
                  on averages. 2) Constant difference - this is the test of 0
                  slop in the regression of differences on averages. 3)
                  Difference equal to 0 - this is usually a lame thing to
-		 use.}       
+		 use.}
   \item{reg.res}{A \eqn{3\times 4}{3x4} matrix with (in the first row)
     the results from regressing the averages on the means, and in the
     two other rows the derived relationships
     between methods. In each line the intercept (\code{alpha}), slope
     (\code{beta}), the prediction standard deviation (\code{pr.sd}) and
-    half the width of the prdiction interval (\code{pr.int}).}  
+    half the width of the prdiction interval (\code{pr.int}).}
 }
 \references{
 JM Bland and DG Altman: Statistical methods for assessing agreement between
   two methods of clinical measurement, Lancet, i, 1986, pp. 307-310.
-  
+
 JM Bland and DG Altman. Measuring agreement in method comparison studies.
   Statistical Methods in Medical Research, 8:136-160, 1999.
-  
+
 B Carstensen: Comparing methods of measurement: Extending the LoA by
   regression. Stat Med. 2010 Feb 10;29(3):401-10.
   }

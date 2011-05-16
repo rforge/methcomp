@@ -40,7 +40,7 @@ function( x, digits=3, ... )
 {
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
-       paste( body(trans$trans) ), "\n\n" )
+        paste( deparse( trans$trans ), collapse="" ), "\n\n" )
 cat("\n Conversion between methods:\n")
 print( round( ftable( x$Conv ), digits ) )
 # Account for the results from DA.reg where variances are not estimated

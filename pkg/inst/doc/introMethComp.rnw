@@ -1,5 +1,5 @@
 \SweaveOpts{results=verbatim,keep.source=TRUE,eps=FALSE,include=FALSE}
-\VignetteIndexEntry{Introduction to the MethComp package}
+% \VignetteIndexEntry{Introduction to the MethComp package}
 \documentclass[a4paper,twoside,12pt]{article}
 \usepackage[english]{babel}
 \usepackage{rotating,booktabs,amsmath,verbatim,fancyhdr,graphicx,makeidx,datetime,Sweave}
@@ -132,6 +132,10 @@ Objects of class \texttt{Meth} (which inherits from
 mostly do not require the data to be in \texttt{Meth} format --- if a
 dataframe with the right columns is supplied, it is normally converted
 internally to \texttt{Meth} format.
+
+\subsection{Wide format data}
+Sometimes data frames comes in the wide format, that is with
+measurements by different methods in different columns.
 
 \section{Function overview}
 

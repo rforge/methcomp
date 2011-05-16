@@ -8,7 +8,7 @@ function( data,
         )
 # A utility function to fit the relevant variance component model with
 # constant (or zero) bias - basically chooses the right one from an array of
-# lme-invocations    
+# lme-invocations
 {
 # Is the supplied dataframe a Meth object? If not make it!
 if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
@@ -26,7 +26,7 @@ item <- data$item
 repl <- data$repl
    y <- data$y
  one <- rep(1,length(y))
- 
+
 # More than two methods?
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
@@ -150,7 +150,7 @@ names( Bias ) <- levels( meth )
 Mu <- summ[grep("item",rownames(summ)),1]
 
 # The two-way random interactions
-vc <- VarCorr( m1 )
+vc <- nlme:::VarCorr( m1 )
 if(        MxI )   tau <- as.numeric( vc[grep("meth",rownames(vc)),2] )
 if( IxR &  MxI ) omega <- as.numeric( vc[grep("Inte",rownames(vc)),2] )
 if( IxR & !MxI ) omega <- as.numeric( vc[grep("repl",rownames(vc)),2][1] )

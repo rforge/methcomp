@@ -3,6 +3,15 @@
 o Allow the plot method to pick up an estimated monotone relationship
   between SD and average.
 
+Version 1.7
+
+o The VarCorr now explicitly calls the ome freom nlme, so that it is
+not accidentally masked by the one for lme4 if that sould be loaded.
+
+Version 1.6
+
+o Printing of the transformation used (if any) is now working.
+
 Version 1.5
 
 o Fixed the real bug which was in Meth. Now removes the columns with
