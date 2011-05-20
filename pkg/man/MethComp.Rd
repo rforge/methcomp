@@ -39,6 +39,7 @@ MethComp(obj)
 %               Transform = getOption("MethComp.transform"),
                 col.lines = "black",
                       lwd = c(3,1),
+                    alpha = NULL,
                       ... )
 \method{points}{MethComp}(x,
                    wh.cmp = getOption("MethComp.wh.cmp"),
@@ -65,7 +66,10 @@ MethComp(obj)
   \item{col.grid}{Color of the gridlines.}
   \item{col.lines}{Color of the conversion lines.}
   \item{lwd}{Numerical vector of length 2. Width of the conversion line and the
-             prediction limits respectively.}
+    prediction limits respectively.}
+  \item{alpha}{1 minus the confidence level for the prediction
+    interval. If not given, the prediction interval is constructed as
+    plus/minus twice the SD.}
   \item{col.points}{Color of the points.}
   \item{eqn}{Logical. Should the conversion equation be printed on the plot.}
   \item{col.eqn}{Color of the conversion formula}
@@ -102,7 +106,7 @@ scale. The second is the inverse transformation; this is only used when plotting
 the resulting relationship between methods.
 
 The methods \code{print}, \code{plot}, \code{lines} and \code{points}
-return nothing. 
+return nothing.
 }
 \author{
 Bendix Carstensen, Steno Diabetes Center, \email{bxc@steno.dk}.

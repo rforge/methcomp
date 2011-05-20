@@ -157,7 +157,7 @@ if( was.dfr & is.logical(keep.vars) )
     names(res)[-(1:4)] <- dfr.nam[-taken]
     }
   }
-# Keep only slected variables
+# Keep only the selected variables
 if( was.dfr & is.character(keep.vars) )
   keep.vars <- match( keep.vars, names(data) )
 if( was.dfr & is.numeric(keep.vars) )
@@ -197,7 +197,7 @@ if( made.repl )
   cat( "\nNOTE: Replication numbers generated in the order of the data\n" )
 if( max( with( res, table( meth, item, repl ) ) ) > 1 )
   cat( "\nWARNING: You have chosen a replicate variable which is not unique\n",
-       "        within each (n,item).\n" )
+       "        within each (meth,item).\n" )
 
 attr(res,"row.names") <- 1:nrow(res)
 invisible( res )

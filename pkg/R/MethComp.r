@@ -159,6 +159,7 @@ function( x,
       pl.type = getOption("MethComp.pl.type"),
     col.lines = "black",
           lwd = c(3,1),
+        alpha = NULL,
           ... )
 {
 Mn <- dimnames( x[[1]] )[[1]]
@@ -184,8 +185,10 @@ axlim <- par("usr")[1:2]
 # Expand well beyond the limits to accommodate the differnce-plot too
   m1 <- seq( axlim[1]-diff(axlim), axlim[2]+diff(axlim),, 500 )
 trm1 <- trf( m1 )
+df   <- Inf
+qnt  <- if( is.null(alpha) ) 2 else qt(1-alpha/2,df)
 trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
-                                        c(0,-2, 2) )
+                                        c(0,-1, 1)*qnt )
   m2 <- itr( trm2 )
 
 if( tolower(substr(pl.type,1,1)) == "c" )
