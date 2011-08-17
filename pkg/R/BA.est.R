@@ -8,7 +8,8 @@ function( data,
           bias = TRUE,  # Should we estimate a bias between the methods?
          alpha = 0.05,
      Transform = NULL,
-     trans.tol = 1e-6
+     trans.tol = 1e-6,
+        random = FALSE 
         )
 {
 # Check that data has item, method and repl
@@ -41,7 +42,8 @@ model.fit <- VC.est( data = dfr,
                       IxR = IxR,
                       MxI = MxI,
                    varMxI = varMxI,
-                     bias = bias )
+                     bias = bias,
+                   random = random )
 Nm   <- length( model.fit$Bias )
 Mnam <-  names( model.fit$Bias )
 
