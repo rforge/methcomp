@@ -80,7 +80,7 @@ else # if !MxI
     }
   else
     m1 <- lme( y ~ item - 1 + meth,
-               random = ~ 1 | one,
+ #              random = ~ 1 | one,
                weights = varIdent( form = ~1 | meth ),
                control = lmeControl(returnObject=TRUE) )
   }
@@ -132,7 +132,7 @@ else # if !MxI
     }
   else
     m1 <- lme( y ~ item - 1,
-               random = ~ 1 | one,
+#               random = ~ 1 | one,
                weights = varIdent( form = ~1 | meth ),
                control = lmeControl(returnObject=TRUE) )
   }
