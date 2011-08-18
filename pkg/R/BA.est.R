@@ -9,7 +9,7 @@ function( data,
          alpha = 0.05,
      Transform = NULL,
      trans.tol = 1e-6,
-        random = FALSE 
+ random.raters = FALSE 
         )
 {
 # Check that data has item, method and repl
@@ -43,7 +43,7 @@ model.fit <- VC.est( data = dfr,
                       MxI = MxI,
                    varMxI = varMxI,
                      bias = bias,
-                   random = random )
+            random.raters = random.raters )
 Nm   <- length( model.fit$Bias )
 Mnam <-  names( model.fit$Bias )
 

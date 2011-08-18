@@ -16,12 +16,13 @@
                           IxR.pr=FALSE,
                             bias=TRUE, alpha=0.05,
                 Transform = NULL,
-                trans.tol = 1e-6 )
+                trans.tol = 1e-6,
+                random.raters = FALSE )
   \method{bias}{BA.est}( obj, ref=1, \dots )
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
            MxI = has.repl(data), matrix = MxI,
-        varMxI = TRUE, bias = TRUE, print = FALSE )
+        varMxI = TRUE, bias = TRUE, print = FALSE, random.raters = FALSE )
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object representing method comparison data
@@ -57,7 +58,10 @@
   \item{ref}{Numeric or character. The reference method for the biases: the
              method with bias 0.}
 	\item{print}{Logical. Should the estimated bias and variance components be
-    printed?}
+	  printed?}
+  \item{random.raters}{Logical. Should methods/raters be considered as
+    random. Defaults to \code{FALSE} which corresponds to a fixed effect
+    of methods/raters.}	
   \item{\dots}{Further argumenst passed on. Curently ignored.}
   }
 \details{

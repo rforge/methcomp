@@ -163,13 +163,13 @@ names( Bias ) <- levels( meth )
 Mu <- summ[grep("item",rownames(summ)),1]
 
 # The two-way random interactions
-vc <<- VarCorr( m1 )
-xi <<- as.numeric( vc[grep("^meth(.+)",rownames(vc)),2][1] )
+vc <- VarCorr( m1 )
+xi <- as.numeric( vc[grep("^meth(.+)",rownames(vc)),2][1] )
 
-if ( varMxI & MxI ) tau <<- as.numeric( tail(vc[grep("^meth(.+)",rownames(vc)),2], nlevels(meth)) )
-if (!varMxI & MxI )   tau <<- as.numeric( vc[grep("^item(.+):meth(.+)",rownames(vc)),2][1] )
+if ( varMxI & MxI ) tau <- as.numeric( tail(vc[grep("^meth(.+)",rownames(vc)),2], nlevels(meth)) )
+if (!varMxI & MxI )   tau <- as.numeric( vc[grep("^item(.+):meth(.+)",rownames(vc)),2][1] )
 #if( IxR &  MxI ) omega <<- as.numeric( vc[grep("Inte",rownames(vc)),2][1] )
-if( IxR ) omega <<- as.numeric( vc[grep("^item(.+):repl(.+)",rownames(vc)),2][1] )
+if( IxR ) omega <- as.numeric( vc[grep("^item(.+):repl(.+)",rownames(vc)),2][1] )
 
 # This does not work in all cases....
 # print( vc )
