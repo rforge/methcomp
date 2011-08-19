@@ -22,7 +22,10 @@
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
            MxI = has.repl(data), matrix = MxI,
-        varMxI = TRUE, bias = TRUE, print = FALSE, random.raters = FALSE )
+        varMxI = TRUE,
+          bias = TRUE,
+ random.raters = FALSE,
+         print = FALSE )
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object representing method comparison data
@@ -32,7 +35,7 @@
   \item{IxR}{Logical. Should an item by repl interaction be included in
     the model. This is needed when the replicates are linked within item
     across methods, so it is just another name for the \code{linked} argument.
-    If \code{linked=} is gven, this is ignored.}
+    If \code{linked=} is given, this is ignored.}
   \item{MxI}{Logical. Should the method by item interaction (matrix effect) be
     included in the model.}
   \item{matrix}{Logical. Alias for \code{MxI}.}
@@ -48,21 +51,21 @@
     used when computing prediction intervals, otherwise the
     \eqn{1-\alpha/2}{1-alpha/2} t-quantile is used. The number of
     d.f. is taken as the number of units minus the number of items minus
-    the number of methods minus 1 (\eqn{I-M-1}{I-M-1}).} 
+    the number of methods minus 1 (\eqn{I-M-1}{I-M-1}).}
   \item{Transform}{Transformation applied to data (\code{y}) before analysis.
                    See \code{\link{check.trans}} for possible values.}
   \item{trans.tol}{Numerical. The tolerance used to check whether the supplied
                    transformation and its inverse combine to the identity.}
+  \item{random.raters}{Logical. Should methods/raters be considered as
+    random. Defaults to \code{FALSE} which corresponds to a fixed effect
+    of methods/raters.}
   \item{obj}{A \code{BA.est} object from which to extract the biases between
              methods.}
   \item{ref}{Numeric or character. The reference method for the biases: the
              method with bias 0.}
 	\item{print}{Logical. Should the estimated bias and variance components be
 	  printed?}
-  \item{random.raters}{Logical. Should methods/raters be considered as
-    random. Defaults to \code{FALSE} which corresponds to a fixed effect
-    of methods/raters.}	
-  \item{\dots}{Further argumenst passed on. Curently ignored.}
+  \item{\dots}{Further arguments passed on. Currently ignored.}
   }
 \details{
   The model fitted is:
@@ -78,12 +81,19 @@
   two methods are compared (i.e. \code{nM} > 2), hence varMxI is ignored when
   \code{nM}==2.
 
-  The function \code{VC.est} is the workhorse; \code{BA.est} just calls it.
-  \code{VC.est} figures out which model to fit by \code{lme}, extracts
-  results and returns estimates. \code{VC.est} is also used as part of
-  the fitting algorithm in \code{\link{AltReg}}, where each iteration
-  step requires fit of this model. 
+  The function \code{VC.est} is the workhorse; \code{BA.est} just calls
+  it.  \code{VC.est} figures out which model to fit by \code{lme},
+  extracts results and returns estimates. \code{VC.est} is also used as
+  part of the fitting algorithm in \code{\link{AltReg}}, where each
+  iteration step requires fit of this model. The function \code{VC.est}
+  is actually just a wrapper for the functions \code{VC.est.fixed} that
+  handles the case with fixed methods (usually 2 or three) i.e. the
+  classical method comparison problem, and \code{VC.est.random} that
+  handles the situation where "methods" are merely a random sample of
+  raters from some population of raters; and therefore are regarded as
+  random.
   }
+
 \value{
   \code{BA.est} returns an object of class \code{c("\link{MethComp}","BA.est")},
   a list with four elements
@@ -95,15 +105,15 @@
               The first two dimensions have the methods compared as levels,
               that last one \code{c("alpha","beta","sd","LoA: lower","upper")}.
               It represents the
-              mean conversions between methods and the prediciton standard
+              mean conversions between methods and the prediction standard
               deviation.
 
 	      Where "To" and "From" take the same value the value
               of the "sd" component is \eqn{\sqrt{2}}{sqrt(2)} times the
               residual variation for the method. If \code{IxR.pr=TRUE} the
               variation between replicates are included too,
-              i.e. \eqn{\sqrt{2(\sigma_m^2+\omega^2)}}
-	                {sqrt[2(sigma_m^2+omega^2)]}.} 
+              i.e. \eqn{\sqrt{2(\sigma_m^2+\omega^2)} }
+	                {sqrt[2(sigma_m^2+omega^2)]}. }
   \item{VarComp}{A matrix of variance components (on the SD scale)
                  with methods as rows and variance components "IxR", "MxI" and
                  "res" as columns.}
@@ -115,8 +125,8 @@
                  difference between two measurements by the same method on the
                  item under identical circumstances; the repeatability
                  coefficient the numerical extent of the prediction interval
-                 for this difference, i.e. \eqn{2\sqrt{2}}{2\sqrt(2)}}
-              times the sd.
+                 for this difference, i.e. \eqn{2\sqrt{2}}{2*sqrt(2)}
+                 times the sd.}
   \item{Mu}{Estimates of the item-specific parameters.}
   \item{RanEff}{Estimates of the random effects from the model (BLUPS).
                 This is a (possibly empty) list with possible elements named

@@ -10,10 +10,8 @@ function( data,
 # This function is just a simple wrapper that splits up
 # the call depending on whether or not random raters
 # are assumed
-{
   if (random.raters)
     return (VC.est.random(data=data, IxR=IxR, MxI=MxI, varMxI=varMxI, bias=FALSE, print=print))
   else
     return (VC.est.fixed(data=data, IxR=IxR, MxI=MxI, varMxI=varMxI, bias=bias, print=print))
-    
 }
