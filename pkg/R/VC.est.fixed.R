@@ -155,15 +155,10 @@ if(        MxI )   tau <- as.numeric( vc[grep("meth",rownames(vc)),2] )
 if( IxR &  MxI ) omega <- as.numeric( vc[grep("Inte",rownames(vc)),2] )
 if( IxR & !MxI ) omega <- as.numeric( vc[grep("repl",rownames(vc)),2][1] )
 
-# This does not work in all cases....
-# print( vc )
-# VC <- VarCorr(m1$modelStruct$reStruct[[1]])
-# cat("\n--------------\n")
-# print( VC )
-
 # The residual variances
 sig <- attr(m1$residuals,"std")
 sigma <- tapply( sig, names(sig), unique )
+
 # Collect variance components
 dnam <- list( Mn, c("IxR","MxI","res") )
 vcmp <- array( 0, dim=sapply(dnam,length), dimnames=dnam )

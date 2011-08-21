@@ -2,11 +2,20 @@
 
 o Allow the plot method to pick up an estimated monotone relationship
   between SD and average.
+o Let BA.plot optionally take a MethComp object af input to produce
+  the right D-A or conversion plots.
+
+Version 1.8
+
+o Claus Ekstrøm added the possibility of random raters to VC.est.
+  In reality a new function is added, VC.est.random, the old is
+  renamed to VC.est.fixed, and a wrapper VC.est is introduced.
 
 Version 1.7
 
-o The VarCorr now explicitly calls the ome freom nlme, so that it is
-not accidentally masked by the one for lme4 if that sould be loaded.
+o VarCorr is now explicitly called as the version the from nlme, so
+  that it is not accidentally masked by the one for lme4 if that sould
+  be loaded.
 
 Version 1.6
 

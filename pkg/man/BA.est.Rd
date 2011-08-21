@@ -24,8 +24,8 @@
            MxI = has.repl(data), matrix = MxI,
         varMxI = TRUE,
           bias = TRUE,
- random.raters = FALSE,
-         print = FALSE )
+         print = FALSE,
+ random.raters = FALSE )
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object representing method comparison data
