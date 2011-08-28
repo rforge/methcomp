@@ -29,6 +29,7 @@ res <- list( Conv = Conv,
              data = dfr )
 class( res ) <- "MethComp"
 attr( res, "Transform" ) <- attr( obj, "Transform" )
+attr( res, "RandomRaters" ) <- attr( obj, "RandomRaters" )
 return( res )
 }
 
@@ -41,8 +42,12 @@ function( x, digits=3, ... )
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
         paste( deparse( trans$trans ), collapse="" ), "\n\n" )
-cat("\n Conversion between methods:\n")
-print( round( ftable( x$Conv ), digits ) )
+
+# Conversion table only relevant for random raters
+if (!attr(x, "RandomRaters")) {
+    cat("\n Conversion between methods:\n")
+  print( round( ftable( x$Conv ), digits ) )
+}
 # Account for the results from DA.reg where variances are not estimated
 if( !is.null( x$VarComp ) )
   {

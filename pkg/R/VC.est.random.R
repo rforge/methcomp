@@ -145,9 +145,12 @@ else # if !MxI
   else {
     # CE - model OK
     m1 <- lme(y ~ item - 1,
-              random = ~ 1 | meth,
+#              random = ~ 1 | meth,
+              random = list(one = pdIdent(~ meth - 1)),
               weights = varIdent( form = ~1 | meth ),
               control = lmeControl(returnObject=TRUE))
+
+    b.m <- m1$res[,"fixed"]-m1$res[,"one"]
     }
 }
 

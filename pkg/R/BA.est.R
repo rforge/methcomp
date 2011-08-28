@@ -93,14 +93,34 @@ for( i in 1:Nm ) for( j in 1:Nm )
                                                            "res")]^2))
    Conv[i,j,4:5] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
    }
+
+# Compute the LoA for the random raters situation
+if (random.raters) {
+  meanvarcomp <- apply(Vcmp**2, 2, mean)
+
+  pred.var <- 2*(meanvarcomp["M"] +  meanvarcomp["MxI"] + meanvarcomp["res"])
+  
+  LoA <- matrix(0, 1, 4)
+  colnames( LoA ) <- c("Mean","Lower","Upper", "SD")
+  rownames( LoA ) <- "Rand. rater - rand. rater"
+
+  LoA[1,4] <- sqrt( pred.var )
+  LoA[1,2] <- - cl.fact*LoA[1,4]
+  LoA[1,3] <- cl.fact*LoA[1,4]
+}
+else {
+  LoA <- LoA[-diags,,drop=FALSE]
+}
+
 # Return data on the original scale
 res <- list( Conv = Conv,
           VarComp = Vcmp,
-              LoA = LoA[-diags,,drop=FALSE],
+              LoA = LoA,
           RepCoef = RC,
              data = data )
 class( res ) <- c("MethComp","BA.est")
 attr( res, "Transform" ) <- Transform
+attr( res, "RandomRaters" ) <- random.raters
 attr( res, "Repeatability" ) <- if( IxR.pr ) "Replication included"
                                 else         "Replication excluded"
 res
