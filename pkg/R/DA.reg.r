@@ -1,5 +1,6 @@
 DA.reg <-
 function( data,
+ random.raters = FALSE,
      Transform = NULL,    # Transformation to be applied to y
      trans.tol = 1e-6 )
 {
@@ -34,7 +35,7 @@ for( i in 1:Nm ) conv[i,i,] <- c(0,1,rep(NA,5))
 for( i in 1:(Nm-1) ) for( j in (i+1):Nm )
    {
    sb <- data[data$meth %in% Mn[c(i,j)],]
-   cf <- da.reg1( sb )
+   cf <- da.reg1( sb, random.raters=random.raters )
    conv[j,i,] <- c(  -cf[1]   /(1+cf[2]/2),
                    (1-cf[2]/2)/(1+cf[2]/2),
                       cf[3]   /(1+cf[2]/2),cf[4:7])
@@ -54,7 +55,7 @@ res
 }
 
 da.reg1 <-
-function( data )
+function( data, random.raters=FALSE )
 {
 data <- subset( data, select=c("meth","item","repl","y") )
 Mn <- levels( data$meth )
@@ -65,11 +66,12 @@ else
 {
 D <-  wd[,Mn[1]]-wd[,Mn[2]]
 A <- (wd[,Mn[1]]+wd[,Mn[2]])/2
-m0 <- lm( D ~ A )
+m0 <- if( random.raters ) lm( D ~ -1 ) else lm( D ~ A )
 ms <- lm( abs(residuals(m0)) ~ A )
-res <- c(coef(m0),
+cf <- if( random.raters ) cbind(c(0,0),matrix(NA,2,3)) else summary(m0)$coef
+res <- c(cf[,1],
          summary(m0)$sigma,
-         summary(m0)$coef[2,4],
+         cf[2,4],
          rbind(c(1,median(data$y)),c(0,1)) %*%
          summary(ms)$coef[1:2,1]*sqrt(pi/2),
          summary(ms)$coef[2,4] )

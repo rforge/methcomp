@@ -1,6 +1,6 @@
 \name{DA.reg}
 \alias{DA.reg}
-\title{Make a regresion of differeneces on averages}
+\title{Make a regression of differences on averages}
 \description{
   For each pair of methods in \code{data}, a regression of the differences on the
   averages between methods is made and a linear relationship between methods
@@ -8,12 +8,18 @@
   }
 \usage{
   DA.reg(data,
+random.raters = FALSE,
     Transform = NULL,
     trans.tol = 1e-6)
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object. May also be a data frame with columns
               \code{meth}, \code{item} and \code{y}.}
+  \item{random.raters}{If methods really are a random selection of
+    raters, neither intercept nor slop different from 0 are sensible, so
+    if this is \code{TRUE}, intercept and slop in the regression of
+    difference on averages are fixed to 0. Meaning that we are
+    essentially looking at the raw differences as residuals.}
   \item{Transform}{A character string, or a list of two functions, each other's
                    inverse. The measurements are transformed by this before
                    analysis. Possibilities are: "exp", "log", "logit",
@@ -34,18 +40,18 @@
        three-dimensional array, with dimensions \code{To}, \code{From} (both
        with levels equal to the methods in \code{data}) and an unnamed dimension
        with levels \code{"alpha"}, \code{"beta"}, \code{"sd.pred"},
-       \code{"beta=1"} and \code{"s.d.=K"}. Conversting from method \eqn{l} to
+       \code{"beta=1"} and \code{"s.d.=K"}. Converting from method \eqn{l} to
        method \eqn{k} using \deqn{y_{k|l}=\alpha+\beta y_l} with prediction
        standard deviation \eqn{\sigma}, just requires the entries
        \code{[k,l,c("alpha","beta","sd.pred"]}. The two last entries are p-values
        for the hypotheses: 1) \eqn{\beta=1} and 2) standard errors are
-       constant over the range. The latter is derived by regressiin the absoulte
+       constant over the range. The latter is derived by regressing the absolute
        values of the residuals on the averages.
 
        The \code{VarComp} element of the list is \code{NULL}, and only present
        for compatibility with the print method for \code{MethComp} objects.
-       
-       The \code{data} element is the input datframe. The mesurements in\code{y}
+
+       The \code{data} element is the input dataframe. The measurements in\code{y}
        are left un-transformed.
   }
 \references{
