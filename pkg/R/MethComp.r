@@ -11,11 +11,12 @@ else
 if( inherits( obj, "MCmcmc" ) )
   {
   dfr <- attr( obj, "data" )
-  # The transformed data are stored in the MCmcmc object so transform back
-  dfr$y <- attr(obj,"Transform")$inv(dfr$y)
+  # The transformed data are stored in the MCmcmc object so transform
+  # back --- well, IF they are transformed
+  if( !is.null(attr(obj,"Transform")) ) dfr$y <- attr(obj,"Transform")$inv(dfr$y)
   Obj <- summary( obj )
   ca  <- Obj$conv.array
-  # Store the array in a different layout [This is crazy]
+  # Store the array in a different layout [This is crazy!]
   names( dimnames( ca ) )[1:2] <- names( dimnames( ca ) )[2:1]
   Conv <- ca
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
@@ -41,13 +42,14 @@ function( x, digits=3, ... )
 {
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
-        paste( deparse( trans$trans ), collapse="" ), "\n\n" )
+       paste( deparse( trans$trans ), collapse="" ), "\n\n" )
 
 # Conversion table only relevant for random raters
-if (!attr(x, "RandomRaters")) {
-    cat("\n Conversion between methods:\n")
+if( is.null(attr(x, "RandomRaters")) )
+  {
+  cat("\n Conversion between methods:\n")
   print( round( ftable( x$Conv ), digits ) )
-}
+  }
 # Account for the results from DA.reg where variances are not estimated
 if( !is.null( x$VarComp ) )
   {
@@ -114,9 +116,9 @@ box()
 
 if( eqn )
   {
-  A <- x[["Conv"]][Mn[2],Mn[1],"alpha"]
-  B <- x[["Conv"]][Mn[2],Mn[1], "beta"]
-  S <- x[["Conv"]][Mn[2],Mn[1],   "sd"]
+  A <- x[["Conv"]][Mn[2],Mn[1],  "alpha"]
+  B <- x[["Conv"]][Mn[2],Mn[1],   "beta"]
+  S <- x[["Conv"]][Mn[2],Mn[1],"sd.pred"]
   y.x <- paste( Mn[2], "=\n",
                 formatC( A, format="f", digits=digits ), "+",
                 formatC( B, format="f", digits=digits ),
@@ -178,9 +180,9 @@ else {
      }
 
 # The slope and the sd, used to plot the lines
-A <- x$Conv[wh.cmp[2],wh.cmp[1],"alpha"]
-B <- x$Conv[wh.cmp[2],wh.cmp[1], "beta"]
-S <- x$Conv[wh.cmp[2],wh.cmp[1],   "sd"]
+A <- x$Conv[wh.cmp[2],wh.cmp[1],  "alpha"]
+B <- x$Conv[wh.cmp[2],wh.cmp[1],   "beta"]
+S <- x$Conv[wh.cmp[2],wh.cmp[1],"sd.pred"]
 
 # Define the method 1 points to use, making sure that the points span also the
 # range of the BA-type plots:

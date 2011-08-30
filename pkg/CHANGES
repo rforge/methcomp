@@ -5,11 +5,19 @@ o Allow the plot method to pick up an estimated monotone relationship
 o Let BA.plot optionally take a MethComp object af input to produce
   the right D-A or conversion plots.
 
+Version 1.9
+
+o Incorporation of the effects of random.rates in the calculation of
+  prediction limits by BA.est.
+
 Version 1.8
 
 o Claus Ekstrøm added the possibility of random raters to VC.est.
   In reality a new function is added, VC.est.random, the old is
   renamed to VC.est.fixed, and a wrapper VC.est is introduced.
+
+o Printing of MCmcmc objects crashed because the inverse
+  transformation was apllied also in cases where it was non-existent.
 
 Version 1.7
 
