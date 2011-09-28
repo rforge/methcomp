@@ -87,6 +87,7 @@ function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$mod
 {
     int     = x$coefficients[1]
     slo     = x$coefficients[2]
+    S       = na.omit(x$S)
     if (any(subtype==1)) {
         prec    = 30
         m       = max(x$model)
@@ -122,8 +123,8 @@ function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$mod
         abline(0,0, col="#99999955", lwd=1.5)
         }
     if (any(subtype==4)) {
-        S = x$S[x$S> slo-3.5*IQR(x$S) & x$S< slo+3.5*IQR(x$S)]
-        h = hist(S, xlab="Individual slopes (range: 7 x IQR)", col="gray", main="",...)
+        S = S[S> slos[2]-2.5*IQR(S) & S< slos[2]+2.5*IQR(S)]
+        h = hist(S, xlab="Individual slopes (range: 5 x IQR)", col="gray", main="",...)
         d = density(S)
         d$y = d$y*(max(h$counts)/max(d$y))
         lines(d, lwd=2, col="#8866aaa0")

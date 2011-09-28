@@ -29,6 +29,9 @@ Version 1.6
 
 o Printing of the transformation used (if any) is now working.
 
+o Added Passing-Bablok regression, written by Michal Figurski, functions
+  PBreg, with a print and a plot method for the resulting "PBreg" class.
+
 Version 1.5
 
 o Fixed the real bug which was in Meth. Now removes the columns with
@@ -199,4 +202,3 @@ Changes in 0.1.13
 o The default for the y-limit in the BlandAltman function now defaults to
   that the y-axis should have the same extent as the x-axis, symmetrically
   around 0, unless the differences or the limits of agreement are larger.
-
