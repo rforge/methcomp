@@ -9,7 +9,7 @@ function( data,
          alpha = 0.05,
      Transform = NULL,
      trans.tol = 1e-6,
- random.raters = FALSE 
+ random.raters = FALSE
         )
 {
 # Check that data has item, method and repl
@@ -53,7 +53,7 @@ Vcmp <- model.fit$VarComp
 omega <- Vcmp[,"IxR"]
 tau   <- Vcmp[,"MxI"]
 sigma <- Vcmp[,"res"]
- 
+
 # The limits of agreement
 LoA <- matrix( NA, Nm*(Nm+1)/2, 4 )
 colnames( LoA ) <- c("Mean","Lower","Upper", "SD")
@@ -79,27 +79,38 @@ rownames( RC ) <- Mnam
 
 dnam <- list( "To:" = Mnam,
             "From:" = Mnam,
-                      c("alpha","beta","sd","  LoA: lower", "upper") )
+                      c("alpha","beta","sd.pred","beta=1",
+                        "int(t-f)", "slope(t-f)", "sd(t-f)",
+                        "int(sd)","slope(sd)","sd=K",
+                        "LoA-lo", "LoA-up") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
-Conv[,,2] <- 1
-Conv[,,1] <- outer( Bias, Bias, "-" )
+Conv[,,"alpha"] <- outer( Bias, Bias, "-" )
+Conv[,, "beta"] <- 1
 # Derive the prediction errors;
 # For the same method it is replications errors,
 # plus variation betrween replicates if required
 for( i in 1:Nm ) for( j in 1:Nm )
    {
-   Conv[i,j,3] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)          "MxI",
-                                         if(i==j & IxR.pr) "IxR",
-                                                           "res")]^2))
-   Conv[i,j,4:5] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
+   Conv[i,j,"sd.pred"] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)          "MxI",
+                                                 if(i==j & IxR.pr) "IxR",
+                                                                   "res")]^2))
+   Conv[i,j,c("LoA-lo","LoA-up")] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
    }
+# Fill in columns corresponding to those from a DA.reg
+Conv[,,    "beta=1"] <- 1
+Conv[,,  "int(t-f)"] <- Conv[,,  "alpha"]
+Conv[,,"slope(t-f)"] <- 0
+Conv[,,   "sd(t-f)"] <-
+Conv[,,   "int(sd)"] <- Conv[,,"sd.pred"]
+Conv[,, "slope(sd)"] <- 0
+Conv[,,      "sd=K"] <- 1
 
 # Compute the LoA for the random raters situation
 if (random.raters) {
   meanvarcomp <- apply(Vcmp**2, 2, mean)
 
   pred.var <- 2*(meanvarcomp["M"] +  meanvarcomp["MxI"] + meanvarcomp["res"])
-  
+
   LoA <- matrix(0, 1, 4)
   colnames( LoA ) <- c("Mean","Lower","Upper", "SD")
   rownames( LoA ) <- "Rand. rater - rand. rater"
@@ -120,7 +131,7 @@ res <- list( Conv = Conv,
              data = data )
 class( res ) <- c("MethComp","BA.est")
 attr( res, "Transform" ) <- Transform
-attr( res, "RandomRaters" ) <- random.raters
+attr( res, "RandomRaters" ) <- if( is.logical(random.raters) ) random.raters else FALSE
 attr( res, "Repeatability" ) <- if( IxR.pr ) "Replication included"
                                 else         "Replication excluded"
 res

@@ -1,9 +1,42 @@
-2do:
+Version 1.12 :
 
-o Allow the plot method to pick up an estimated monotone relationship
-  between SD and average.
-o Let BA.plot optionally take a MethComp object af input to produce
-  the right D-A or conversion plots.
+o Complete rewrite of BA.plot, the old still available, the new
+  version is so far called AB.plot. AB.plot creates a MethComp object
+  and uses plot.MethComp to make the Bland-Altman plot. The old
+  workhorse BlandAltman will still be available for direct use.  This
+  also involved changes in the output object from AltReg.
+
+o Amendment of plot.MethComp, to allow for increasing sd etc.
+
+o Amendment of DA.reg to allow increasing sd, change in the returned
+  object.
+
+o New functions DA2y and y2DA to convert between linear relation
+  between difference and average and linear relation between y1 and y2.
+
+Version 1.11
+
+o Added the dataset Ancona, collected at the MethComp course in Ancona
+  on 28 September 2011.
+
+o Changed the mode of the "random.raters" argument to logical
+  throughout, preventing side effects of crap coding.
+
+o DA.reg now returns the intercept and the slope of the differences as
+  a function of the averages.
+
+o A convenience function DA2y is added, converting the regression of
+  the differences on the averages to the lines linking y1 and y2.
+
+Version 1.10
+
+o Removed warning from VC.est's call to lme wth a -1 in the model
+  formula (which returns 0 d.f. for the fixed item parameters).
+
+o BA.est named the 3rd column in the result as "sd", whereas all other
+  functions returned the name of the column as "sd.pred". This caused a
+  crash when using lines.MethComp, which assumes that "sd.pred" is the
+  name of the third column. Now all called "sd.pred".
 
 Version 1.9
 

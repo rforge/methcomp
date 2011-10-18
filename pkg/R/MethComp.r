@@ -6,6 +6,7 @@ if( inherits( obj, "MethComp" ) )
   Conv    <- obj$Conv
   VarComp <- obj$VarComp
   dfr     <- obj$data
+  cls     <- class( obj )
   }
 else
 if( inherits( obj, "MCmcmc" ) )
@@ -22,15 +23,18 @@ if( inherits( obj, "MCmcmc" ) )
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
   VarComp <- Obj$VarComp[,-4,1]
   names(dimnames(VarComp)) <- c("Method","s.d.")
+  cls <- c("MethComp","fromMCmcmc")
   }
 else stop( "Input object (argument) must have class 'MethComp' or 'MCmcmc'.\n",
            "It has class ", class( obj ) )
 res <- list( Conv = Conv,
           VarComp = VarComp,
              data = dfr )
-class( res ) <- "MethComp"
+class( res ) <- cls
 attr( res, "Transform" ) <- attr( obj, "Transform" )
-attr( res, "RandomRaters" ) <- attr( obj, "RandomRaters" )
+# Make sure that the RandomRaters attribute is always logical
+RaRa <- attr( obj, "RandomRaters" )
+attr( res, "RandomRaters" ) <- if( is.logical(RaRa) ) RaRa else FALSE
 return( res )
 }
 
@@ -43,14 +47,20 @@ function( x, digits=3, ... )
 if( !is.null( trans <- attr(x,"Transform") ) )
   cat( "\nNote: Response transformed by: ",
        paste( deparse( trans$trans ), collapse="" ), "\n\n" )
-
-# Conversion table only relevant for random raters
-if( is.null(attr(x, "RandomRaters")) )
+# Conversion table not relevant for random raters
+if( !attr(x, "RandomRaters") )
   {
   cat("\n Conversion between methods:\n")
-  print( round( ftable( x$Conv ), digits ) )
+  if( inherits(x,"DA.reg") ) pcols <- c("alpha","beta","sd.pred","beta=1",
+                                        "int(t-f)","slope(t-f)","sd(t-f)",
+                                        "int(sd)","slope(sd)","sd=K")
+  else
+  if( inherits(x,"BA.est") ) pcols <- c("alpha","beta","sd.pred",
+                                        "LoA-lo", "LoA-up")
+  else pcols <- 1:(dim(x$Conv)[3])
+  print( round( ftable( x$Conv[,,pcols] ), digits ) )
   }
-# Account for the results from DA.reg where variances are not estimated
+# Variance component table not relevant for DA.reg where variances are not estimated
 if( !is.null( x$VarComp ) )
   {
   cat("\n Variance components (sd):\n")
@@ -63,32 +73,51 @@ if( !is.null( x$VarComp ) )
 ################################################################################
 plot.MethComp <-
 function( x,
-       wh.cmp = 1:2,
-      pl.type = "convert",
+      wh.comp = 1:2,
+      pl.type = "conv",
+      sd.type = "const",
         axlim = range(x$data$y,na.rm=TRUE),
        diflim = axlim-mean(axlim),
        points = FALSE,
+    repl.conn = FALSE,
+     col.conn = "gray",
+     lwd.conn = 1,
          grid = TRUE,
        N.grid = 10,
      col.grid = grey(0.9),
+          lwd = c(3,1,1),
     col.lines = "black",
    col.points = "black",
-          eqn = tolower(substr(pl.type,1,1))=="c" & is.null(attr(x,"Transform")),
+   pch.points = 16,
+          eqn = is.null(attr(x,"Transform")),
       col.eqn = col.lines,
      font.eqn = 2,
-       digits = 1,
+       digits = 2,
+        alpha = NULL,
           ... )
 {
-# All method names
-Mn <- dimnames( x[["Conv"]] )[[1]]
-# Those two plotted here in the right order
-Mn <- Mn[wh.cmp[1:2]]
+# Set the options
+if( is.numeric(wh.comp) ) wh.comp <- levels( x$data$meth )[wh.comp]
+ pl.type <- ifelse( substr(tolower(pl.type),1,1) == "c", "conv" , "BA" )
+ sd.type <- ifelse( substr(tolower(sd.type),1,1) == "c", "const", "lin" )
+options( MethComp.wh.comp = wh.comp,
+         MethComp.pl.type = pl.type,
+         MethComp.sd.type = sd.type )
+Mn <- wh.comp
 
-if( tolower(substr(pl.type,1,1)) == "c" )
+# Check if linear SD is actually possible
+if( sd.type == "lin" )
+  if( !inherits(x,"DA.reg") )
+    {
+    sd.type <- "const"
+    cat("Variable SD not possible, use DA.reg() or specify model=FALSE\n")
+    }
+
+if( pl.type == "conv" )
   # Conversion plot
   {
   plot( NA, xlim=axlim, ylim=axlim, type="n",
-            xlab=Mn[1], ylab=Mn[2], ... )
+            xlab=Mn[2], ylab=Mn[1], ... )
   # Grid?
   if( is.logical( grid ) ) if( grid )
     grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
@@ -100,7 +129,7 @@ else
   plot( NA, xlim=axlim, ylim=diflim, type="n",
             xlab=paste( "(", Mn[1], "+",
                              Mn[2], ") / 2" ),
-            ylab=paste( Mn[2], "-", Mn[1] ), ... )
+            ylab=paste( Mn[1], "-", Mn[2] ), ... )
   # Grid?
   if( is.logical( grid ) )
     if( grid )
@@ -114,46 +143,132 @@ else
   }
 box()
 
+## Construct the annotation formulae
 if( eqn )
   {
+  if( sd.type=="lin" )
+    {
+    # The conversion formula is multiplicative in the SD,
+    # but additivity is what is needed:
+    SL <- ( DA2y( x[["Conv"]][Mn[1],Mn[2],"int(t-f)"]+
+                  x[["Conv"]][Mn[1],Mn[2],"int(sd)" ],
+                  x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"]+
+                  x[["Conv"]][Mn[1],Mn[2],"slope(sd)" ] )
+          - DA2y( x[["Conv"]][Mn[1],Mn[2],"int(t-f)"],
+                  x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"] ) )
+    }
+  A <- x[["Conv"]][Mn[1],Mn[2],  "alpha"]
+  B <- x[["Conv"]][Mn[1],Mn[2],   "beta"]
+  S <- x[["Conv"]][Mn[1],Mn[2],"sd.pred"]
+  y.x <- paste( Mn[1], " = ",
+                formatC( A, format="f", digits=digits ), if( B>0 ) "+",
+     if( B!=1 ) formatC( B, format="f", digits=digits ),
+                Mn[2], " (",
+if( sd.type=="const" )        formatC( S , format="f", digits=digits ),
+if( sd.type=="lin"   ) paste( formatC( SL["y1|2",  "int"], format="f", digits=digits ), if( SL["y1|2","slope"]>0 ) "+",
+                              formatC( SL["y1|2","slope"], format="f", digits=digits ), Mn[2], sep="" ),
+                ")", sep="" )
   A <- x[["Conv"]][Mn[2],Mn[1],  "alpha"]
   B <- x[["Conv"]][Mn[2],Mn[1],   "beta"]
   S <- x[["Conv"]][Mn[2],Mn[1],"sd.pred"]
-  y.x <- paste( Mn[2], "=\n",
-                formatC( A, format="f", digits=digits ), "+",
-                formatC( B, format="f", digits=digits ),
-                Mn[1], "\n  (",
-                formatC( S, format="f", digits=digits ), ")" )
-  x.y <- paste( Mn[1], "=\n",
-                formatC( -A/B, format="f", digits=digits ), "+",
-                formatC(  1/B, format="f", digits=digits ),
-                Mn[2], "\n  (",
-                formatC(  S/B, format="f", digits=digits ), ")" )
-  # Heights and widths of the equations
+  x.y <- paste( Mn[2], " = ",
+                formatC( A, format="f", digits=digits ), if( B>0 ) "+",
+     if( B!=1 ) formatC( B, format="f", digits=digits ),
+                Mn[1], " (",
+if( sd.type=="const" )        formatC( S , format="f", digits=digits ),
+if( sd.type=="lin"   ) paste( formatC( SL["y2|1",  "int"], format="f", digits=digits ), if(  SL["y2|1","slope"]>0 ) "+",
+                              formatC( SL["y2|1","slope"], format="f", digits=digits ), Mn[1], sep="" ),
+                ")", sep="" )
+  A <- x[["Conv"]][Mn[1],Mn[2],  "int(t-f)"]
+  B <- x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"]
+  S <- x[["Conv"]][Mn[1],Mn[2],   "sd(t-f)"]
+  if( sd.type=="lin" )
+    {
+    Sa <- x[["Conv"]][Mn[1],Mn[2],   "int(sd)"]
+    Sb <- x[["Conv"]][Mn[1],Mn[2], "slope(sd)"]
+    }
+  D.A <- paste( Mn[1], "-", Mn[2], " = ",
+                              formatC( A , format="f", digits=digits ), if( B>0 ) "+",
+ if( B!=0 ) paste( if( B!=1 ) formatC( B , format="f", digits=digits ),
+                              "(", Mn[1], "+", Mn[2], ")/2", sep="" ), " (",
+if( sd.type=="const" )        formatC( S , format="f", digits=digits ),
+if( sd.type=="lin"   ) paste( formatC( Sa, format="f", digits=digits ), if( Sb>0 ) "+",
+                              formatC( Sb, format="f", digits=digits ), "Avg.", sep="" ),
+                ")", sep="" )
+# Heights and widths of the equations
   wul <- strwidth ( y.x, font=2 )
   hul <- strheight( y.x, font=2 )
   wlr <- strwidth ( x.y, font=2 )
   hlr <- strheight( x.y, font=2 )
+  wDA <- strwidth ( D.A, font=2 )
+  hDA <- strheight( D.A, font=2 )
+  wxp <- 1.1
+  hxp <- 2.0
+
+if( pl.type=="conv" )
+  {
   if( is.numeric(grid) )
     {
-    rect( par("usr")[1], par("usr")[4],
-          par("usr")[1]+wul+0.2*hul, par("usr")[4]-1.2*hul,
-          border=col.grid, col="white" )
-    rect( par("usr")[2], par("usr")[3],
-          par("usr")[2]-wlr-0.2*hlr, par("usr")[3]+1.2*hlr,
-          border=col.grid, col="white" )
+    rect( par("usr")[1],
+          par("usr")[4],
+          par("usr")[1] + wxp*wul,
+          par("usr")[4] - hxp*hul,
+          border="white", col="white" )
+    rect( par("usr")[2],
+          par("usr")[3],
+          par("usr")[2] - wxp*wlr,
+          par("usr")[3] + hxp*hlr,
+          border="white", col="white" )
     }
-  text( par("usr")[1]+0.1*hul    , par("usr")[4]-0.1*hul, y.x,
-        adj=c(0,1), font=font.eqn, col=col.eqn )
-  text( par("usr")[2]-0.1*hlr-wlr, par("usr")[3]+0.1*hlr, x.y,
-        adj=c(0,0), font=font.eqn, col=col.eqn )
+  text( par("usr")[1] + wxp/2*wul,
+        par("usr")[4] - hxp/2*hul, y.x,
+        font=font.eqn, col=col.eqn )
+  text( par("usr")[2] - wxp/2*wlr,
+        par("usr")[3] + hxp/2*hlr, x.y,
+        font=font.eqn, col=col.eqn )
   }
+if( pl.type=="BA" )
+  {
+  if( is.numeric(grid) )
+    {
+    rect( par("usr")[2],
+          par("usr")[4],
+          par("usr")[2] -   wxp*max(wlr,wul),
+          par("usr")[4] - 2*hxp*max(hlr,hul),
+          border="white", col="white" )
+    rect( par("usr")[2],
+          par("usr")[3],
+          par("usr")[2] - wxp*wDA,
+          par("usr")[3] + hxp*hDA,
+          border="white", col="white" )
+    }
+  text( par("usr")[2] - wxp/2*max(wlr,wul),
+        par("usr")[4] - hxp  *max(hlr,hul),
+        paste( y.x, "\n", x.y ),
+        font=font.eqn, col=col.eqn )
+  text( par("usr")[2] - wxp/2*wDA,
+        par("usr")[3] + hxp/2*hDA,
+        D.A,
+        font=font.eqn, col=col.eqn )
+  }
+}
+if( eqn )
+cat( "Relationships between methods:\n",
+     D.A, "\n",
+     y.x, "\n",
+     x.y, "\n" )
 
-options( MethComp.pl.type = pl.type,
-          MethComp.wh.cmp = wh.cmp )
-
-if( points ) points.MethComp( x, col.points= col.points, ... )
-              lines.MethComp( x, col.lines = col.lines, ... )
+              lines.MethComp( x,  col.lines = col.lines,
+                                        lwd = lwd,
+                                     digits = digits,
+                                      alpha = alpha,
+                                        ... )
+if( points ) points.MethComp( x, col.points = col.points,
+                                 pch.points = pch.points,
+                                  repl.conn = repl.conn,
+                                   col.conn = col.conn,
+                                   lwd.conn = lwd.conn,
+                                        ... )
 box()
 }
 
@@ -162,15 +277,15 @@ box()
 ################################################################################
 lines.MethComp <-
 function( x,
-       wh.cmp = getOption("MethComp.wh.cmp"),
+      wh.comp = getOption("MethComp.wh.comp"),
       pl.type = getOption("MethComp.pl.type"),
+      sd.type = getOption("MethComp.sd.type"),
     col.lines = "black",
-          lwd = c(3,1),
+          lwd = c(3,1,1),
+       digits = 3,
         alpha = NULL,
           ... )
 {
-Mn <- dimnames( x[[1]] )[[1]]
-
 # Define the transformation
 if( is.null( attr( x, "Transform" ) ) )
   trf <- itr <- function( x ) x
@@ -180,29 +295,68 @@ else {
      }
 
 # The slope and the sd, used to plot the lines
-A <- x$Conv[wh.cmp[2],wh.cmp[1],  "alpha"]
-B <- x$Conv[wh.cmp[2],wh.cmp[1],   "beta"]
-S <- x$Conv[wh.cmp[2],wh.cmp[1],"sd.pred"]
-
-# Define the method 1 points to use, making sure that the points span also the
-# range of the BA-type plots:
+ A <- x$Conv[wh.comp[1],wh.comp[2],  "alpha"]
+ B <- x$Conv[wh.comp[1],wh.comp[2],   "beta"]
+ S <- x$Conv[wh.comp[1],wh.comp[2],"sd.pred"]
+# The same for the differences
+if( "int(t-f)" %in% dimnames(x$Conv)[[3]] )
+  { # Is the Conv out of DA.reg?
+ a <- x$Conv[wh.comp[1],wh.comp[2],  "int(t-f)"]
+ b <- x$Conv[wh.comp[1],wh.comp[2],"slope(t-f)"]
+  }
+else
+  { # If not assume constant difference and constant SD
+ a <- A
+ b <- 0
+  }
+# And the same for the sd
+if( "int(sd)" %in% dimnames(x$Conv)[[3]] )
+  { # Is the Conv out of DA.reg?
+Sa <- x$Conv[wh.comp[1],wh.comp[2],   "int(sd)"]
+Sb <- x$Conv[wh.comp[1],wh.comp[2], "slope(sd)"]
+  }
+else
+  {
+Sa <- S # When slope b is 0, the SD if the diff is the pred.sd.
+Sb <- 0
+  }
+# Define the method-1 points to use, making sure that the points span
+# also the range of the BA-type plots:
 axlim <- par("usr")[1:2]
 # m1 is on the original scale, so is axlim;
 # but A, B and S are for transformed measurements
-# Expand well beyond the limits to accommodate the differnce-plot too
+# Expand well beyond the limits to accommodate the differnece-plot too
   m1 <- seq( axlim[1]-diff(axlim), axlim[2]+diff(axlim),, 500 )
 trm1 <- trf( m1 )
-df   <- Inf
-qnt  <- if( is.null(alpha) ) 2 else qt(1-alpha/2,df)
-trm2 <- cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
-                                        c(0,-1, 1)*qnt )
+  df <- nlevels(x$item)-1
+# If alpha is not given use 2, otherwise the t quantile
+ qnt <- if( is.null(alpha) ) 2 else qt(1-alpha/2,df)
+trm2 <- if( substr(sd.type,1,1) == "c" )
+            cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
+                                            c(0,-1, 1)*qnt )
+        else cbind(1,trm1) %*%
+             cbind( c(A,B),
+                    # Limits coef for DA-reg converted to coefs
+                    # for the limits of y1 versus y2
+                    DA2y( a-qnt*Sa, b-qnt*Sb )["y1|2",1:2],
+                    DA2y( a+qnt*Sa, b+qnt*Sb )["y1|2",1:2] )
   m2 <- itr( trm2 )
 
 if( tolower(substr(pl.type,1,1)) == "c" )
      matlines( m1, m2,
-               lwd=lwd[c(1,2,2)], lty=1, col=col.lines )
+               lwd=lwd, lty=1, col=col.lines )
 else matlines( (m1+m2)/2, m2-m1,
-               lwd=lwd[c(1,2,2)], lty=1, col=col.lines )
+               lwd=lwd, lty=1, col=col.lines )
+
+if( pl.type=="BA" &
+    sd.type=="const" &
+    inherits(x,c("DA.reg","BA.est")) )
+  {
+  LoA <- (m2-m1)[1,]
+  axis( side=4, at=LoA, labels=formatC(LoA,format="f",digits=digits),
+        col=col.lines, col.axis=col.lines, las=1 )
+  box()
+  }
 }
 
 ################################################################################
@@ -210,24 +364,37 @@ else matlines( (m1+m2)/2, m2-m1,
 ################################################################################
 points.MethComp <-
 function( x,
-       wh.cmp = getOption("MethComp.wh.cmp"),
+      wh.comp = getOption("MethComp.wh.comp"),
       pl.type = getOption("MethComp.pl.type"),
    col.points = "black",
+   pch.points = 16,
+    repl.conn = FALSE,
+     col.conn = "gray",
+     lwd.conn = 1,
           ... )
 {
-Mn <- dimnames( x[[1]] )[[1]]
+if( is.numeric(wh.comp) ) wh.comp <- levels(x$data$meth)[wh.comp]
 wide <- to.wide( x$data )
-if( is.function( col.points ) )
-   col.points <- col.points(nlevels(wide$item))[wide$item]
-if( tolower(substr(pl.type,1,1)) == "c" )
+
+if( repl.conn) connect2mean( x$data, wh.comp = wh.comp,
+                                     pl.type = pl.type,
+                                    col.conn = col.conn,
+                                    lwd.conn = lwd.conn )
+if( pl.type!="BA" )
+  {
   # Conversion plot
-  points( wide[,Mn[wh.cmp[1]]], wide[,Mn[wh.cmp[2]]],
-          col = col.points, ... )
+  points( wide[,wh.comp[2]], wide[,wh.comp[1]],
+          col = col.points,
+          pch = pch.points, ... )
+  }
 else
+  {
   # Bland-Altman type plot
-  points( (wide[,Mn[wh.cmp[1]]]+wide[,Mn[wh.cmp[2]]])/2,
-           wide[,Mn[wh.cmp[2]]]-wide[,Mn[wh.cmp[1]]],
-           col = col.points, ... )
+  points( (wide[,wh.comp[1]]+wide[,wh.comp[2]])/2,
+           wide[,wh.comp[1]]-wide[,wh.comp[2]],
+           col = col.points,
+           pch = pch.points, ... )
+  }
 }
 
 ################################################################################

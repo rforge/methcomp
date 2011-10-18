@@ -23,7 +23,6 @@
   \item{wh.meth}{Which of the methods from the \code{Meth} object are used in
     the regression.}
   \item{\ldots}{other parameters, currently ignored.}
-
 }
 \details{
   This is an implementation of the original Passing-Bablok
@@ -82,13 +81,14 @@
   ## Call to PBreg
   x <- PBreg(a)
   print(x)
-  par(mfrow=c(2,2))
-  plot(x, s=1:4)
 
-  # A real data example
+  par(mfrow=c(2,2))
+# plot(x, s=1:4)
+
+  ## A real data example
   data(milk)
   milk <- Meth(milk)
   summary(milk)
-  PBmilk <- PBreg( milk )
-  plot( PBmilk )
+( PBmilk <- PBreg( milk ) )
+# plot( PBmilk )
 }

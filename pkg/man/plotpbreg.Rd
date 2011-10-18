@@ -23,19 +23,19 @@
   \item{subtype}{a numeric value or vector, that selects the desired
     plot subtype.  Subtype \bold{1} is an x-y plot of raw data with regression
     line and confidence boundaries for the fit as a shaded area.  This
-    is the default.  Subtype \bold{2} is a ranked residuals plot.  Subtype 
+    is the default.  Subtype \bold{2} is a ranked residuals plot.  Subtype
     \bold{3} is the "Cusum" plot useful for assessing linearity of the
     fit. Plot subtypes 1 through 3 are standard plots from the 1983 paper
     by Passing and Bablok - see the reference.  Plot subtype \bold{4} is
-    a histogram (with overlaid density line) of the individual slopes. 
+    a histogram (with overlaid density line) of the individual slopes.
     The range of this plot is limited to 5 x IQR for better visibility.
     }
-  \item{\ldots}{other parameters as in \code{"plot"}, some of which are 
+  \item{\ldots}{other parameters as in \code{"plot"}, some of which are
     pre-defined for improved appearance. This affects only the subtype 1 plot.}
 }
 \references{Passing, H. and Bablok, W. (1983), A New Biometrical Procedure
   for Testing the Equality of Measurements from Two Different Analytical
-  Methods. \emph{Journal of Clinical Chemistry and Clinical Biochemistry}, 
+  Methods. \emph{Journal of Clinical Chemistry and Clinical Biochemistry},
   \bold{Vol 21}, 709--720}
 \author{Michal J. Figurski \email{mfigrs@gmail.com}}
 \seealso{
@@ -43,19 +43,19 @@
 }
 \examples{
   ## Model data frame generation
-  a <- data.frame(x=seq(1, 30)+rnorm(mean=0, sd=1, n=30), 
+  a <- data.frame(x=seq(1, 30)+rnorm(mean=0, sd=1, n=30),
                   y=seq(1, 30)*rnorm(mean=1, sd=0.4, n=30))
-                  
+
   ## Call to PBreg
   x <- PBreg(a)
   print(x)
   par(mfrow=c(2,2))
-  plot(x, s=1:4)
-  
+#  plot(x, s=1:4)
+
   ## Or the same using "Meth" object
   a <- Meth(a, y=1:2)
   x <- PBreg(a)
   print(x)
   par(mfrow=c(2,2))
-  plot(x, s=1:4)
+#  plot(x, s=1:4)
 }

@@ -1,7 +1,8 @@
 Meth <-
-function( data=NULL,
-          meth="meth", item="item", repl=NULL, y="y",
-          print=!is.null(data), keep.vars=!is.null(data) )
+function( data = NULL,
+          meth = "meth", item="item", repl=NULL, y="y",
+         print = !is.null(data),
+     keep.vars  =!is.null(data) )
 {
 dfr <- deparse(substitute(data))
 was.dfr <- is.data.frame( data )
@@ -201,6 +202,23 @@ if( max( with( res, table( meth, item, repl ) ) ) > 1 )
 
 attr(res,"row.names") <- 1:nrow(res)
 invisible( res )
+}
+
+# Calculation of means over replicates
+mean.Meth <-
+function( x, simplify=FALSE, ... )
+{
+tmp <- aggregate( x$y, list( meth=x$meth, item=x$item ), FUN=mean )
+if( simplify )
+  {
+  names( tmp )[3] <- "y"
+  return( invisible( tmp ) )
+  }
+else
+  {
+  names( tmp )[3] <- "mean.y"
+  return( invisible( merge(x,tmp) ) )
+  }
 }
 
 # Utilities needed to preserve the Meth attribute

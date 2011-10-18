@@ -11,11 +11,11 @@
   enormously.
   }
 \usage{
-  to.wide( data, warn )
+  to.wide( data, warn=TRUE )
   to.long( data, vars )
   }
 \arguments{
-  \item{data}{A dataframe}
+  \item{data}{A \code{\link{Meth}} object.}
   \item{warn}{Logical. Should a warning be printed when replicates are taken
               as items?}
   \item{vars}{The variables representing measurements by different methods.
@@ -28,7 +28,7 @@
 \details{
   If \code{data} represents method comparisons with exchangeable
   replicates within method, the transformation to wide format does not
-  necessarily make sense.
+  necessarily make sense. Also recognizes a
   }
 \author{
   Bendix Carstensen, Steno Diabetes Center,
@@ -40,7 +40,7 @@ data( milk )
 str( milk )
 mw <- to.wide( milk )
 str( mw )
-( mw <- subset( mw, item < 3 ) )
+( mw <- subset( mw, as.integer(item) < 3 ) )
 to.long( mw, 3:4 )
 }
 \keyword{manip}

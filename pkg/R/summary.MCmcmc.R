@@ -14,7 +14,7 @@ Nm <- length( mnam )
 
 dnam <- list( "From:" = mnam,
                 "To:" = mnam,
-                        c("alpha","beta","sd") )
+                        c("alpha","beta","sd.pred") )
 conv.array <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 qnt <- t( apply( as.matrix( object ),
                  2,
@@ -38,7 +38,7 @@ for( ff in 1:Nm ) for( tt in 1:Nm )
      conv.array[ff,tt,] <-
      c( 0, 1,
      medians[paste("sd.pred[",mnam[tt],".",mnam[ff],"]",sep="")] )
-   
+
 # Correction of the median intercepts to make translation
 # formulae that are the same both ways (i.e combine to the identity):
 for( ff in 1:Nm ) for( tt in 1:Nm )
@@ -50,7 +50,7 @@ for( ff in 1:Nm ) for( tt in 1:Nm )
      conv.array[ff,tt,1] <-  (  aft      -atf*bft )/2
      conv.array[tt,ff,1] <-  ( -aft/bft + atf     )/2
      }
-     
+
 # The variance components
 wh <- grep( "sigma", rownames( qnt ) )
 wh <- wh[order( rownames( qnt )[wh] )]

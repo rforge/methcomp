@@ -25,7 +25,7 @@
 data(Enzyme)
 Enzyme <- Meth( Enzyme )
 summary( Enzyme )
-plot(Enzyme)
+# plot( Enzyme )
 }
 \keyword{datasets}
 

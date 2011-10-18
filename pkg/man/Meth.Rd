@@ -2,6 +2,7 @@
 \alias{Meth}
 \alias{summary.Meth}
 \alias{plot.Meth}
+\alias{mean.Meth}
 \alias{subset.Meth}
 \alias{sample.Meth}
 \alias{transform.Meth}
@@ -15,7 +16,7 @@ Meth( data=NULL,
       meth="meth", item="item", repl=NULL, y="y",
       print=!is.null(data), keep.vars=!is.null(data) )
 \method{summary}{Meth}( object, ... )
-\method{plot}{Meth}(x, y = NULL,
+\method{plot}{Meth}(x, which = NULL,
           col.LoA = "blue", col.pt = "black", cex.name = 2,
         var.range,
        diff.range,
@@ -24,6 +25,7 @@ Meth( data=NULL,
               cex = 0.7,
         Transform,
               ... )
+\method{mean}{Meth}(x, simplify=FALSE, ... )
 \method{subset}{Meth}(x, ... )
 \method{sample}{Meth}( x,
                      how = "random",
@@ -47,15 +49,14 @@ Meth( data=NULL,
     contains the measurements by different methods or a dataframe with
     columns representing  measurements by different methods. In this
     case the argument \code{meth} is ignored, and the names of the
-    columns are taken as method names.
-    
-           For the \code{plot} method the argument is
-           either a vector of indices or names of methods to plot.}
+    columns are taken as method names.}
   \item{print}{Logical: Should a summary result be printed?}
   \item{keep.vars}{Logical. Should the remaining variables from the dataframe
                    \code{data} be transferred to the \code{Meth} object.}
   \item{object}{A \code{Meth} object.}
   \item{x}{A \code{Meth} object.}
+  \item{which}{A vector of indices or names of methods to plot. If
+    \code{NULL} all methods in the object are plotted.}
   \item{col.LoA}{What color should be used for the limits of agreement.}
   \item{col.pt}{What color should be used for the points.}
   \item{cex.name}{Character expansion factor for plotting method names }
@@ -66,11 +67,13 @@ Meth( data=NULL,
   \item{var.names}{If logical: should the individual panels be labelled with the
                    variable names?. If character, then the values of the character
                    will be used to label the methods.}
-  \item{pch}{Plot character for points.}		 
-  \item{cex}{Plot charcter expansion for points.}		 
+  \item{pch}{Plot character for points.}
+  \item{cex}{Plot charcter expansion for points.}
   \item{Transform}{Transformation used to the measurements prior to
            plotting. Function or character, see
-           \code{\link{choose.trans}} for possible values.} 
+           \code{\link{choose.trans}} for possible values.}
+  \item{simplify}{Should a \code{Meth} object with one row per
+           (meth,item) be returned?}
   \item{how}{Character. What sampling strategy should be used, one of
              \code{"random"}, \code{"linked"} or \code{"item"}. Only the first
              letter is significant. See details for explanation.}
@@ -83,7 +86,7 @@ Meth( data=NULL,
  }
 \details{
   In order to perform analyses of method comparisons it is convenient to have a
-  dataframe with classifying factors , \code{meth}, \code{item}, and possibly
+  dataframe with classifying factors, \code{meth}, \code{item}, and possibly
   \code{repl} and the response variable \code{y}. This function creates such a
   dataframe, and gives it a class, \code{Meth}, for which there is a number of
   methods: \code{summary} - tabulation, \code{plot} - plotting and a couple of
@@ -92,14 +95,14 @@ Meth( data=NULL,
   If there are replicates in the values of \code{item} it is assumed
   that those observations represent replicate measurements and different
   replicate numbers are given to those.
-  
+
   \code{sample.Meth} samples a \code{\link{Meth}} object with
   replacement.  If \code{how=="random"}, a random sample of the rows are
   sampled, the existing values of \code{meth}, \code{item} and \code{y}
   are kept but new replicate numbers are generated.  If
   \code{how=="linked"}, a random sample of the linked observations (i.e.
   observations with identical \code{item} and \code{repl} values) are
-  sampled with replacement and replicate numbers are kept.  If
+  sampled with replacement and replicate numbers are kept. If
   \code{how=="item"}, items are sampled with replacement, and their
   observations are included the sampled numner of times.
   }
@@ -109,7 +112,19 @@ Meth( data=NULL,
   \code{summary.Meth} returns a table classified by method and no. of
   replicate measurements, extended with columns of the total number of items,
   total number of observations and the range of the measurements.
-  The \code{subset.Meth} returns a subset of the \code{Meth} rows.
+
+  The \code{mean.Meth} returns a \code{Meth} object where means have
+  been computed over replicates, and put in a variable \code{mean.y}. If
+  \code{simplify=TRUE}, a smaller \code{Meth} object will be returned
+  with only one row per (meth,item), and the means in the variable
+  \code{y}. This is useful if the definition of a particular measurement
+  method is the mean of a specified number of replicate measuements.
+
+  The \code{subset.Meth} returns a subset of the \code{Meth} rows. If a
+  subset of the methods is selected, the new \code{meth} variable will
+  have levels equal to the actually present levels of \code{meth} in the
+  new \code{Meth} object. This is not teh case if subsetting is done
+  using "\code{[}".
   }
 \author{Bendix Carstensen, \email{bxc@steno.dk} }
 \examples{
@@ -145,5 +160,5 @@ hb1  <- with( hba1c,
 hb2  <- with( subset(hba1c,type=="Cap"),
               Meth( meth=dev, item=item, repl=d.ana-d.samp, y=y, print=TRUE ) )
   }
-  
+
 \keyword{manip}

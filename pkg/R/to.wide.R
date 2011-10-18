@@ -1,36 +1,26 @@
 to.wide <-
 function( data, warn=TRUE )
 {
-if( !is.data.frame(data) )
+if( !inherits(data,"data.frame") )
 stop( "The argument must be a dataframe\n--- you supplied a ", class(data) )
-
-# Check names of the supplied dataframe
-rq.nam <- c("meth", "item", "y")
-if (sum(!is.na(wh <- match(rq.nam, names(data)))) < 3)
-    stop("\nThe supplied dataframe misses column(s) named ",
-          rq.nam[is.na(wh)], ".\n")
+if( !inherits(data,"Meth") ) data <- Meth( data, print=FALSE )
 
 # Are replicates present ?
-if( "repl" %in% names( data ) )
-  {
-  data$id <- interaction( data$item, data$repl )
-  if( length( unique( data$id ) ) > length( unique( data$item ) ) & warn )
-  cat( "\nNote:\n Replicate measurements are taken as separate items!\n" )
-  }
-else
-  data$id <- data$item
-
-# Method must be a factor with only the levels actually present
-data$meth <- factor( data$meth )
+if( has.repl(data) ) data$id <- interaction( data$item, data$repl )
+else                 data$id <- data$item
 
 res <- reshape( data, direction = "wide",
-                        v.names = "y",
+                        v.names = c("y", if("mean.y" %in% names(data) ) "mean.y" ),
                         timevar = "meth",
                           idvar = "id" )
 names( res ) <- gsub( "y\\.", "", names( res ) )
 attr( res, "reshapeWide" )$varying <- gsub( "y\\.", "",
                                             attr( res, "reshapeWide" )$varying )
 class( res ) <- "data.frame"
+onam <- c("item","repl", levels(data$meth),
+          if( length(grep("mean",names(data))) > 0 )
+          paste("mean",levels(data$meth),sep=".") )
+res <- res[,onam]
 res
 }
 

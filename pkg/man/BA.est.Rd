@@ -103,7 +103,7 @@
   These list components are:
   \item{Conv}{3-dimensional array with dimensions "To", "From" and unnamed.
               The first two dimensions have the methods compared as levels,
-              that last one \code{c("alpha","beta","sd","LoA: lower","upper")}.
+              the last one \code{c("alpha","beta","sd.pred","LoA: lower","upper")}.
               It represents the
               mean conversions between methods and the prediction standard
               deviation.

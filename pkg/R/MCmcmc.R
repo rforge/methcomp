@@ -49,7 +49,7 @@ if( !Got.coda | ! Got.R2WB | !Got.BRugs )
 if(  is.null(bugs.directory) &&
     !is.null(bugs.dir <- getOption("R2WinBUGS.bugs.directory")) )
   bugs.directory <- bugs.dir
-   
+
 # Check that a dataframe is supplied
 if( !is.data.frame(data) | missing( data ) )
 stop( "A dataframe should be supplied as the first argument." )
@@ -221,6 +221,8 @@ attr( MCobj, "random" )  <- c( if(MxI) "MxI", if(IxR) "IxR" )
 attr( MCobj, "methods" ) <- Mn
 attr( MCobj, "data" )    <- data
 attr( MCobj, "Transform" ) <- Transform
+# Not implemented yet, but should be
+attr( res, "RandomRaters" ) <- FALSE
 attr( MCobj, "mcmc.par" )<- list( n.chains = n.chains,
                                     n.iter = n.iter,
                                   n.burnin = n.burnin,
@@ -392,7 +394,7 @@ wh <-  c( grep( paste("alpha\\[",i,"]",sep=""), colnames(sim.mat) ),
 # The result is a matrix object with 3 columns
 ab.conv <- abconv( sim.mat, wh,
                    col.names = paste( c("alpha","beta","id"), j, i, sep="." ) )
-                     
+
 # The variance for predicting method j from i:
 # First the residual variances
 var.conv <- sim.mat[,paste("sigma.res[",j,"]", sep="" )]^2 +

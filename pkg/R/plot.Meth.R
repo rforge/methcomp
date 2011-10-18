@@ -1,15 +1,16 @@
 plot.Meth <-
-function( x, y = NULL,
-        col.LoA = "blue",
-        col.pt = "black",
-      cex.name = 2,
-     var.range,
-    diff.range,
-     var.names = FALSE,
-           pch = 16,
-           cex = 0.7,
-     Transform,
-           ... )
+function( x,
+      which = NULL,
+    col.LoA = "blue",
+     col.pt = "black",
+   cex.name = 2,
+  var.range,
+ diff.range,
+  var.names = FALSE,
+        pch = 16,
+        cex = 0.7,
+  Transform,
+        ... )
 {
 # Should we transform data?
 if( !missing(Transform) )
@@ -22,16 +23,15 @@ if( !missing(Transform) )
 x <- x[,c("meth","item","repl","y")]
 # Wide-ify data to allow plotting
 data <- to.wide( x )
-if( missing( y ) )
-    which <- levels( attr( data, "reshapeWide" )$times )
-else which <- y
+if( is.null(which) )
+    which <- match( levels(x$meth), names(data) )
 
 # Should we plot the variable names
 if( is.logical( var.names ) )
   {
   plot.names <- var.names
   if( is.character( which ) ) var.names <- which
-  else  var.names <- names( data )[which]
+  else var.names <- names( data )[which]
   }
 else plot.names <- TRUE
 
