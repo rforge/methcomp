@@ -83,12 +83,13 @@
   print(x)
 
   par(mfrow=c(2,2))
-# plot(x, s=1:4)
+  plot(x, s=1:4)
 
   ## A real data example
   data(milk)
   milk <- Meth(milk)
   summary(milk)
-( PBmilk <- PBreg( milk ) )
-# plot( PBmilk )
+  PBmilk <- PBreg(milk) 
+  par(mfrow=c(2,2))
+  plot(PBmilk, s=1:4)
 }

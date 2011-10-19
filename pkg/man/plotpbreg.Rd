@@ -9,13 +9,15 @@
 \method{plot}{PBreg}(x,
                pch=21, bg="#2200aa33",
                xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
-               xlab=x$meths[1], ylab=x$meths[2],
-               subtype=1, \ldots)
+               xlab=x$meths[1], ylab=x$meths[2], subtype=1, colors =
+               list(CI = "#ccaaff50", fit = "blue", ref = "#99999955", 
+               bars = "gray", dens = "#8866aaa0", ref2 = c("#1222bb99", 
+               "#bb221299")), \ldots)
 }
 \arguments{
   \item{x}{an object of class \code{"PBreg"}}
   \item{pch}{Which plotting character should be used for the points.}
-  \item{bg}{Background colour.}
+  \item{bg}{Background colour for the plotting character.}
   \item{xlim}{Limits for the x-axis.}
   \item{ylim}{Limits for the y-axis.}
   \item{xlab}{Label on the x-axis.}
@@ -28,8 +30,14 @@
     fit. Plot subtypes 1 through 3 are standard plots from the 1983 paper
     by Passing and Bablok - see the reference.  Plot subtype \bold{4} is
     a histogram (with overlaid density line) of the individual slopes.
-    The range of this plot is limited to 5 x IQR for better visibility.
-    }
+    The range of this plot is limited to 5 x IQR for better visibility.}
+  \item{colors}{A list of 6 elements allowing customization of colors of various 
+    plot elements. For plot subtype 1: "CI" is the color of the shaded confidence 
+    interval area; and "fit" is the color of fit line. For plot subtypes 2 & 3: 
+    "ref" is the color of the horizontal reference line. For plot subtype 4:
+    "bars" is the bar background color, "dens" is the color of the density line, and
+    "ref2" is a vector of two colors for lines indicating the median and confidence
+    limits.}
   \item{\ldots}{other parameters as in \code{"plot"}, some of which are
     pre-defined for improved appearance. This affects only the subtype 1 plot.}
 }
@@ -50,12 +58,12 @@
   x <- PBreg(a)
   print(x)
   par(mfrow=c(2,2))
-#  plot(x, s=1:4)
+  plot(x, s=1:4)
 
   ## Or the same using "Meth" object
   a <- Meth(a, y=1:2)
   x <- PBreg(a)
   print(x)
   par(mfrow=c(2,2))
-#  plot(x, s=1:4)
+  plot(x, s=1:4)
 }

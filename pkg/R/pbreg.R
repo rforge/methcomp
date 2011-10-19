@@ -80,53 +80,52 @@ function(x,...)
     cat(if(any((x$cusum<1.36*sqrt(x$adj[5]+x$adj[6]))==FALSE)) " (failed)\n" else " (passed)\n")
     cat("Linearity test not fully implemented in this version.\n")
 }
-    
-plot.PBreg <-
+      
+plot.PBreg <- 
 function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
-    xlab=x$meths[1], ylab=x$meths[2], subtype=1,...)
-{
-    int     = x$coefficients[1]
-    slo     = x$coefficients[2]
-    S       = na.omit(x$S)
+    xlab=x$meths[1], ylab=x$meths[2], subtype=1, colors = list(CI="#ccaaff50", fit="blue", 
+    ref="#99999955", bars="gray", dens="#8866aaa0", ref2=c("#1222bb99","#bb221299") ), ...)
+    {
+    ints    = c(x$coefficients[3],x$coefficients[1],x$coefficients[5])
+    slos    = c(x$coefficients[4],x$coefficients[2],x$coefficients[6])
     if (any(subtype==1)) {
-        prec    = 30
-        m       = max(x$model)
-        cis     = data.frame(x=seq(-0.1*m, 1.1*m, length=50), 
-                             y=int + seq(-0.1*m, 1.1*m, length=50)*slo)
-        cis$hi  = cis$lo = cis$y
-        a       = seq(x$coefficients[3],x$coefficients[5], length=prec)
-        b       = seq(x$coefficients[4],x$coefficients[6], length=prec)
+        m       = max(x$model, na.rm=T)
+        xs      = seq(-0.1*m, 1.1*m, length=50)
+        cis     = data.frame(x=xs, lo=NA, hi=NA)
         for (i1 in 1:50) {
-            for (i2 in 1:prec) {
-                for (i3 in 1:prec) {
-                    point = a[i2]+cis$x[i1]*b[i3]
-                    if (cis$lo[i1]>point) cis$lo[i1]=point
-                    if (cis$hi[i1]<point) cis$hi[i1]=point
-            }   }   }
+            cis$lo[i1] = min(ints + slos * cis$x[i1])
+            cis$hi[i1] = max(ints + slos * cis$x[i1])
+            }
         plot(x$model, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="n", ...)
         px = c(-.1*m, cis$x, 1.1*m, 1.1*m, rev(cis$x), -.1*m)
         py = c(-.1*m, cis$hi, 1.1*m, 1.1*m, rev(cis$lo), -.1*m)
-        polygon(px,py,col="#ccaaff50", border=NA)
+        polygon(px,py,col=colors[["CI"]], border=NA)
         abline(0,1, lwd=0.5, lty=2)
         points(x$model, pch=pch, bg=bg)
-        abline(int, slo, lwd=2, col="blue")
+        abline(ints[2], slos[2], lwd=2, col=colors[["fit"]])
+
+        text(m*0.10,m*0.94, "Intercept =", adj=c(1,0), cex=0.8)
+        text(m*0.12,m*0.94, formatC(ints[2], digits=4, format="g"), adj=c(0,0), cex=0.8)
+        text(m*0.10,m*0.90, "Slope =", adj=c(1,0), cex=0.8)
+        text(m*0.12,m*0.90, formatC(slos[2], digits=4, format="g"), adj=c(0,0), cex=0.8)
         }
     if (any(subtype==2)) {
         ranked = x$residuals[order(x$Di)]
         ylim   = c(-max(abs(ranked)),max(abs(ranked)))
         plot(ranked, ylab="Residuals", ylim=ylim, pch=pch, bg=bg)
-        abline(0,0, col="#99999955", lwd=1.5)
+        abline(0,0, col=colors[["ref"]], lwd=1.5)
         }
     if (any(subtype==3)) {
         ylim   = c(-max(abs(x$cusum)),max(abs(x$cusum)))
         plot(x$cusum, ylab="Cusum", type="l", ylim=ylim, lwd=2)
-        abline(0,0, col="#99999955", lwd=1.5)
+        abline(0,0, col=colors[["ref"]], lwd=1.5)
         }
     if (any(subtype==4)) {
-        S = S[S> slos[2]-2.5*IQR(S) & S< slos[2]+2.5*IQR(S)]
-        h = hist(S, xlab="Individual slopes (range: 5 x IQR)", col="gray", main="",...)
-        d = density(S)
+        S = x$S[x$S> slos[2]-2.5*IQR(x$S, na.rm=T) & x$S< slos[2]+2.5*IQR(x$S, na.rm=T)]
+        h = hist(S, xlab="Individual slopes (range: 5 x IQR)", col=colors[["bars"]], main="",...)
+        d = density(S, na.rm=T)
         d$y = d$y*(max(h$counts)/max(d$y))
-        lines(d, lwd=2, col="#8866aaa0")
+        lines(d, lwd=2, col=colors[["dens"]])
+        abline(v=slos, col=colors[["ref2"]], lwd=c(0.5,1.5), lty=c(2,1))
         }
 }
