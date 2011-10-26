@@ -93,7 +93,7 @@ return( invisible( res ) )
 }
 
 DA2y <-
-function( a, b, s=NA )
+function( a=0, b=0, s=NA )
 {
 # Convert from (y1-y2) = a + b*(y1+y2)/2 (s)
 # to the linear relationships betewwn y1 and y2
@@ -111,7 +111,7 @@ invisible( res )
 }
 
 y2DA <-
-function( A, B, S )
+function( A=0, B=1, S=NA )
 {
 # Convert from the linear relationship y1 = A + B * y2 (S)
 # to the linear relationship between D=y1-y2 and A=(y1+y2)/2

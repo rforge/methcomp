@@ -15,8 +15,8 @@
          print = TRUE,
  random.raters = FALSE,
       DA.slope = TRUE )
-  DA2y( a, b, s )
-  y2DA( A, B, S )
+  DA2y( a=0, b=1, s=NA )
+  y2DA( A=0, B=1, S=NA )
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object. May also be a data frame with columns
