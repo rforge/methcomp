@@ -15,7 +15,7 @@
          print = TRUE,
  random.raters = FALSE,
       DA.slope = TRUE )
-  DA2y( a=0, b=1, s=NA )
+  DA2y( a=0, b=0, s=NA )
   y2DA( A=0, B=1, S=NA )
   }
 \arguments{
@@ -44,12 +44,12 @@
     \code{y1-y2} to the averages \code{(y1+y2)/2}. If a vector of length>1, this is
     used instead of \code{a}, \code{b} and \code{s}, and \code{b} and
     \code{s} are ignored.}
-  \item{b}{Slope in the linear relstion of the differences to the
-    averages.}
-  \item{s}{SD from the regression of the differences in the averages. Can be missing}
+  \item{b}{Slope in the linear relstion of the differences to the averages.}
+  \item{s}{SD from the regression of the differences in the
+    averages. Can be \code{NA}.}
   \item{A}{Intercept in the linear relation of y1 on y2.}
   \item{B}{Slope in the linear relation of y1 on y2.}
-  \item{S}{SD for the linear relation of y1 on y2.}
+  \item{S}{SD for the linear relation of y1 on y2. Can be \code{NA}.}
 }
 \details{
   If the input object contains replicate measurements these are taken as separate
@@ -92,8 +92,8 @@
        The \code{VarComp} element of the list is \code{NULL}, and only present
        for compatibility with the print method for \code{MethComp} objects.
 
-       The \code{data} element is the input dataframe. The measurements in\code{y}
-       are left un-transformed, even if data are transformed (i.e. if
+       The \code{data} element is the input dataframe. The measurements
+       in \code{y} are left un-transformed, even if data are transformed (i.e. if
        the \code{Transform} attribute of the object is non-null).
 
        \code{DA2y} returns a 2 by 3 matrix with rownames
@@ -101,7 +101,9 @@
        calculated under the assumption that the differences were formed as
        \code{D <- y1 - y2}.
 
-       \code{y2DA} returns a 2-component vector with names \code{c("DA-int","DA-slope")}.
+       \code{y2DA} returns a 3-component vector with names
+       \code{c("DA-int","DA-slope","DA-sd")}, referring to differences
+       \code{D=y1-y2} as a linear function of \code{A=(y1+y2)/2}.
      }
 \references{
   B. Carstensen:
