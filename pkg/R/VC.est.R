@@ -5,7 +5,8 @@ function( data,
         varMxI = TRUE,  # variance of matrix effect varies across methods
           bias = TRUE,  # Estimate a bias between methods
          print = FALSE, # Print bias and variance?
- random.raters = FALSE  # Random methods/raters
+ random.raters = FALSE, # Random methods/raters
+    lmecontrol = lmeControl(msMaxIter=300) # Control options for lme
         )
 {
 # To prevnt annoying warnings from error in lme
@@ -20,12 +21,15 @@ if( random.raters )
                           MxI = MxI,
                        varMxI = varMxI,
                          bias = FALSE,
-                        print = print ) )
+                        print = print,
+                   lmecontrol = lmecontrol )
+         )
 else
   return( MethComp:::VC.est.fixed( data = data,
                          IxR = IxR,
                          MxI = MxI,
                       varMxI = varMxI,
                         bias = bias,
-                       print = print) )
+                       print = print,
+                  lmecontrol = lmecontrol) )
 }

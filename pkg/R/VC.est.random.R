@@ -4,7 +4,8 @@ function( data,
            MxI = has.repl(data), matrix = MxI,
         varMxI = TRUE,  # variance of matrix effect varies across methods
           bias = TRUE,  # Estimate a bias between methods
-         print = FALSE  # Print bias and variance?
+         print = FALSE, # Print bias and variance?
+    lmecontrol = lmeControl(msMaxIter=300) # Control options for lme
         )
 # A utility function to fit the relevant variance component model with
 # constant (or zero) bias - basically chooses the right one from an array of
@@ -33,8 +34,8 @@ data$one <- one
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
 
-# Hard coding lme controls
-lmecont <- lmeControl(msMaxIter=300, returnObject=TRUE)
+# returnObject must be set to true to ensure proper output
+lmecontrol$returnObject <- TRUE
 
 # Select among the 2^3=8 possibile models, subdiving those with MxI effect
 # according to whether the variance is the same across methods
@@ -49,7 +50,7 @@ if( MxI )
                                      pdIdent(~ item:repl-1),
                                      pdIdent(~ meth-1)))),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmecont )
+                control = lmecontrol )
       
       # Spaghetti-code. Must be an elegant solution
       re <- ranef(m1)
@@ -69,7 +70,7 @@ if( MxI )
        m1 <- lme( y ~ item - 1,
                   random = list( one = pdBlocked(list(pdIdent(~ item:repl-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),                
                   weights = varIdent( form = ~1 | meth ),
-                  control = lmecont )
+                  control = lmecontrol )
        
       # Spaghetti-code. There must be an elegant solution
       re <- ranef(m1)
@@ -97,7 +98,7 @@ if( MxI )
                  random = list(one = pdBlocked(list(pdIdent( ~ item:meth-1 ),
                                              pdIdent(~ meth -1)))),
                  weights = varIdent( form = ~1 | meth ),
-                 control = lmecont, data=data)
+                 control = lmecontrol, data=data)
 
       # Spaghetti-code. Must be an elegant solution
       re <- ranef(m1)
@@ -117,7 +118,7 @@ if( MxI )
       m1 <- lme( y ~ item - 1,
                  random = list( one = pdIdent(~ meth-1), item=pdDiag( ~ meth-1 )),
                  weights = varIdent( form = ~1 | meth ),
-                 control = lmecont, data=data )
+                 control = lmecontrol, data=data )
 
       re <- ranef(m1)
 
@@ -134,7 +135,7 @@ else # if !MxI
                random = list(one = pdBlocked(list(pdIdent( ~ item:repl-1 ),
                                              pdIdent(~ meth -1)))),
                weights = varIdent( form = ~1 | meth ),
-               control = lmecont)
+               control = lmecontrol)
 
     # Something like this might work easier with a few extra computations?
     # a.ir <- m1$res[,"fixed"]-m1$res[,"one"]
@@ -151,7 +152,7 @@ else # if !MxI
 #              random = ~ 1 | meth,
               random = list(one = pdIdent(~ meth - 1)),
               weights = varIdent( form = ~1 | meth ),
-              control = lmecont )
+              control = lmecontrol )
 
     b.m <- m1$res[,"fixed"]-m1$res[,"one"]
     }

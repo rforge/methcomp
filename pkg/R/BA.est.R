@@ -9,7 +9,9 @@ function( data,
          alpha = 0.05,
      Transform = NULL,
      trans.tol = 1e-6,
- random.raters = FALSE
+ random.raters = FALSE,
+    lmecontrol = lmeControl(msMaxIter=300),
+weightfunction = c("mean", "median")
         )
 {
 # Check that data has item, method and repl
@@ -18,6 +20,8 @@ if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) < 3 ) stop(
 "\nThe supplied dataframe misses columns named ", rq.nam[is.na(wh)], ".\n" )
 if( sum( !is.na( wh <- match( rq.nam, names( data ) ) ) ) == 3 ) stop(
 "\nThe supplied dataframe misses the column named ", rq.nam[is.na(wh)], ".\n" )
+
+WFUN <- match.fun(match.arg(weightfunction))
 
 # Only complete cases
 dfr <- Meth( data[,c("meth","item","repl","y")], print=FALSE )
@@ -43,7 +47,8 @@ model.fit <- VC.est( data = dfr,
                       MxI = MxI,
                    varMxI = varMxI,
                      bias = bias,
-            random.raters = random.raters )
+            random.raters = random.raters,
+               lmecontrol = lmecontrol )
 Nm   <- length( model.fit$Bias )
 Mnam <-  names( model.fit$Bias )
 
@@ -107,7 +112,7 @@ Conv[,,      "sd=K"] <- 1
 
 # Compute the LoA for the random raters situation
 if (random.raters) {
-  meanvarcomp <- apply(Vcmp**2, 2, mean)
+  meanvarcomp <- apply(Vcmp**2, 2, WFUN)
 
   pred.var <- 2*(meanvarcomp["M"] +  meanvarcomp["MxI"] + meanvarcomp["res"])
 

@@ -4,7 +4,8 @@ function( data,
            MxI = has.repl(data), matrix = MxI,
         varMxI = TRUE,  # variance of matrix effect varies across methods
           bias = TRUE,  # Estimate a bias between methods
-         print = FALSE  # Print bias and variance?
+         print = FALSE,  # Print bias and variance?
+    lmecontrol = lmeControl(msMaxIter=300)  # Control options for lme
         )
 # A utility function to fit the relevant variance component model with
 # constant (or zero) bias - basically chooses the right one from an array of
@@ -31,6 +32,10 @@ repl <- data$repl
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
 
+# Setting returnObject=TRUE to ensure proper output
+lmecontrol$returnObject <- TRUE
+
+
 # Select among the 2^3=8 possibile models, subdiving those with MxI effect
 # according to whether the variance is the same across methods
 if( bias )
@@ -44,13 +49,13 @@ if( MxI )
                  random = list( item = pdIdent( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     if( Nm > 2 & varMxI )
       m1 <- lme( y ~ item - 1 + meth,
                  random = list( item = pdDiag( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     a.ir <- m1$res[,"item"]-m1$res[,"repl"]
     }
   else # if !IxR
@@ -59,12 +64,12 @@ if( MxI )
       m1 <- lme( y ~ item - 1 + meth,
                  random = list( item = pdIdent( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     if( Nm > 2 & varMxI )
       m1 <- lme( y ~ item - 1 + meth,
                  random = list( item = pdDiag( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     }
   c.mi <- m1$res[,"fixed"]-m1$res[,"item"]
   }
@@ -75,14 +80,14 @@ else # if !MxI
     m1 <- lme( y ~ item - 1 + meth,
                random = list( item = pdIdent( ~ repl-1 ) ),
               weights = varIdent( form = ~1 | meth ),
-              control = lmeControl(returnObject=TRUE) )
+              control = lmecontrol )
     a.ir <- m1$res[,"fixed"]-m1$res[,"item"]
     }
   else
     m1 <- lme( y ~ item - 1 + meth,
  #              random = ~ 1 | one,
                weights = varIdent( form = ~1 | meth ),
-               control = lmeControl(returnObject=TRUE) )
+               control = lmecontrol )
   }
 }
 else # if !bias
@@ -96,13 +101,13 @@ if( MxI )
                  random = list( item = pdIdent( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     if( Nm > 2 & varMxI )
       m1 <- lme( y ~ item - 1,
                  random = list( item = pdDiag( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     a.ir <- m1$res[,"item"]-m1$res[,"repl"]
     }
   else # if !IxR
@@ -111,12 +116,12 @@ if( MxI )
       m1 <- lme( y ~ item - 1,
                  random = list( item = pdIdent( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     if( Nm > 2 & varMxI )
       m1 <- lme( y ~ item - 1,
                  random = list( item = pdDiag( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
-                control = lmeControl(returnObject=TRUE) )
+                control = lmecontrol )
     }
   c.mi <- m1$res[,"fixed"]-m1$res[,"item"]
   }
@@ -127,14 +132,14 @@ else # if !MxI
     m1 <- lme( y ~ item - 1,
                random = list( item = pdIdent( ~ repl-1 ) ),
               weights = varIdent( form = ~1 | meth ),
-              control = lmeControl(returnObject=TRUE) )
+              control = lmecontrol )
     a.ir <- m1$res[,"fixed"]-m1$res[,"item"]
     }
   else
     m1 <- lme( y ~ item - 1,
 #               random = ~ 1 | one,
                weights = varIdent( form = ~1 | meth ),
-               control = lmeControl(returnObject=TRUE) )
+               control = lmecontrol )
   }
 }
 

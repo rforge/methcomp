@@ -17,7 +17,10 @@
                             bias=TRUE, alpha=0.05,
                 Transform = NULL,
                 trans.tol = 1e-6,
-                random.raters = FALSE )
+                random.raters = FALSE,
+                lmecontrol = lmeControl(msMaxIter=300),
+                weightfunction = c("mean", "median")
+ )
   \method{bias}{BA.est}( obj, ref=1, \dots )
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
@@ -25,7 +28,9 @@
         varMxI = TRUE,
           bias = TRUE,
          print = FALSE,
- random.raters = FALSE )
+ random.raters = FALSE,
+    lmecontrol = lmeControl(msMaxIter=300)
+ )
   }
 \arguments{
   \item{data}{A \code{\link{Meth}} object representing method comparison data
@@ -59,6 +64,9 @@
   \item{random.raters}{Logical. Should methods/raters be considered as
     random. Defaults to \code{FALSE} which corresponds to a fixed effect
     of methods/raters.}
+  \item{lmecontrol}{A list of control parameters passed on to \code{lme}.}
+  \item{weightfunction}{Function to weigh variance components for random
+    raters. Defaults to \code{mean} but can also be \code{median}.}  
   \item{obj}{A \code{BA.est} object from which to extract the biases between
              methods.}
   \item{ref}{Numeric or character. The reference method for the biases: the
