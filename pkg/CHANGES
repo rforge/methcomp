@@ -1,10 +1,14 @@
+Version 1.13 :
+
+o Bug-fixes in VC.est.random getting the estimated variances right. (CTEk)
+
 Version 1.12 :
 
 o Complete rewrite of BA.plot, the old still available, the new
   version is so far called AB.plot. AB.plot creates a MethComp object
   and uses plot.MethComp to make the Bland-Altman plot. The old
   workhorse BlandAltman will still be available for direct use.  This
-  also involved changes in the output object from AltReg.
+  also involved changes in the output object from AltReg. (BxC)
 
 o Amendment of plot.MethComp, to allow for increasing sd etc.
 

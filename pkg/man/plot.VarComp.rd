@@ -8,20 +8,20 @@
   method.
   }
 \usage{
-  plot.VarComp( x,
-            which,
-         lwd.line = rep(2, 4),
-         col.line = c("red", "green", "blue", "black"),
-         lty.line = rep(1, 4),
-             grid = TRUE,
-         col.grid = gray(0.8),
-              rug = TRUE,
-            probs = c(5, 50, 95),
-          tot.var = FALSE,
-          same.ax = TRUE,
-       meth.names = TRUE,
-         VC.names = "first",
-              ... )
+\method{plot}{VarComp}( x,
+                    which,
+                 lwd.line = rep(2, 4),
+                 col.line = c("red", "green", "blue", "black"),
+                 lty.line = rep(1, 4),
+                     grid = TRUE,
+                 col.grid = gray(0.8),
+                      rug = TRUE,
+                    probs = c(5, 50, 95),
+                  tot.var = FALSE,
+                  same.ax = TRUE,
+               meth.names = TRUE,
+                 VC.names = "first",
+                      ... )
   }
 \arguments{
   \item{x}{A \code{MCmcmc} object.}

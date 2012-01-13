@@ -6,15 +6,15 @@
   \code{\link{MCmcmc}} object.
   }
 \usage{
-plot.MCmcmc( x,
-             axlim = range( attr(x,"data")$y, na.rm=TRUE ),
-            wh.cmp,
-          lwd.line = c(3,1), col.line = rep("black",2), lty.line=rep(1,2),
-               eqn = TRUE, digits = 2,
-              grid = FALSE, col.grid=gray(0.8),
-            points = FALSE,
-           col.pts = "black", pch.pts = 16, cex.pts = 0.8,
-               ... )
+\method{plot}{MCmcmc}( x,
+                   axlim = range( attr(x,"data")$y, na.rm=TRUE ),
+                  wh.cmp,
+                lwd.line = c(3,1), col.line = rep("black",2), lty.line=rep(1,2),
+                     eqn = TRUE, digits = 2,
+                    grid = FALSE, col.grid=gray(0.8),
+                  points = FALSE,
+                 col.pts = "black", pch.pts = 16, cex.pts = 0.8,
+                     ... )
 }
 \arguments{
   \item{x}{A \code{\link{MCmcmc}} object}
