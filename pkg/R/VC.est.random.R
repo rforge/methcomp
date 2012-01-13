@@ -45,14 +45,13 @@ if( MxI )
     {
     if( Nm ==2 | !varMxI ) {
       # CE - model OK
-      m1 <- lme( y ~ 1,
+      m1 <- lme( y ~ item - 1,
                 random = list( one = pdBlocked(list(pdIdent( ~ item:meth-1 ) ,
                                      pdIdent(~ item:repl-1),
                                      pdIdent(~ meth-1)))),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
-      
-      # Spaghetti-code. Must be an elegant solution
+      # Spaghetti-code. Must be an elegant solution somewhere out there
       re <- ranef(m1)
 
       mii <- factor(interaction(item,meth))
@@ -72,7 +71,7 @@ if( MxI )
                   weights = varIdent( form = ~1 | meth ),
                   control = lmecontrol )
        
-      # Spaghetti-code. There must be an elegant solution
+      # Spaghetti-code again. There must be an elegant solution. 
       re <- ranef(m1)
 
       c.mi <<- re[[2]][cbind(item,meth)]
@@ -170,11 +169,12 @@ names( Bias ) <- levels( meth )
 Mu <- summ[grep("item",rownames(summ)),1]
 
 # The two-way random interactions
-vc <- VarCorr( m1 )
+vc <- nlme:::VarCorr( m1 )
 xi <- as.numeric( vc[grep("^meth(.+)",rownames(vc)),2][1] )
 
 if ( varMxI & MxI ) tau <- as.numeric( tail(vc[grep("^meth(.+)",rownames(vc)),2], nlevels(meth)) )
-if (!varMxI & MxI )   tau <- as.numeric( vc[grep("^item(.+):meth(.+)",rownames(vc)),2][1] )
+if ((!varMxI | Nm == 2) & MxI ) tau <- as.numeric( vc[grep("^item(.+):meth(.+)",rownames(vc)),2][1] )
+
 #if( IxR &  MxI ) omega <<- as.numeric( vc[grep("Inte",rownames(vc)),2][1] )
 if( IxR ) omega <- as.numeric( vc[grep("^item(.+):repl(.+)",rownames(vc)),2][1] )
 

@@ -1,6 +1,6 @@
 Package: MethComp
-Version: 1.12
-Date: 2011-10-17
+Version: 1.13
+Date: 2012-01-13
 Title: Functions for analysis of method comparison studies.
 Author: Bendix Carstensen, Lyle Gurrin, Claus Ekstrom
 Maintainer: Bendix Carstensen <bxc@steno.dk>
