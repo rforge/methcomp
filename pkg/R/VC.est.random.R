@@ -37,17 +37,19 @@ Mn <-  levels( meth )
 # returnObject must be set to true to ensure proper output
 lmecontrol$returnObject <- TRUE
 
-# Select among the 2^3=8 possibile models, subdiving those with MxI effect
+# Select among the 2^3=8 possible models, subdividing those with MxI effect
 # according to whether the variance is the same across methods
 if( MxI )
   {
   if( IxR )
     {
-    if( Nm ==2 | !varMxI ) {
+    if( Nm == 2 | !varMxI ) {
       # CE - model OK
+      iri <- droplevels(interaction(item,repl))
+      
       m1 <- lme( y ~ item - 1,
                 random = list( one = pdBlocked(list(pdIdent( ~ item:meth-1 ) ,
-                                     pdIdent(~ item:repl-1),
+                                     pdIdent(~ iri-1),
                                      pdIdent(~ meth-1)))),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
@@ -58,7 +60,6 @@ if( MxI )
       nmi <- nlevels(mii)
       c.mi <- (re[1:nmi])[mii]
       
-      iri <- factor(interaction(item,repl))
       nir <- nlevels(iri)
       a.ir <- (re[(nmi+1):(nmi+nir)])[iri]
 
@@ -66,8 +67,10 @@ if( MxI )
     }
     if( Nm > 2 & varMxI ) {
        # CE - model OK
+      iri <- droplevels(interaction(item,repl))
+      
        m1 <- lme( y ~ item - 1,
-                  random = list( one = pdBlocked(list(pdIdent(~ item:repl-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),                
+                  random = list( one = pdBlocked(list(pdIdent(~ iri-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),                
                   weights = varIdent( form = ~1 | meth ),
                   control = lmecontrol )
        
@@ -76,7 +79,6 @@ if( MxI )
 
       c.mi <<- re[[2]][cbind(item,meth)]
       
-      iri <- factor(interaction(item,repl))
       nir <- nlevels(iri)
       a.ir <<- (re[[1]][1:nir])[iri]
 
@@ -129,9 +131,11 @@ if( MxI )
 else # if !MxI
   {
   if( IxR ) {
-    ## CE - model OK
+    ## CE - model OK    
+    iri <- factor(interaction(item,repl))
+
     m1 <- lme( y ~ item - 1,
-               random = list(one = pdBlocked(list(pdIdent( ~ item:repl-1 ),
+               random = list(one = pdBlocked(list(pdIdent( ~ iri-1 ),
                                              pdIdent(~ meth -1)))),
                weights = varIdent( form = ~1 | meth ),
                control = lmecontrol)
@@ -176,7 +180,8 @@ if ( varMxI & MxI ) tau <- as.numeric( tail(vc[grep("^meth(.+)",rownames(vc)),2]
 if ((!varMxI | Nm == 2) & MxI ) tau <- as.numeric( vc[grep("^item(.+):meth(.+)",rownames(vc)),2][1] )
 
 #if( IxR &  MxI ) omega <<- as.numeric( vc[grep("Inte",rownames(vc)),2][1] )
-if( IxR ) omega <- as.numeric( vc[grep("^item(.+):repl(.+)",rownames(vc)),2][1] )
+# if( IxR ) omega <- as.numeric( vc[grep("^item(.+):repl(.+)",rownames(vc)),2][1] )
+if( IxR ) omega <- as.numeric( vc[grep("^iri(.+)",rownames(vc)),2][1] )
 
 # This does not work in all cases....
 # print( vc )
