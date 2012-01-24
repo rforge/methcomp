@@ -9,7 +9,7 @@ function( data,
         )
 # A utility function to fit the relevant variance component model with
 # constant (or zero) bias - basically chooses the right one from an array of
-# lme-invocations    
+# lme-invocations
 {
 # Is the supplied dataframe a Meth object? If not make it!
 if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
@@ -29,7 +29,7 @@ repl <- factor(data$repl)
  one <- rep(1,length(y))
 
 data$one <- one
- 
+
 # More than two methods?
 Nm <- nlevels( meth )
 Mn <-  levels( meth )
@@ -43,14 +43,14 @@ if( MxI )
   {
   if( IxR )
     {
-    if( Nm == 2 | !varMxI ) {
+    if( Nm ==2 | !varMxI ) {
       # CE - model OK
       iri <- droplevels(interaction(item,repl))
       
       m1 <- lme( y ~ item - 1,
                 random = list( one = pdBlocked(list(pdIdent( ~ item:meth-1 ) ,
                                      pdIdent(~ iri-1),
-                                     pdIdent(~ meth-1)))),
+                                                    pdIdent( ~      meth-1 ) ))),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
       # Spaghetti-code. Must be an elegant solution somewhere out there
@@ -59,11 +59,11 @@ if( MxI )
       mii <- factor(interaction(item,meth))
       nmi <- nlevels(mii)
       c.mi <- (re[1:nmi])[mii]
-      
+
       nir <- nlevels(iri)
       a.ir <- (re[(nmi+1):(nmi+nir)])[iri]
 
-      b.m <- (re[(nmi+nir+1):length(re)])[meth]      
+      b.m <- (re[(nmi+nir+1):length(re)])[meth]
     }
     if( Nm > 2 & varMxI ) {
        # CE - model OK
@@ -73,17 +73,17 @@ if( MxI )
                   random = list( one = pdBlocked(list(pdIdent(~ iri-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),                
                   weights = varIdent( form = ~1 | meth ),
                   control = lmecontrol )
-       
-      # Spaghetti-code again. There must be an elegant solution. 
+
+      # Spaghetti-code again. There must be an elegant solution.
       re <- ranef(m1)
 
       c.mi <<- re[[2]][cbind(item,meth)]
-      
+
       nir <- nlevels(iri)
       a.ir <<- (re[[1]][1:nir])[iri]
 
-      b.m <<- (re[(nir+1):length(re[[1]])])[meth]      
-            
+      b.m <<- (re[(nir+1):length(re[[1]])])[meth]
+
     }
     }
   else {  # if !IxR
@@ -94,10 +94,10 @@ if( MxI )
       #            random  = list( meth = pdCompSymm( ~ item-1 ) ),
       #            weights = varIdent( form = ~1 | meth ),
       #            control = lmeControl(returnObject=TRUE) , data=data)
-      
+
       m1 <- lme( y ~ item - 1,
                  random = list(one = pdBlocked(list(pdIdent( ~ item:meth-1 ),
-                                             pdIdent(~ meth -1)))),
+                                                    pdIdent( ~      meth-1 )))),
                  weights = varIdent( form = ~1 | meth ),
                  control = lmecontrol, data=data)
 
@@ -107,12 +107,12 @@ if( MxI )
       mii <- factor(interaction(item,meth))
       nmi <- nlevels(mii)
       c.mi <- (re[1:nmi])[mii]
-      
+
 #      iri <- factor(interaction(item,repl))
 #      nir <- nlevels(iri)
 #      a.ir <- (re[(nmi+1):(nmi+nir)])[iri]
 
-      b.m <- (re[(nmi+1):length(re)])[meth]      
+      b.m <- (re[(nmi+1):length(re)])[meth]
     }
     if( Nm > 2 & varMxI ) {
       # CE - model OK
@@ -131,12 +131,12 @@ if( MxI )
 else # if !MxI
   {
   if( IxR ) {
-    ## CE - model OK    
+    ## CE - model OK
     iri <- factor(interaction(item,repl))
 
     m1 <- lme( y ~ item - 1,
                random = list(one = pdBlocked(list(pdIdent( ~ iri-1 ),
-                                             pdIdent(~ meth -1)))),
+                                                  pdIdent( ~      meth - 1 )))),
                weights = varIdent( form = ~1 | meth ),
                control = lmecontrol)
 
@@ -147,7 +147,7 @@ else # if !MxI
     iri <- factor(interaction(item,repl))
     nir <- nlevels(iri)
     a.ir <- (re[1:nir])[iri]
-    b.m <- (re[(nir+1):length(re)])[meth]      
+    b.m <- (re[(nir+1):length(re)])[meth]
     }
   else {
     # CE - model OK
