@@ -1,3 +1,8 @@
+Version 1.14 :
+
+o Further bug-fixes in VC.est.random getting the estimated variances
+  right. (CTEk) 
+
 Version 1.13 :
 
 o Bug-fixes in VC.est.random getting the estimated variances right. (CTEk)
