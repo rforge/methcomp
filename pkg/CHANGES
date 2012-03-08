@@ -1,3 +1,7 @@
+Version 1.15 :
+
+o Mored intuitive example in the Deming help page, thanks to Roland Fuss.
+
 Version 1.14 :
 
 o Further bug-fixes in VC.est.random getting the estimated variances

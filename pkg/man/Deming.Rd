@@ -71,9 +71,11 @@
   \code{\link{MCmcmc}}
   }
 \examples{
-# Some data
-x <- runif(100,0,5) + rnorm(100)
-y <- 2 + 3 * x + rnorm(100,sd=2)
+# 'True' values 
+M <- runif(100,0,5)
+# Measurements:
+x <-         M + rnorm(100)
+y <- 2 + 3 * M + rnorm(100,sd=2)
 # Deming regression with equal variances, variance ratio 2.
 Deming(x,y)
 Deming(x,y,vr=2)
