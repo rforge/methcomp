@@ -95,8 +95,8 @@ return( invisible( res ) )
 DA2y <-
 function( a=0, b=0, s=NA )
 {
-# Convert from (y1-y2) = a + b*(y1+y2)/2 (s)
-# to the linear relationships betewwn y1 and y2
+# Convert from D = (y1-y2) = a + b*(y1+y2)/2 (s)
+# to the linear relationships between y1 and y2
 if( length(a)>1 )
   {
   s <- a[3]
@@ -122,6 +122,6 @@ if( length(A)>1 )
   A <- A[1]
   }
 res <- c( 2*A, 2*(B-1), 2*S )/(B+1)
-names( res ) <- c("DA-int","DA-slope","DA-sd")
+names( res ) <- c("int(t-f)","slope(t-f)","sd(t-f)")
 invisible( res )
 }

@@ -17,10 +17,13 @@ if( inherits( obj, "MCmcmc" ) )
   if( !is.null(attr(obj,"Transform")) ) dfr$y <- attr(obj,"Transform")$inv(dfr$y)
   Obj <- summary( obj )
   ca  <- Obj$conv.array
-  # Store the array in a different layout [This is crazy!]
-  names( dimnames( ca ) )[1:2] <- names( dimnames( ca ) )[2:1]
-  Conv <- ca
+  dnam <- dimnames(ca)[c(2,1,3)]
+  dnam[[3]] <- c( dnam[[3]], "int(t-f)","slope(t-f)","sd(t-f)" )
+  # Store the array in a different layout
+  # [This is crazy! the layout of the MCmcmc summary should be changed]
+  Conv <- array( NA, dimnames=dnam, dim=sapply(dnam,length) )
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
+  for( i in 1:2 ) for( j in 1:2 ) Conv[i,j,4:6] <- y2DA( Conv[i,j,1:3] )
   VarComp <- Obj$VarComp[,-4,1]
   names(dimnames(VarComp)) <- c("Method","s.d.")
   cls <- c("MethComp","fromMCmcmc")
@@ -165,8 +168,10 @@ if( eqn )
      if( B!=1 ) formatC( B, format="f", digits=digits ),
                 Mn[2], " (",
 if( sd.type=="const" )        formatC( S , format="f", digits=digits ),
-if( sd.type=="lin"   ) paste( formatC( SL["y1|2",  "int"], format="f", digits=digits ), if( SL["y1|2","slope"]>0 ) "+",
-                              formatC( SL["y1|2","slope"], format="f", digits=digits ), Mn[2], sep="" ),
+if( sd.type=="lin"   ) paste( formatC( SL["y1|2",  "int"], format="f", digits=digits ),
+                              if( SL["y1|2","slope"]>0 ) "+",
+                              formatC( SL["y1|2","slope"], format="f", digits=digits ),
+                              Mn[2], sep="" ),
                 ")", sep="" )
   A <- x[["Conv"]][Mn[2],Mn[1],  "alpha"]
   B <- x[["Conv"]][Mn[2],Mn[1],   "beta"]
@@ -176,8 +181,10 @@ if( sd.type=="lin"   ) paste( formatC( SL["y1|2",  "int"], format="f", digits=di
      if( B!=1 ) formatC( B, format="f", digits=digits ),
                 Mn[1], " (",
 if( sd.type=="const" )        formatC( S , format="f", digits=digits ),
-if( sd.type=="lin"   ) paste( formatC( SL["y2|1",  "int"], format="f", digits=digits ), if(  SL["y2|1","slope"]>0 ) "+",
-                              formatC( SL["y2|1","slope"], format="f", digits=digits ), Mn[1], sep="" ),
+if( sd.type=="lin"   ) paste( formatC( SL["y2|1",  "int"], format="f", digits=digits ),
+                              if(  SL["y2|1","slope"]>0 ) "+",
+                              formatC( SL["y2|1","slope"], format="f", digits=digits ),
+                              Mn[1], sep="" ),
                 ")", sep="" )
   A <- x[["Conv"]][Mn[1],Mn[2],  "int(t-f)"]
   B <- x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"]
@@ -350,7 +357,8 @@ else matlines( (m1+m2)/2, m2-m1,
 
 if( pl.type=="BA" &
     sd.type=="const" &
-    inherits(x,c("DA.reg","BA.est")) )
+    inherits(x,c("DA.reg","BA.est")) &
+    is.null(attr(x,"Transform")) )
   {
   LoA <- (m2-m1)[1,]
   axis( side=4, at=LoA, labels=formatC(LoA,format="f",digits=digits),

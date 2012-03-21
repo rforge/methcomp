@@ -1,11 +1,18 @@
 Version 1.15 :
 
-o Mored intuitive example in the Deming help page, thanks to Roland Fuss.
+o BA.plot is now in a new version essentially usng the facilities
+  available from at MethComp-object derived from DA.reg. 
+  The old version is still available as AB.plot.
+
+o JAGS is now recognized as a value for the program= argument to
+  MCmcmc. Jags and rjags is required to be installed of course.
+
+o More intuitive example in the Deming help page, thanks to Roland Fuss.
 
 Version 1.14 :
 
 o Further bug-fixes in VC.est.random getting the estimated variances
-  right. (CTEk) 
+  right. (CTEk)
 
 Version 1.13 :
 

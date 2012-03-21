@@ -56,7 +56,7 @@ bugs.code.file = "model.txt",
  \item{varMxI}{Logical, should the method by item effect have method-specific
    variances. Ignored if only two methods are compared.}
   \item{n.chains}{How many chains should be run by WinBUGS --- passed on
-    to \code{bugs}.} 
+    to \code{bugs}.}
   \item{n.iter}{How many total iterations --- passed on to \code{bugs}.}
   \item{n.burnin}{How many of these should be burn-in --- passed on to \code{bugs}.}
   \item{n.thin}{How many should be sampled --- passed on to \code{bugs}.}
@@ -65,7 +65,7 @@ bugs.code.file = "model.txt",
     options(). If you use this routinely, this is most conveniently set in
     your \code{.Rprofile} file.}
   \item{debug}{Should WinBUGS remain open after running --- passed on to
-    \code{bugs}.} 
+    \code{bugs}.}
   \item{clearWD}{Should the working directory be cleared for junk files after
                  the running of WinBUGS --- passed on to \code{bugs}.}
   \item{bugs.code.file}{Where should the bugs code go?}
@@ -98,7 +98,7 @@ bugs.code.file = "model.txt",
              in the model actually simulated.}
   \item{program}{Which program should be used for the MCMC simulation.
                  Possible values are "brugs","openbugs","ob" (openBUGS),
-                 "winbugs","wb" (WinBUGS).}
+                 "winbugs","wb" (WinBUGS), "jags" (JAGS).}
   \item{Transform}{Transformation of data (\code{y}) before analysis.
                    See \code{\link{choose.trans}}.}
   \item{trans.tol}{The tolerance used to check whether the supplied
@@ -123,7 +123,7 @@ bugs.code.file = "model.txt",
 
   The model set up for an observation \eqn{y_{mir}}{y_mir} is:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) +
-    e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir} 
+    e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir}
   where \eqn{b_{ir}}{b_ir} is a random \code{item} by \code{repl} interaction (included if
   \code{"ir" \%in\% random}) and \eqn{c_{mi}}{c_mi} is a random \code{meth} by \code{item}
   interaction (included if \code{"mi" \%in\% random}). The \eqn{\mu_i}{mu_i}'s are
@@ -132,16 +132,16 @@ bugs.code.file = "model.txt",
   \eqn{c_{mi}}{c_{mi}} and \eqn{e_{mir}}{e_{mir}} are monitored and
   returned. The estimated parameters are only determined up to a linear
   transformation of the \eqn{\mu}{mu}s, but the linear functions linking
-  methods are invariant. The identifiable conversion parameters are: 
+  methods are invariant. The identifiable conversion parameters are:
   \deqn{\alpha_{m\cdot k}=\alpha_m - \alpha_k \beta_m/\beta_k, \quad
     \beta_{m\cdot k}=\beta_m/\beta_k}{alpha_m|k=alpha_m-alpha_k
-    beta_m/beta_k,  beta_m|k=beta_m/beta_k} 
+    beta_m/beta_k,  beta_m|k=beta_m/beta_k}
   The posteriors of these are derived and included in the \code{posterior}, which
   also will contain the posterior of the variance components (the sd's, that is).
   Furthermore, the posterior of the point where the conversion lines intersects
   the identity as well as the prediction sd's between any pairs of methods are
   included.
-  
+
   The function \code{summary.MCmcmc} method gives estimates of the conversion
   parameters that are consistent. Clearly,
   \deqn{\mathrm{median}(\beta_{1\cdot 2})=
@@ -164,7 +164,7 @@ bugs.code.file = "model.txt",
   a  \code{\link[coda]{mcmc.list}} object of the relevant parametes, i.e. the
   posteriors of the conversion parameters and the variance components transformed
   to the scales of each of the methods.
-  
+
   Furthermore, the object have the following attibutes:
   \item{random}{Character vector indicatinf which random effects ("ir","mi")
                 were included in the model.}

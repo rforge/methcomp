@@ -61,6 +61,17 @@
   \eqn{A=(y_1+y_2)/2}{A=(y1+y2)/2}, back and forth to the resulting
   intercept, slope and sd in the relationship between \eqn{y_1}{y1} and
   \eqn{y_2}{y2}, cf. Carstensen (2010), equation 6.
+
+  \code{DA2y} takes intercept(\code{a}), slope(\code{b}) and
+  sd(\code{s}) from the relationship \code{(y1-y2)=a+b((y1+y2)/2)+e}
+  with sd(\code{e})=\code{s}, and returns a two by 3 matrix with columns
+  \code{"int","slope","sd"} and rows \code{"y1|2","y2|1"}.
+
+  \code{y2DA} takes intercept(\code{A}), slope(\code{B}) and
+  sd(\code{S}) from the relationship \code{y1=A+B y2 + E}
+  with sd(\code{E})=\code{E}, and returns a vector of length 3 with names
+  \code{"int(t-f)","slope(t-f)","sd(t-f)"}, where \code{t} refers to
+  "to" (\code{y1} and \code{f} to "from" \code{y2}.
   }
   \value{\code{DA.reg} returns a \code{\link{MethComp}} object, i.e. a
        list with three components, \code{Conv}, \code{VarComp}, and

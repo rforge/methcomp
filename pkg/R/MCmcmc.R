@@ -30,21 +30,24 @@ if( !is.null(Transform) )
   check.trans( Transform, data$y, trans.tol=trans.tol )
   data$y <- Transform$trans( data$y )
   }
-# Since we are using Brugs we only continue if on a windows system:
-if( substr(version$os,1,5)!="mingw" )
-  {
-  cat( "The MCmcmc function only works on Windows\n" )
-  return( NULL )
-  }
+
 # Check the availability of required packages
 Got.coda <- require( coda )
 Got.R2WB <- require( R2WinBUGS )
 Got.BRugs<- require( BRugs )
-if( !Got.coda | ! Got.R2WB | !Got.BRugs )
+Got.jags <- require( rjags )
+if( !Got.coda | !Got.R2WB | ( !Got.BRugs & !Got.jags ) )
   stop( "Using the MCmcmc function requires that\n",
-        "the packages 'R2WinBUGS' as well as 'coda' are installed.\n",
-        "In addition WinBUGS or the R-package Brugs is required too.\n",
+        "the packages 'R2WinBUGS' or 'rjags' as well as 'coda' are installed.\n",
+        "In addition WinBUGS, JAGS or openbugs is required too.\n",
         "All installed packages are shown if you type 'library()'." )
+
+# Since we are using Brugs we only continue if on a windows system:
+if( substr(version$os,1,5)!="mingw" & !Got.jags )
+  {
+  cat( "The MCmcmc function only works on Windows unless you have JAGS\n" )
+  return( NULL )
+  }
 
 if(  is.null(bugs.directory) &&
     !is.null(bugs.dir <- getOption("R2WinBUGS.bugs.directory")) )
@@ -169,6 +172,23 @@ data.list <- c( list( N=N, Ni=Ni, Nm=Nm ),
 flush.console()
 
 # Run bugs
+
+if( program == "jags"  )
+{
+cat("Initialization and burn-in:\n")
+m <- jags.model( file = paste( getwd(), bugs.code.file, sep="/" ),
+                 data = data.list,
+             n.chains = n.chains,
+                inits = list.ini,
+              n.adapt = n.burnin )
+cat("Sampling:\n")
+res <- coda.samples( m,
+       variable.names = names( list.ini[[1]] ),
+               n.iter = n.iter-n.burnin,
+                 thin = n.thin )
+}
+
+if( program %in% c("winbugs","openbugs")  )
 res <- bugs( data = data.list,
             param = names( list.ini[[1]] ),
             inits = list.ini,
@@ -183,7 +203,7 @@ res <- bugs( data = data.list,
           codaPkg = TRUE )
 
 # and read the result into an mcmc.list object
-# --- different approach for WinBUGS and OpenBUGE
+# --- different approach for WinBUGS and OpenBUGS
 if( program == "winbugs"  )
   res <- read.bugs( res, quiet=TRUE )
 if( program == "openbugs" )

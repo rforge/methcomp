@@ -1,5 +1,5 @@
-\name{AB.plot}
-\alias{AB.plot}
+\name{BA.plot}
+\alias{BA.plot}
 \title{
   Bland-Altman plot of differences versus averages.
   }
@@ -12,7 +12,7 @@
   objects too.
   }
 \usage{
-AB.plot( y1, y2, meth.names = NULL,
+BA.plot( y1, y2, meth.names = NULL,
                      wh.comp = 1:2,
                      pl.type = "BA",
                     dif.type = "const",
@@ -70,7 +70,7 @@ AB.plot( y1, y2, meth.names = NULL,
   \item{     axlim}{The limits of the axes.}
   \item{    diflim}{The limits of the difference axis.}
   \item{      grid}{Should a grid be drawn? If numeric it indicates the
-    plces where the grid is drawn.}
+    places where the grid is drawn.}
   \item{    N.grid}{How many gridlines should be drawn.}
   \item{  col.grid}{What should be the color of the grid?}
   \item{    points}{Logical. Should the observed points be drawn?}
@@ -99,10 +99,9 @@ AB.plot( y1, y2, meth.names = NULL,
   \item{     alpha}{1 minus the confidence level. If \code{NULL} a
     multiplier of 2 is used for constructing prediction limits,
     otherwise a t-quantile with df equal th number of items minus 1.}
-  \item{...}{Further parameters passed on to
-             \code{\link{plot.MethComp}}}
+  \item{...}{Further parameters passed on to \code{\link{plot.MethComp}}}
 }
-\details{A plot of the relationship betwwen the methods is produced;
+\details{A plot of the relationship between the methods is produced;
   either a Bland-Altman plot of the differences versus averages, or a 45
   degree rotation as a conversion between the methods. If
   \code{model=NULL} a simple regression of averages on differences is
@@ -133,25 +132,44 @@ B Carstensen: Comparing methods of measurement: Extending the LoA by
 data( ox )
 ox <- Meth( ox )
 # The siplest possibe Bland-Altman plot
-AB.plot( ox )
+BA.plot( ox )
 
 ## With bellse and whistles, comparing the naive and meodel
-par( mfrow=c(1,2) )
-AB.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
+par( mfrow=c(2,2) )
+BA.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
+         axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
+         las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin",
+        grid=1:9*10, digits=3,font.eqn=1)
+par(new=TRUE)
+BA.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
+         axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
+         las=1, eqn=FALSE, dif.type="lin", pl.type="BA", sd.type="lin",
+        grid=1:0*10, digits=3)
+BA.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
+         axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
+         las=1, eqn=TRUE, dif.type="lin", pl.type="conv", sd.type="lin",
+        grid=1:9*10, digits=3,font.eqn=1)
+par(new=TRUE)
+BA.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
+         axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
+         las=1, eqn=FALSE, dif.type="lin", pl.type="conv", sd.type="lin",
+        grid=1:9*10, digits=3)
+# The same again, but now logit-transformed
+BA.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
          axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
          las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin",
         grid=1:9*10, digits=3,font.eqn=1,Transform="pctlogit")
 par(new=TRUE)
-AB.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
+BA.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
          axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
          las=1, eqn=FALSE, dif.type="lin", pl.type="BA", sd.type="lin",
         grid=1:0*10, digits=3,Transform="pctlogit")
-AB.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
+BA.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
          axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
          las=1, eqn=TRUE, dif.type="lin", pl.type="conv", sd.type="lin",
         grid=1:9*10, digits=3,font.eqn=1,Transform="pctlogit")
 par(new=TRUE)
-AB.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
+BA.plot( ox, model="linked", repl.conn=TRUE, col.lines="red",
          axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
          las=1, eqn=FALSE, dif.type="lin", pl.type="conv", sd.type="lin",
         grid=1:9*10, digits=3,Transform="pctlogit")

@@ -1,8 +1,9 @@
 \name{BlandAltman}
 \alias{BlandAltman}
-\alias{BA.plot}
+\alias{AB.plot}
 \title{
-  Bland-Altman plot of differences versus averages.
+  Bland-Altman plot of differences versus averages. Deprecated, formerly
+  known as BA.plot, likely to disappear from the package.
 }
 \description{
   For two vectors of equal length representing measurements of the same
@@ -31,7 +32,7 @@
               mult = FALSE,
              alpha,
                ... )
-  BA.plot( y1, y2,
+  AB.plot( y1, y2,
       meth.names = NULL,
        mean.repl = FALSE,
        conn.repl = !mean.repl,

@@ -255,6 +255,8 @@ function( x, what = "sd",
 sbset <- NULL
 if( any( what %in% c("sd","sigma") ) ) sbset <- c(sbset,"mi","ir","res")
 if( any( what %in% c("all")        ) ) sbset <- c(sbset,"tot")
+if( any( what %in% c("alpha")      ) ) sbset <- c(sbset,"alpha")
+if( any( what %in% c("beta")       ) ) sbset <- c(sbset,"beta")
 if( any( what %in% c("mn","mean")  ) ) sbset <- c(sbset,"alpha","beta")
 # Select columns from posterior based on subset=
 if( is.character(subset) )

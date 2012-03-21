@@ -1,4 +1,4 @@
-AB.plot <-
+BA.plot <-
 function( y1, y2, meth.names = NULL,
                      wh.comp = 1:2,
                      pl.type = "BA",
@@ -42,8 +42,8 @@ if( is.vector( y1 ) )
   # If we have a vector, check if it has the same length as the second argument
   if( length(y1)!=length(y2) )
     stop( "Arguments y1 and y2 must have same length, but",
-          "hut length(y1)=",  length(y1),
-            ", length(y2)=",  length(y2) )
+          "length(y1)=",  length(y1),
+        ", length(y2)=",  length(y2) )
   else
   {
   # And if they are of same length, make a Meth object out of it using
@@ -65,7 +65,7 @@ if( is.data.frame( y1 ) )
   obj <- Meth( y1[y1$meth %in% wh.comp,], print=FALSE )
   }
 
-else stop("Wrong data structrure for y1 supplied: str(y1)", str(y1) )
+else stop("Wrong data structrue for y1 supplied: str(y1):", str(y1) )
 
 # So we turn this into a MethComp object
 if( is.null(model) )
