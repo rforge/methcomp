@@ -150,7 +150,7 @@ BlandAltman  <-
  upper.agreement.limit <- difference.mean+al	   # agreement limits
  lower.agreement.limit <- difference.mean-al
  p.no.diff <- pt( abs( difference.mean/
-                      (difference.sd/sqrt(n)) ), n-1, low=FALSE )*2
+                      (difference.sd/sqrt(n)) ), n-1, lower.tail=FALSE )*2
                                                 # p value for H0: mean(diff)=0
 
  # Collect results in a named vector

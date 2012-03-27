@@ -189,18 +189,18 @@ res <- coda.samples( m,
 }
 
 if( program %in% c("winbugs","openbugs")  )
-res <- bugs( data = data.list,
-            param = names( list.ini[[1]] ),
-            inits = list.ini,
-       model.file = paste( getwd(), bugs.code.file, sep="/" ),
-         n.chains = n.chains,
-           n.iter = n.iter,
-         n.burnin = n.burnin,
-           n.thin = n.thin,
-         bugs.dir = bugs.directory,
-            debug = debug,
-          program = program,
-          codaPkg = TRUE )
+res <- bugs(  data = data.list,
+parameters.to.save = names( list.ini[[1]] ),
+             inits = list.ini,
+        model.file = paste( getwd(), bugs.code.file, sep="/" ),
+          n.chains = n.chains,
+            n.iter = n.iter,
+          n.burnin = n.burnin,
+            n.thin = n.thin,
+    bugs.directory = bugs.directory,
+             debug = debug,
+           program = program,
+           codaPkg = TRUE )
 
 # and read the result into an mcmc.list object
 # --- different approach for WinBUGS and OpenBUGS
