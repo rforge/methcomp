@@ -8,7 +8,7 @@
   quantity by two different methods, the differences are plotted versus the
   average. The limits of agreement (prediction limits for the differences)
   are plotted, optionally a regression of differences of means is given
-  too. Wirks with \code{\link{Meth}} objects and \code{\link{MethComp}}
+  too. Works with \code{\link{Meth}} objects and \code{\link{MethComp}}
   objects too.
   }
 \usage{
@@ -49,56 +49,56 @@ BA.plot( y1, y2, meth.names = NULL,
             \code{\link{Meth}} or a \code{\link{MethComp}} object, see details.}
   \item{y2}{Numerical vector of measurements by 2nd method. Must of same
             length as \code{x}. Ignored if a \code{\link{Meth}} or a
-	    \code{\link{MethComp}} objects is gievn for \code{x}.}
+	    \code{\link{MethComp}} objects is given for \code{x}.}
   \item{meth.names}{Label for the method names.}
   \item{wh.comp}{Which methods should be compared. Either numerical or
     character.}
-  \item{   pl.type}{What type of plot shoudl be made, \code{"BA"} for
-    differences versus avearages, \code{"conv"} for method 1 versus
+  \item{   pl.type}{What type of plot should be made, \code{"BA"} for
+    differences versus averages, \code{"conv"} for method 1 versus
     method 2.}
   \item{  dif.type}{How should difference depend on the
     averages. \code{"const"} or \code{"lin"}.}
   \item{   sd.type}{How should the standard deviation depend on the
     averages. \code{"const"} or \code{"lin"}.}
   \item{     model}{Should a variance component model be used to compute
-  the limits of agreement? If \code{NULL} a simple analysis is mde;
+  the limits of agreement? If \code{NULL} a simple analysis is made;
   other possibilities are \code{"exch"} or \code{"linked"} for
   exchangeable or linked replicates.}
   \item{      eqax}{Should the axes be identical? If a Bland-Altman plot
-  is drawn, the axis for the differences wil have the same extent af the
+  is drawn, the axis for the differences will have the same extent as the
   axis for the averages, but centered on 0 (see \code{diflim}).}
   \item{     axlim}{The limits of the axes.}
   \item{    diflim}{The limits of the difference axis.}
   \item{      grid}{Should a grid be drawn? If numeric it indicates the
     places where the grid is drawn.}
-  \item{    N.grid}{How many gridlines should be drawn.}
+  \item{    N.grid}{How many grid-lines should be drawn.}
   \item{  col.grid}{What should be the color of the grid?}
   \item{    points}{Logical. Should the observed points be drawn?}
-  \item{col.points}{What color shoudl they have?}
+  \item{col.points}{What color should they have?}
   \item{cex.points}{How large should they be?}
-  \item{pch.points}{What plot chahracter for the points}
-  \item{       lwd}{Numerical vector of 3, giving the witdh of the
+  \item{pch.points}{What plot character for the points}
+  \item{       lwd}{Numerical vector of 3, giving the width of the
     conversion line (mean difference) and the limits of agreement.}
   \item{ col.lines}{What color should the lines have.}
-  \item{ repl.conn}{Should replicate measirements be connected (within items)?}
+  \item{ repl.conn}{Should replicate measurements be connected (within items)?}
   \item{  col.conn}{Color of connecting lines.}
   \item{  lwd.conn}{Width of connecting lines.}
   \item{      xlab}{x-axis label.}
   \item{      ylab}{y-axis label.}
-  \item{       eqn}{Logical. Should the equations linking the metods be
-    shown on the plot? If a Bland-Altman plot is made, both the eqautions
+  \item{       eqn}{Logical. Should the equations linking the methods be
+    shown on the plot? If a Bland-Altman plot is made, both the equations
   linking the methods and the equation for the differences versus the
   averages are shown.}
   \item{   col.eqn}{Color for equations}
-  \item{  font.eqn}{Font for eqautions}
+  \item{  font.eqn}{Font for equations}
   \item{    digits}{How many digits after the decimal point should be
-    used when showing the eqatuions.}
+    used when showing the equations.}
   \item{ Transform}{Transformation applied to data prior to
     analysis. Plots are made on the original scale after
-    bac-transformation.}
+    back-transformation.}
   \item{     alpha}{1 minus the confidence level. If \code{NULL} a
     multiplier of 2 is used for constructing prediction limits,
-    otherwise a t-quantile with df equal th number of items minus 1.}
+    otherwise a t-quantile with d.f. equal th number of items minus 1.}
   \item{...}{Further parameters passed on to \code{\link{plot.MethComp}}}
 }
 \details{A plot of the relationship between the methods is produced;
@@ -131,10 +131,10 @@ B Carstensen: Comparing methods of measurement: Extending the LoA by
 \examples{
 data( ox )
 ox <- Meth( ox )
-# The siplest possibe Bland-Altman plot
+# The simplest possible Bland-Altman plot
 BA.plot( ox )
 
-## With bellse and whistles, comparing the naive and meodel
+## With bells and whistles, comparing the naive and model
 par( mfrow=c(2,2) )
 BA.plot( ox, model=NULL, repl.conn=TRUE, col.lines="blue",
          axlim=c(0,100), diflim=c(-50,50), xaxs="i", yaxs="i",
