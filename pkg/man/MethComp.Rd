@@ -37,6 +37,7 @@ MethComp(obj)
       col.eqn = col.lines,
      font.eqn = 2,
        digits = 2,
+         mult = FALSE,
         alpha = NULL,
           ... )
 \method{lines}{MethComp}(x,
@@ -46,6 +47,7 @@ MethComp(obj)
                  col.lines = "black",
                        lwd = c(3,1,1),
                     digits = 3,
+                      mult = FALSE,
                      alpha = NULL,
                        ... )
 \method{points}{MethComp}(x,
@@ -56,6 +58,7 @@ MethComp(obj)
                   repl.conn = FALSE,
                    col.conn = "gray",
                    lwd.conn = 1,
+                       mult = FALSE,
                         ... )
 }
 \arguments{
@@ -89,6 +92,8 @@ MethComp(obj)
   \item{font.eqn}{font for the conversion formula}
   \item{digits}{The number of digits after the decimal point in the
     conversion formulae.}
+  \item{mult}{Logical. Should ratios be plotted on a log-scale instead
+  of differences on a linear scale? See description of the argument for \code{\link{BA.plot}}.}
   \item{alpha}{1 minus the confidence level for the prediction
     interval. If not given, the prediction interval is constructed as
     plus/minus twice the SD.}

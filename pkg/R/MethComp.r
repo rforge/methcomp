@@ -96,6 +96,7 @@ function( x,
       col.eqn = col.lines,
      font.eqn = 2,
        digits = 2,
+         mult = FALSE,
         alpha = NULL,
           ... )
 {
@@ -129,15 +130,21 @@ if( pl.type == "conv" )
 else
   # Bland-Altman type plot
   {
-  plot( NA, xlim=axlim, ylim=diflim, type="n",
+  if( mult & any(diflim<=0) ) diflim <- c(0.5,2)
+  if( mult & length(diflim)==1 ) diflim <- sort( c(diflim,1/diflim) )
+  plot( NA, xlim=axlim, ylim=diflim, type="n", log=if(mult) "y" else "",
             xlab=paste( "(", Mn[1], "+",
                              Mn[2], ") / 2" ),
-            ylab=paste( Mn[1], "-", Mn[2] ), ... )
+            ylab=paste( Mn[1], if(mult) "/" else "-", Mn[2] ), ... )
   # Grid?
   if( is.logical( grid ) )
     if( grid )
       {
-       grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
+       grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim,
+                                                         n=N.grid )
+      if( mult )
+      hgrid <- 1:20/10
+      else
       hgrid <- pretty( axlim-mean(axlim),
                        n = if( length(N.grid)>1 ) length(N.grid)
                            else N.grid )
@@ -212,49 +219,52 @@ if( sd.type=="lin"   ) paste( formatC( Sa, format="f", digits=digits ), if( Sb>0
   wxp <- 1.1
   hxp <- 2.0
 
+  cn <- par("usr")
+  if(mult) cn[3:4] <- 10^cn[3:4]
+
 if( pl.type=="conv" )
   {
   if( is.numeric(grid) )
     {
-    rect( par("usr")[1],
-          par("usr")[4],
-          par("usr")[1] + wxp*wul,
-          par("usr")[4] - hxp*hul,
+    rect( cn[1],
+          cn[4],
+          cn[1] + wxp*wul,
+          cn[4] - hxp*hul,
           border="white", col="white" )
-    rect( par("usr")[2],
-          par("usr")[3],
-          par("usr")[2] - wxp*wlr,
-          par("usr")[3] + hxp*hlr,
+    rect( cn[2],
+          cn[3],
+          cn[2] - wxp*wlr,
+          cn[3] + hxp*hlr,
           border="white", col="white" )
     }
-  text( par("usr")[1] + wxp/2*wul,
-        par("usr")[4] - hxp/2*hul, y.x,
+  text( cn[1] + wxp/2*wul,
+        cn[4] - hxp/2*hul, y.x,
         font=font.eqn, col=col.eqn )
-  text( par("usr")[2] - wxp/2*wlr,
-        par("usr")[3] + hxp/2*hlr, x.y,
+  text( cn[2] - wxp/2*wlr,
+        cn[3] + hxp/2*hlr, x.y,
         font=font.eqn, col=col.eqn )
   }
 if( pl.type=="BA" )
   {
   if( is.numeric(grid) )
     {
-    rect( par("usr")[2],
-          par("usr")[4],
-          par("usr")[2] -   wxp*max(wlr,wul),
-          par("usr")[4] - 2*hxp*max(hlr,hul),
+    rect( cn[2],
+          cn[4],
+          cn[2] -   wxp*max(wlr,wul),
+          cn[4] - 2*hxp*max(hlr,hul),
           border="white", col="white" )
-    rect( par("usr")[2],
-          par("usr")[3],
-          par("usr")[2] - wxp*wDA,
-          par("usr")[3] + hxp*hDA,
+    rect( cn[2],
+          cn[3],
+          cn[2] - wxp*wDA,
+          cn[3] + hxp*hDA,
           border="white", col="white" )
     }
-  text( par("usr")[2] - wxp/2*max(wlr,wul),
-        par("usr")[4] - hxp  *max(hlr,hul),
+  text( cn[2] - wxp/2*max(wlr,wul),
+        cn[4] - hxp  *max(hlr,hul),
         paste( y.x, "\n", x.y ),
         font=font.eqn, col=col.eqn )
-  text( par("usr")[2] - wxp/2*wDA,
-        par("usr")[3] + hxp/2*hDA,
+  text( cn[2] - wxp/2*wDA,
+        cn[3] + hxp/2*hDA,
         D.A,
         font=font.eqn, col=col.eqn )
   }
@@ -269,12 +279,14 @@ cat( "Relationships between methods:\n",
                                         lwd = lwd,
                                      digits = digits,
                                       alpha = alpha,
+                                       mult = mult,
                                         ... )
 if( points ) points.MethComp( x, col.points = col.points,
                                  pch.points = pch.points,
                                   repl.conn = repl.conn,
                                    col.conn = col.conn,
                                    lwd.conn = lwd.conn,
+                                       mult = mult,
                                         ... )
 box()
 }
@@ -290,16 +302,18 @@ function( x,
     col.lines = "black",
           lwd = c(3,1,1),
        digits = 3,
+         mult = FALSE,
         alpha = NULL,
           ... )
 {
 # Define the transformation
 if( is.null( attr( x, "Transform" ) ) )
   trf <- itr <- function( x ) x
-else {
+else
+  {
   trf <- attr( x, "Transform" )$trans
   itr <- attr( x, "Transform" )$inv
-     }
+  }
 
 # The slope and the sd, used to plot the lines
  A <- x$Conv[wh.comp[1],wh.comp[2],  "alpha"]
@@ -352,15 +366,20 @@ trm2 <- if( substr(sd.type,1,1) == "c" )
 if( tolower(substr(pl.type,1,1)) == "c" )
      matlines( m1, m2,
                lwd=lwd, lty=1, col=col.lines )
-else matlines( (m1+m2)/2, m2-m1,
+else matlines( (m1+m2)/2, if(mult) m2/m1 else m2-m1,
                lwd=lwd, lty=1, col=col.lines )
+
+# Transform status to be used when deciding if LoA should be written
+no.tr <- is.null(attr(x,"Transform"))
+is.log.tr <- FALSE
+if( !no.tr ) is.log.tr <- max( abs( attr(x,"Transform")$trans(1:10)-log(1:10) ) ) < 1e-6
 
 if( pl.type=="BA" &
     sd.type=="const" &
     inherits(x,c("DA.reg","BA.est")) &
-    is.null(attr(x,"Transform")) )
+    ( no.tr | ( mult & is.log.tr ) ) )
   {
-  LoA <- (m2-m1)[1,]
+  LoA <- if(mult) (m2/m1)[length(m1),] else (m2-m1)[length(m1),]
   axis( side=4, at=LoA, labels=formatC(LoA,format="f",digits=digits),
         col=col.lines, col.axis=col.lines, las=1 )
   box()
@@ -379,6 +398,7 @@ function( x,
     repl.conn = FALSE,
      col.conn = "gray",
      lwd.conn = 1,
+         mult = FALSE,
           ... )
 {
 if( is.numeric(wh.comp) ) wh.comp <- levels(x$data$meth)[wh.comp]
@@ -399,6 +419,9 @@ else
   {
   # Bland-Altman type plot
   points( (wide[,wh.comp[1]]+wide[,wh.comp[2]])/2,
+          if(mult)
+           wide[,wh.comp[1]]/wide[,wh.comp[2]]
+          else
            wide[,wh.comp[1]]-wide[,wh.comp[2]],
            col = col.points,
            pch = pch.points, ... )

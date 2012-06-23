@@ -126,28 +126,29 @@ BlandAltman  <-
  # Get the naming of the variables and axes
  if( is.null( x.name ) ) x.name <- x.nam
  if( is.null( y.name ) ) y.name <- y.nam
+ if( is.null( xlab ) ) xlab <- paste( "(", x.name, "+", y.name, ") / 2" )
  if( mult )
    {
    x <- log(x)
    y <- log(y)
-   if( is.null( xlab ) ) xlab <- paste( "Geometric mean( ",x.name, " , ", y.name, " )",sep="" )
+ # if( is.null( xlab ) ) xlab <- paste( "Geometric mean( ",x.name, " , ", y.name, " )",sep="" )
    if( is.null( ylab ) ) ylab <- paste( x.name, "/", y.name )
    }
  else
    {
-   if( is.null( xlab ) ) xlab <- paste( "(", x.name, "+", y.name, ") / 2" )
+#  if( is.null( xlab ) ) xlab <- paste( "(", x.name, "+", y.name, ") / 2" )
    if( is.null( ylab ) ) ylab <- paste( x.name, "-", y.name )
    }
 
  # The actual calculations
- difference <- x-y								               # vector of differences
- average    <- (x+y)/2                          # vector of means
- n <- sum(!is.na(difference))						       # number of 'observations'
+ difference <- x-y               # vector of differences
+ average    <- (x+y)/2           # vector of means
+ n <- sum(!is.na(difference))    # number of 'observations'
  tvalue <- ifelse( missing(alpha), 2, qt(1-alpha/2,n-1)*(n+1)/n )
  difference.mean <- mean(difference,na.rm=TRUE) # mean difference
  difference.sd   <-   sd(difference,na.rm=TRUE) # SD of differences
  al <- tvalue*difference.sd
- upper.agreement.limit <- difference.mean+al	   # agreement limits
+ upper.agreement.limit <- difference.mean+al    # agreement limits
  lower.agreement.limit <- difference.mean-al
  p.no.diff <- pt( abs( difference.mean/
                       (difference.sd/sqrt(n)) ), n-1, lower.tail=FALSE )*2
@@ -258,8 +259,12 @@ BlandAltman  <-
                            paste( x.name, "|", y.name ) )
 
  # Plot
- plot.default( average, difference, type="n",
-               log=if( mult ) "xy" else "",
+ plot.default( average,
+               # Use arithmetic averages even when we use ratios
+               if( mult ) (exp(average+difference/2)+
+                           exp(average-difference/2))/2
+               else difference, type="n",
+               log=if( mult ) "y" else "",
                xlim=limx, ylim=limy,
                xlab=xlab, ylab=ylab, main=maintit, ... )
  if( reg.line )

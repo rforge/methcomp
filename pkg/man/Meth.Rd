@@ -3,6 +3,10 @@
 \alias{summary.Meth}
 \alias{plot.Meth}
 \alias{mean.Meth}
+\alias{median.Meth}
+\alias{min.Meth}
+\alias{max.Meth}
+\alias{sort.Meth}
 \alias{subset.Meth}
 \alias{sample.Meth}
 \alias{transform.Meth}
@@ -25,7 +29,8 @@ Meth( data=NULL,
               cex = 0.7,
         Transform,
               ... )
-\method{mean}{Meth}(x, simplify=FALSE, ... )
+\method{mean}{Meth}(x, na.rm=TRUE, simplify=TRUE, ... )
+\method{sort}{Meth}(x, ... )
 \method{subset}{Meth}(x, ... )
 \method{sample}{Meth}( x,
                      how = "random",
@@ -72,6 +77,7 @@ Meth( data=NULL,
   \item{Transform}{Transformation used to the measurements prior to
            plotting. Function or character, see
            \code{\link{choose.trans}} for possible values.}
+  \item{na.rm}{Logical. Should \code{NA}s be removed before calculations?}
   \item{simplify}{Should a \code{Meth} object with one row per
            (meth,item) be returned?}
   \item{how}{Character. What sampling strategy should be used, one of
@@ -119,11 +125,15 @@ Meth( data=NULL,
   with only one row per (meth,item), and the means in the variable
   \code{y}. This is useful if the definition of a particular measurement
   method is the mean of a specified number of replicate measuements.
+  The functions \code{mean.Meth}, \code{median.Meth}, \code{max.Meth}, and
+  \code{min.Meth} behaves similarly, whereas \code{sort.Meth} just sorts
+  the replicates within each (meth,item), and puts the results in a
+  variable \code{sort.y} added \code{Meth} object.
 
   The \code{subset.Meth} returns a subset of the \code{Meth} rows. If a
   subset of the methods is selected, the new \code{meth} variable will
   have levels equal to the actually present levels of \code{meth} in the
-  new \code{Meth} object. This is not teh case if subsetting is done
+  new \code{Meth} object. This is not the case if subsetting is done
   using "\code{[}".
   }
 \author{Bendix Carstensen, \email{bxc@steno.dk} }

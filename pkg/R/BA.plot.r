@@ -27,7 +27,8 @@ function( y1, y2, meth.names = NULL,
                      col.eqn = col.lines,
                     font.eqn = 2,
                       digits = 2,
-                   Transform = NULL,
+                   Transform = if( mult ) "log" else NULL,
+                        mult = FALSE,
                        alpha = NULL,
                          ... )
 {
@@ -106,6 +107,7 @@ plot.MethComp( M.obj,
             font.eqn = font.eqn,
               digits = digits,
                alpha = alpha,
+                mult = mult,
                  ... )
 
 attr( M.obj, "pl.type" ) <- c( pl.type =  pl.type,
@@ -132,7 +134,7 @@ wob <- cbind( wob[,wh.comp[2]],
               # - and the item averages
           ave(wob[,wh.comp[2]],wob[,"item"]),
           ave(wob[,wh.comp[1]],wob[,"item"]) )
-# Convert to D-A corrdinates if required
+# Convert to D-A coordinates if required
 if( pl.type == "BA" )
   {
   ADmat <- rbind(c(0.5,-1),

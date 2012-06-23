@@ -10,6 +10,8 @@ y2DA,
 DA2y,
           Meth,
   summary.Meth,
+     mean.Meth,
+     sort.Meth,
      plot.Meth,
    subset.Meth,
    sample.Meth,
@@ -49,6 +51,8 @@ VC.est )
 # register S3 methods
 S3method(plot, Meth)
 S3method(summary, Meth)
+S3method(mean, Meth)
+S3method(sort, Meth)
 S3method(subset, Meth)
 S3method(sample, Meth)
 S3method(transform, Meth)

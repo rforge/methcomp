@@ -8,7 +8,7 @@
   quantity by two different methods, the differences are plotted versus the
   average. The limits of agreement (prediction limits for the differences)
   are plotted, optionally a regression of differences of means is given
-  too. Works with \code{\link{Meth}} objects and \code{\link{MethComp}}
+  too. Works with \code{\link{Meth}} and \code{\link{MethComp}}
   objects too.
   }
 \usage{
@@ -40,7 +40,8 @@ BA.plot( y1, y2, meth.names = NULL,
                      col.eqn = col.lines,
                     font.eqn = 2,
                       digits = 2,
-                   Transform = NULL,
+                   Transform = if( mult ) "log" else NULL,
+                        mult = FALSE,
                        alpha = NULL,
                          ... )
  }
@@ -96,6 +97,12 @@ BA.plot( y1, y2, meth.names = NULL,
   \item{ Transform}{Transformation applied to data prior to
     analysis. Plots are made on the original scale after
     back-transformation.}
+  \item{      mult}{Logical. If TRUE, ratios of measurement instead of
+    differences will be plotted in the Bland-Altman plot on a logarthmic
+    axis, and limits of agreement will be given on this scale?
+    This gives the same analysis as using \code{Transform="log"}, but a different
+    plot. Using another transformation than the log is accommodated, but
+    no LoA is shown on the axis.}
   \item{     alpha}{1 minus the confidence level. If \code{NULL} a
     multiplier of 2 is used for constructing prediction limits,
     otherwise a t-quantile with d.f. equal th number of items minus 1.}

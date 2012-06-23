@@ -204,21 +204,35 @@ attr(res,"row.names") <- 1:nrow(res)
 invisible( res )
 }
 
-# Calculation of means over replicates
+# Calculation of mean/median/min/max over replicates
 mean.Meth <-
-function( x, simplify=FALSE, ... )
+function( x, na.rm=TRUE, simplify=TRUE, ... )
 {
-tmp <- aggregate( x$y, list( meth=x$meth, item=x$item ), FUN=mean )
+tmp <- aggregate( x$y,
+                  list( meth=x$meth, item=x$item ),
+                  FUN=mean,
+                  na.rm=na.rm, ... )
 if( simplify )
   {
   names( tmp )[3] <- "y"
-  return( invisible( tmp ) )
+  tmp
   }
 else
   {
-  names( tmp )[3] <- "mean.y"
-  return( invisible( merge(x,tmp) ) )
+  FUN.name <- deparse( substitute(FUN) )
+  names( tmp )[3] <- paste( FUN.name, "y", sep="." )
+  tmp <- merge(x,tmp)
   }
+return( invisible( Meth( tmp, print=FALSE ) ) )
+}
+
+sort.Meth <-
+function( x, ... )
+{
+tmp <- x[order(x$meth,x$item),]
+tmp$sort.y <- ave( tmp$y, list(tmp$meth,tmp$item), FUN=sort )
+tmp <- merge(x,tmp)
+return( invisible( Meth( tmp, print=FALSE ) ) )
 }
 
 # Utilities needed to preserve the Meth attribute

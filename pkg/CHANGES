@@ -1,7 +1,21 @@
-Version 1.15 :
+Version 1.17
+
+o An argument mult=FALSE is added to BA.plot (and to plot.MethComp,
+  lines.MethComp and points.Methcomp), which for Bland-Altman plots
+  plots ratios on a log-scale instead of differences on a linear scale.
+
+o The ridiculous functions min.Meth, max.Meth and median.Meth remoced
+  again. Only mean.Meth and sort.Meth that takes means / sorts
+  measurements within item/replicate are preserved.
+
+Version 1.16
+
+o mean.Meth was not exported, it is now.
+
+Version 1.15
 
 o BA.plot is now in a new version essentially usng the facilities
-  available from at MethComp-object derived from DA.reg. 
+  available from at MethComp-object derived from DA.reg.
   The old version is still available as AB.plot.
 
 o JAGS is now recognized as a value for the program= argument to
@@ -9,16 +23,16 @@ o JAGS is now recognized as a value for the program= argument to
 
 o More intuitive example in the Deming help page, thanks to Roland Fuss.
 
-Version 1.14 :
+Version 1.14
 
 o Further bug-fixes in VC.est.random getting the estimated variances
   right. (CTEk)
 
-Version 1.13 :
+Version 1.13
 
 o Bug-fixes in VC.est.random getting the estimated variances right. (CTEk)
 
-Version 1.12 :
+Version 1.12
 
 o Complete rewrite of BA.plot, the old still available, the new
   version is so far called AB.plot. AB.plot creates a MethComp object
