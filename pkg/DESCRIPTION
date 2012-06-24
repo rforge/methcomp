@@ -1,11 +1,11 @@
 Package: MethComp
 Version: 1.17
 Date: 2012-06-23
-Title: Functions for analysis of method comparison studies.
+Title: Functions for analysis of agreement in method comparison studies.
 Author: Bendix Carstensen, Lyle Gurrin, Claus Ekstrom
 Maintainer: Bendix Carstensen <bxc@steno.dk>
 Depends: R (>= 2.10), nlme
-Suggests:  R2WinBUGS, coda, BRugs, lattice, rjags, lme4
-Description: Methods (standard and advanced) for comparison of measurement methods.
+Suggests:  R2WinBUGS, BRugs, rjags, coda, lattice, lme4
+Description: Methods (standard and advanced) for analysis of agreement between measurement methods.
 License: GPL (>= 2)
 URL: http://BendixCarstensen.com/MethComp/
