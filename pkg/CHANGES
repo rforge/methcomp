@@ -1,3 +1,11 @@
+Version 1.18
+
+o Use of the alpha= argument crashed lines.MethComp (and all the
+  functions that call this). Fixed.
+
+o Checking for coda, R2WinBUGS and rjags improved to produce fewer
+  weird error messages.
+
 Version 1.17
 
 o An argument mult=FALSE is added to BA.plot (and to plot.MethComp,

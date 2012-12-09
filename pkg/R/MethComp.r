@@ -349,9 +349,10 @@ axlim <- par("usr")[1:2]
 # Expand well beyond the limits to accommodate the differnece-plot too
   m1 <- seq( axlim[1]-diff(axlim), axlim[2]+diff(axlim),, 500 )
 trm1 <- trf( m1 )
-  df <- nlevels(x$item)-1
-# If alpha is not given use 2, otherwise the t quantile
+  df <- nlevels(x$data$item)-1
+# If alpha is not given, use 2, otherwise the t quantile
  qnt <- if( is.null(alpha) ) 2 else qt(1-alpha/2,df)
+print( qnt )
 trm2 <- if( substr(sd.type,1,1) == "c" )
             cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
                                             c(0,-1, 1)*qnt )

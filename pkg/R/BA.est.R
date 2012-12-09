@@ -121,8 +121,8 @@ if (random.raters) {
   rownames( LoA ) <- "Rand. rater - rand. rater"
 
   LoA[1,4] <- sqrt( pred.var )
-  LoA[1,2] <- - cl.fact*LoA[1,4]
-  LoA[1,3] <- cl.fact*LoA[1,4]
+  LoA[1,2] <- -cl.fact*LoA[1,4]
+  LoA[1,3] <-  cl.fact*LoA[1,4]
 }
 else {
   LoA <- LoA[-diags,,drop=FALSE]

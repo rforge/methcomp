@@ -1,6 +1,6 @@
 Package: MethComp
-Version: 1.17
-Date: 2012-06-23
+Version: 1.18
+Date: 2012-12-09
 Title: Functions for analysis of agreement in method comparison studies.
 Author: Bendix Carstensen, Lyle Gurrin, Claus Ekstrom
 Maintainer: Bendix Carstensen <bxc@steno.dk>

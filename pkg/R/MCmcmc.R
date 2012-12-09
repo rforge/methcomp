@@ -31,21 +31,26 @@ if( !is.null(Transform) )
   data$y <- Transform$trans( data$y )
   }
 
-# Check the availability of required packages
-Got.coda <- require( coda )
-Got.R2WB <- require( R2WinBUGS )
-Got.BRugs<- require( BRugs )
-Got.jags <- require( rjags )
-if( !Got.coda | !Got.R2WB | ( !Got.BRugs & !Got.jags ) )
+# Check the availability of required package
+Got.coda  <- require( coda )
+Got.r2win <-
+Got.brugs <-
+Got.jags  <-
+Got.pr    <- FALSE
+if( tolower(substr(program,1,1)) %in% c("b","o","w") ) Got.r2win <- require( R2WinBUGS, quietly=TRUE )
+if( tolower(substr(program,1,1)) %in% c("b","o"    ) ) Got.brugs <- require( BRugs    , quietly=TRUE )
+if( tolower(substr(program,1,1))=="j" )                Got.jags  <- require( rjags    , quietly=TRUE )
+if( !Got.coda |
+    !( Got.jags | Got.r2win ) )
   stop( "Using the MCmcmc function requires that\n",
         "the packages 'R2WinBUGS' or 'rjags' as well as 'coda' are installed.\n",
-        "In addition WinBUGS, JAGS or openbugs is required too.\n",
-        "All installed packages are shown if you type 'library()'." )
+        "In addition WinBUGS, JAGS or openBugs is required too.\n",
+        "(All installed packages are shown if you type 'library()'.)" )
 
-# Since we are using Brugs we only continue if on a windows system:
+# If we are using Brugs we only continue if on a windows system:
 if( substr(version$os,1,5)!="mingw" & !Got.jags )
   {
-  cat( "The MCmcmc function only works on Windows unless you have JAGS\n" )
+  cat( "The MCmcmc function only works on non-Windows systems if you have JAGS\n" )
   return( NULL )
   }
 
@@ -79,7 +84,7 @@ if( !code.only & is.null( bugs.directory ) & program=="winbugs" ) stop(
 "\n    or by setting options(bugs.directory=...).",
 "\nThe latter will last you for the rest of your session.\n" )
 
-if( !Got.BRugs & program=="openbugs" )
+if( !Got.brugs & program=="openbugs" )
   stop( "Using the MCmcmc function with Brugs/openbugs option requires",
         "that the BRugs package is installed\n" )
 
