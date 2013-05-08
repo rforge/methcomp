@@ -35,6 +35,7 @@ summary.MCmcmc,
         PBreg,
   print.PBreg,
    plot.PBreg,
+predict.PBreg,
  check.trans,
 choose.trans,
 abconv,
@@ -71,3 +72,4 @@ S3method(lines, MethComp)
 S3method(points, MethComp)
 S3method(plot, PBreg)
 S3method(print, PBreg)
+S3method(predict, PBreg)

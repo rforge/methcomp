@@ -11,15 +11,15 @@
   \method{print}{PBreg}(x,...)
 }
 \arguments{
-  \item{x}{a numeric vector of measurements by method A, alternatively
-    a data frame of exactly two columns, first column with measurements
-    by method A, second column with measurements by method B. If \code{x} is a
-    \code{\link{Meth}} object, the methods from that are used in the regression.}
+  \item{x}{a \code{\link{Meth}} object, alternatively a numeric vector of 
+    measurements by method A, or a data frame of exactly two columns, first 
+    column with measurements by method A, second column with measurements 
+    by method B. }
   \item{y}{a numeric vector of measurements by method B - must be of
-    the same length as \code{x}. If not provided, \code{x} must be
-    a data frame of exactly 2 columns.}
+    the same length as \code{x}. If not provided, \code{x} must be the 
+    \code{\link{Meth}} object or a data frame of exactly 2 columns.}
   \item{conf.level}{confidence level for calculation of confidence
-    boundaries.}
+    boundaries - 0.05 is the default. }
   \item{wh.meth}{Which of the methods from the \code{Meth} object are used in
     the regression.}
   \item{\ldots}{other parameters, currently ignored.}
@@ -42,7 +42,7 @@
   }
 \value{
   \code{PBreg} returns an object of class \code{"PBreg"}, for which
-  the \code{print} and \code{plot} methods are defined.
+  the \code{print}, \code{predict} and \code{plot} methods are defined.
 
   An object of class \code{"PBreg"} is a list composed of the following
   elements:
@@ -57,9 +57,10 @@
   \item{n}{a vector of two values: the number of observations read, and
     the number of observations used.}
   \item{S}{A vector of all slope estimates.}
+  \item{I}{A vector of all intercept estimates.}
   \item{adj}{A vector of fit parameters, where \emph{Ss} is the number of
-    estimated slopes (\code{length(S)}), \emph{K} is the offset for negative
-    slopes, \emph{M1} and \emph{M2} are the locations of confidence boundaries
+    estimated slopes (\code{length(S)}), \emph{K} is the offset for slopes <(-1), 
+    \emph{M1} and \emph{M2} are the locations of confidence boundaries
     in \code{S}, and  \emph{l} and \emph{L} are the numbers of points above and
     below the fitted line, used in cusum calculation.}
   \item{cusum}{A vector of cumulative sums of residuals sorted by the D-rank.}
@@ -71,7 +72,7 @@
   Vol 21, 709--720}
 \author{Michal J. Figurski \email{mfigrs@gmail.com}}
 \seealso{
-  \code{\link{plot.PBreg}, \link{Deming}}.
+  \code{\link{plot.PBreg}, \link{predict.PBreg}, \link{Deming}}.
 }
 \examples{
   ## Model data frame generation
