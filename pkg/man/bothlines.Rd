@@ -25,7 +25,7 @@ bothlines(x, y, Dem = FALSE, sdr = 1, col = "black", ...)
   }
 \author{
   Bendix Carstensen, Steno Diabetes Center,
-  \url{http://www.biostat.ku.dk/~bxc}
+  \url{http://BendixCarstensen.com}
   }
 \seealso{\code{\link{abline}}.}
 \examples{

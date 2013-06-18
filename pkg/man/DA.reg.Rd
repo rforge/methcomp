@@ -84,7 +84,8 @@
        referring to the regression of the differences on the averages,
        and \code{"int(sd)"}, \code{"slope(sd)"}, and \code{"s.d.=K"},
        referring to the regression of the absoulte residuals on the
-       averages.
+       averages, and \code{LoA-lo}, \code{LoA-hi}, the limits of
+       agreement.
 
        Converting from method \eqn{l} to method \eqn{k} using
        \deqn{y_{k|l}=\alpha+\beta y_l} with prediction standard
@@ -120,13 +121,15 @@
   B. Carstensen:
   Comparing methods of measurement: Extending the LoA by regression.
   Stat Med, 29:401-410, 2010.
-  }
-\author{Bendix Carstensen, Steno Diabetes Center, \code{bxc$steno.dk}}
+}
+\author{Bendix Carstensen, Steno Diabetes Center, \code{bxc$steno.dk},
+  \url{http://BendixCarstensen.com/MethComp}
+}
 \examples{
 data( milk )
 DA.reg( milk )
 data( sbp )
-print( DA.reg( sbp ), digits=3 )
+print( DA.reg(sbp), digits=3 )
 # Slope, intercept : y1 = 0.7 + 1.2*y2 (0.4)
 A <- c(0.7,1.2,0.4)
 ( y2DA( A ) )

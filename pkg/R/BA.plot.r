@@ -88,6 +88,7 @@ if( is.null(diflim) ) diflim <- axlim - mean(axlim)
 plot.MethComp( M.obj,
              wh.comp = wh.comp,
              pl.type = pl.type,
+            dif.type = dif.type,
              sd.type = sd.type,
                axlim = axlim,
               diflim = diflim,

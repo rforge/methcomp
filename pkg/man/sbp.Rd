@@ -34,6 +34,6 @@ par( mfrow=c(2,2), mar=c(4,4,1,4) )
 BA.plot( sbp, comp=1:2 )
 BA.plot( sbp, comp=2:3 )
 BA.plot( sbp, comp=c(1,3) )
-BA.est( sbp, linked=TRUE )
+\dontrun{ BA.est( sbp, linked=TRUE ) }
 }
 \keyword{datasets}

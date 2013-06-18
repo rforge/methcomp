@@ -5,7 +5,7 @@
 Estimates in the general model for method comparison studies with
 replicate measurements by each method, allowing for a linear
 relationship between methods, using the method of alternating
-regressions. 
+regressions.
 }
 \usage{
   AltReg( data,
@@ -29,7 +29,7 @@ regressions.
     otherwise not.}
   \item{IxR}{Logical, alias for linked.}
   \item{MxI}{Logical, should the method by item effect (matrix effect)
-    be in the model?} 
+    be in the model?}
   \item{varMxI}{Logical, should the method by item effect have method-specific
     variances. Ignored if only two methods are compared. See details.}
   \item{eps}{Convergence criterion, the test is the max of the relative
@@ -39,7 +39,7 @@ regressions.
     \code{TRUE} iteration number, convergence criterion and current
     estimates of means and sds are printed.}
   \item{sd.lim}{Estimated standard deviations below \code{sd.lim} are
-    disregarded in the evaluation of convergence. See details.} 
+    disregarded in the evaluation of convergence. See details.}
   \item{Transform}{A character string, or a list of two functions, each other's
                    inverse. The measurements are transformed by this before
                    analysis. Possibilities are: "exp", "log", "logit",
@@ -70,7 +70,7 @@ regressions.
   method, and hence the default option is to have a constant MxI variance
   across methods. On the other hand it may be grossly inadequate to assume
   these variances to be identical.
-  
+
   If only two methods are compared, it is not possible to separate different
   variances of the MxI effect, and hence the \code{varMxI} is ignored in this
   case.
@@ -91,7 +91,7 @@ regressions.
 \author{
   Bendix Carstensen, Steno Diabetes Center,
   \email{bxc@steno.dk},
-  \url{http://www.biostat.ku.dk/~bxc}.
+  \url{http://BendixCarstensen.com}.
 }
 \seealso{
 \code{\link{BA.est}}, \code{\link{DA.reg}}, \code{\link{Meth.sim}}, \code{\link{MethComp}}
@@ -99,13 +99,14 @@ regressions.
 \examples{
 data( ox )
 ox <- Meth( ox )
+\dontrun{
 ox.AR <- AltReg( ox, linked=TRUE, trace=TRUE, Transform="pctlogit" )
 str( ox.AR )
 ox.AR
 # plot the resulting conversion between methods
 plot(ox.AR,pl.type="conv",axlim=c(20,100),points=TRUE,xaxs="i",yaxs="i",pch=16)
 # - or the rotated plot
-plot(ox.AR,pl.type="BA",axlim=c(20,100),points=TRUE,xaxs="i",yaxs="i",pch=16)
+plot(ox.AR,pl.type="BA",axlim=c(20,100),points=TRUE,xaxs="i",yaxs="i",pch=16) }
 }
 \keyword{models}
 \keyword{regression}

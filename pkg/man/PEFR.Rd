@@ -18,7 +18,7 @@
     \item{\code{y}}{Numeric vector, the measurements, i.e. PEFR for the
       two measurements with a Wright peak flow meter and a mini Wright
       meter respectively. The measurement unit is l/min.}
-    \item{repl}{Numeric vector, replicate number. Replicates are
+    \item{\code{repl}}{Numeric vector, replicate number. Replicates are
       exchangeable within item.}
   }
 }

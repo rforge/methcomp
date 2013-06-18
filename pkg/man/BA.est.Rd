@@ -12,6 +12,7 @@
 \usage{
   BA.est( data, linked=TRUE, IxR=has.repl(data),
                              MxI=has.repl(data),
+                          corMxI=FALSE,
                           varMxI=TRUE,
                           IxR.pr=FALSE,
                             bias=TRUE, alpha=0.05,
@@ -25,13 +26,14 @@
   VC.est( data,
            IxR = has.repl(data), linked = IxR,
            MxI = has.repl(data), matrix = MxI,
+        corMxI = FALSE,
         varMxI = TRUE,
           bias = TRUE,
          print = FALSE,
  random.raters = FALSE,
     lmecontrol = lmeControl(msMaxIter=300)
  )
-  }
+}
 \arguments{
   \item{data}{A \code{\link{Meth}} object representing method comparison data
     with replicate measurements, i.e. with columns \code{meth},
@@ -44,6 +46,9 @@
   \item{MxI}{Logical. Should the method by item interaction (matrix effect) be
     included in the model.}
   \item{matrix}{Logical. Alias for \code{MxI}.}
+  \item{corMxI}{Logical. Should the method by item interaction allow
+    coorelated effects within item. Ignored if only two methods
+    are compared.}
   \item{varMxI}{Logical. Should the method by item interaction have a
     variance that varies between methods. Ignored if only two methods
     are compared.}
@@ -66,7 +71,7 @@
     of methods/raters.}
   \item{lmecontrol}{A list of control parameters passed on to \code{lme}.}
   \item{weightfunction}{Function to weigh variance components for random
-    raters. Defaults to \code{mean} but can also be \code{median}.}  
+    raters. Defaults to \code{mean} but can also be \code{median}.}
   \item{obj}{A \code{BA.est} object from which to extract the biases between
              methods.}
   \item{ref}{Numeric or character. The reference method for the biases: the
@@ -159,11 +164,12 @@ summary( ox )
 BA.est( ox )
 BA.est( ox, linked=FALSE )
 BA.est( ox, linked=TRUE, Transform="pctlogit" )
+\dontrun{
 data( sbp )
 BA.est( sbp )
 BA.est( sbp, linked=FALSE )
 # Check what you get from VC.est
-str( VC.est( sbp ) )
+str( VC.est( sbp ) )}
 }
 \keyword{models}
 \keyword{design}

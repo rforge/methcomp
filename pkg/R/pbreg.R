@@ -18,7 +18,7 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
     n     = nrow(a)
     ch    = choose(n,2)
     nn    = combn(n,2)
-    S     = I = NULL 
+    S     = I = NULL
     for (i1 in 1:ch)
         {
         data  = a[nn[,i1],]
@@ -68,7 +68,7 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
                         class="PBreg"))
 }
 
-predict.PBreg <- function(object, newdata = object$model$x, interval="confidence", level=0.95) {
+predict.PBreg <- function(object, newdata = object$model$x, interval="confidence", level=0.95,...) {
     S    = object$S
     ch   = object$adj["Ss"]
     x    = newdata
@@ -76,7 +76,7 @@ predict.PBreg <- function(object, newdata = object$model$x, interval="confidence
     n    = nrow(object$model)
     K    = object$adj["K"]
     M1   = round((ch-qnorm(1-(1-level)/2) * sqrt((n * (n-1) * (2*n+5))/18))/2,0)
-    M2   = ch-M1+1 
+    M2   = ch-M1+1
     S    = S[(M1+K):(M2+K)]
     I    = NULL
     for (i1 in 1:length(S)) {
@@ -88,7 +88,7 @@ predict.PBreg <- function(object, newdata = object$model$x, interval="confidence
         y    = x[i1] * S + I
         y.ci[i1,] = quantile(y, c(0.5,0,1), na.rm=T)
     }
-    
+
     if (interval=="confidence") { return(y.ci) }
     else { return(as.vector(y.ci$fit)) }
 }
@@ -103,13 +103,13 @@ print.PBreg <- function(x,...) {
     cat("\nSummary of residuals:\n")
     print(summary(x$residuals))
     cat("\nTest for linearity:")
-    # !!! Not working very well !!! 
+    # !!! Not working very well !!!
     cat(if(any((x$cusum<1.36*sqrt(x$adj[5]+x$adj[6]))==FALSE)) " (failed)\n" else " (passed)\n")
     cat("Linearity test not fully implemented in this version.\n\n")
-} 
-    
+}
+
 plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
-    xlab=x$meths[1], ylab=x$meths[2], subtype=1, colors = list(CI="#ccaaff50", fit="blue", 
+    xlab=x$meths[1], ylab=x$meths[2], subtype=1, colors = list(CI="#ccaaff50", fit="blue",
     ref="#99999955", bars="gray", dens="#8866aaa0", ref2=c("#1222bb99","#bb221299") ), ...)
     {
     ints    = c(x$coefficients[3],x$coefficients[1],x$coefficients[5])
@@ -127,7 +127,7 @@ plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=
         abline(ints[2], slos[2], lwd=2, col=colors[["fit"]])
 
         text(m*0.10,m*0.94, "Intercept =", adj=c(1,0), cex=0.8)
-        text(m*0.12,m*0.94, paste(formatC(ints[2], digits=4, format="g"), " [", formatC(ints[1], digits=4, format="g"), 
+        text(m*0.12,m*0.94, paste(formatC(ints[2], digits=4, format="g"), " [", formatC(ints[1], digits=4, format="g"),
             " : ", formatC(ints[3], digits=4, format="g"), "]", sep=""), adj=c(0,0), cex=0.8)
         text(m*0.10,m*0.90, "Slope =", adj=c(1,0), cex=0.8)
         text(m*0.12,m*0.90, paste(formatC(slos[2], digits=4, format="g"), " [", formatC(slos[1], digits=4, format="g"),

@@ -28,7 +28,7 @@ bugs.code.file = "model.txt",
       ini.mult = 2,
       list.ini = TRUE,
            org = FALSE,
-       program = "BRugs",
+       program = "JAGS",
      Transform = NULL,
      trans.tol = 1e-6,
            ... )
@@ -43,7 +43,7 @@ bugs.code.file = "model.txt",
              \code{y} represents a measurement on an \code{item}
              (typically patient or sample) by method \code{meth}, in replicate
              \code{repl}.}
- \item{bias}{Character. Indicating how the bias between metods should be
+ \item{bias}{Character. Indicating how the bias between methods should be
              modelled. Possible values are \code{"none"}, \code{"constant"},
              \code{"linear"} and \code{"proportional"}. Only the first three
              letters are significant. Case insensitive.}
@@ -72,9 +72,9 @@ bugs.code.file = "model.txt",
   \item{code.only}{Should \code{MCmcmc} just create a bugs code file and a set
                    of inits? See the \code{list.ini} argument.}
   \item{ini.mult}{Numeric. What factor should be used to randomly perturb the
-                  initial values for the variance componets, see below in details.}
+                  initial values for the variance components, see below in details.}
   \item{list.ini}{List of lists of starting values for the chains, or logical
-        inidcating whether starting values should be generated.
+        indicating whether starting values should be generated.
         If \code{TRUE} (the default), the function \code{\link{VC.est}} will
         be used to generate
         initial values for the chains. \code{list.ini} is a list of length
@@ -97,16 +97,20 @@ bugs.code.file = "model.txt",
              an attribute, \code{original}, with the posterior of the parameters
              in the model actually simulated.}
   \item{program}{Which program should be used for the MCMC simulation.
-                 Possible values are "brugs","openbugs","ob" (openBUGS),
-                 "winbugs","wb" (WinBUGS), "jags" (JAGS).}
+                 Possible values are "\code{BRugs}", "\code{openbugs}",
+		 "\code{ob}" (openBUGS/BRugs), "\code{winbugs}",
+		 "\code{wb}" (WinBUGS), "\code{jags}" (JAGS). Case
+		 insensitive. Defaults to "\code{JAGS}" since: 1) JAGS
+		 is available on all platforms and 2) JAGS seems to be
+		 faster than BRugs on (some) windows machines.}
   \item{Transform}{Transformation of data (\code{y}) before analysis.
                    See \code{\link{choose.trans}}.}
   \item{trans.tol}{The tolerance used to check whether the supplied
                    transformation and its inverse combine to the identity.}
   \item{...}{Additional arguments passed on to \code{\link[R2WinBUGS]{bugs}}.}
-  \item{object}{A \code{MCmcmc} object}
+  \item{object}{An \code{MCmcmc} object}
   \item{alpha}{1 minus the the confidence level}
-  \item{x}{A \code{MCmcmc} object}
+  \item{x}{An \code{MCmcmc} object}
   \item{digits}{Number of digits after the decimal point when printing.}
   \item{subset}{Numerical, character or list giving the variables to keep.
                 If numerical, the variables in the \code{MCmcmc} object with
@@ -118,9 +122,6 @@ bugs.code.file = "model.txt",
   \item{chains}{Numerical vector giving the number of the chains to keep.}
   }
 \details{
-  This function uses features currently only available under Windows, so the
-  function returns NULL unless the operating system is Windows.
-
   The model set up for an observation \eqn{y_{mir}}{y_mir} is:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) +
     e_{mir}}{y_mir = alpha_m + beta_m*(mu_i+b_ir+c_mi) + e_mir}
@@ -137,9 +138,9 @@ bugs.code.file = "model.txt",
     \beta_{m\cdot k}=\beta_m/\beta_k}{alpha_m|k=alpha_m-alpha_k
     beta_m/beta_k,  beta_m|k=beta_m/beta_k}
   The posteriors of these are derived and included in the \code{posterior}, which
-  also will contain the posterior of the variance components (the sd's, that is).
+  also will contain the posterior of the variance components (the SDs, that is).
   Furthermore, the posterior of the point where the conversion lines intersects
-  the identity as well as the prediction sd's between any pairs of methods are
+  the identity as well as the prediction SDs between any pairs of methods are
   included.
 
   The function \code{summary.MCmcmc} method gives estimates of the conversion
@@ -161,15 +162,15 @@ bugs.code.file = "model.txt",
   }
 \value{
   If \code{code.only==FALSE}, an object of class \code{MCmcmc} which is
-  a  \code{\link[coda]{mcmc.list}} object of the relevant parametes, i.e. the
+  a  \code{\link[coda]{mcmc.list}} object of the relevant parameters, i.e. the
   posteriors of the conversion parameters and the variance components transformed
   to the scales of each of the methods.
 
-  Furthermore, the object have the following attibutes:
-  \item{random}{Character vector indicatinf which random effects ("ir","mi")
+  Furthermore, the object have the following attributes:
+  \item{random}{Character vector indicating which random effects ("ir","mi")
                 were included in the model.}
   \item{methods}{Character vector with the method names.}
-  \item{data}{The dataframe used in the analysis. This is
+  \item{data}{The data frame used in the analysis. This is
               used in \code{\link{plot.MCmcmc}} when plotting points.}
   \item{mcmc.par}{A list giving the number of chains etc. used to
                   generate the object.}
@@ -186,7 +187,7 @@ bugs.code.file = "model.txt",
   of measurement, Biostatistics, 5, pp 399-413, 2004
   }
 \author{Bendix Carstensen, Steno Diabetes Center,
-  \url{http://www.biostat.ku.dk/~bxc},
+  \url{http://BendixCarstensen.com},
   Lyle Gurrin, University of Melbourne,
   \url{http://www.epi.unimelb.edu.au/about/staff/gurrin-lyle}.
   }
@@ -199,14 +200,16 @@ bugs.code.file = "model.txt",
 \examples{
 data( ox )
 str( ox )
+ox <- Meth( ox )
+# Writes the BUGS program to your console
 MCmcmc( ox, MI=TRUE, IR=TRUE, code.only=TRUE, bugs.code.file="" )
 
 ### What is written here is not necessarily correct on your machine.
-# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100, program="winbugs" )
+# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100, program="JAGS" )
 # ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100 )
-# data( ox.MC )
-#  str( ox.MC )
-#print( ox.MC )
+#  data( ox.MC )
+#   str( ox.MC )
+# print( ox.MC )
 }
 \keyword{models}
 \keyword{design}

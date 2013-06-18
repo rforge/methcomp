@@ -46,7 +46,7 @@ if( MxI )
     if( Nm ==2 | !varMxI ) {
       # CE - model OK
       iri <- droplevels(interaction(item,repl))
-      
+
       m1 <- lme( y ~ item - 1,
                 random = list( one = pdBlocked(list(pdIdent( ~ item:meth-1 ) ,
                                      pdIdent(~ iri-1),
@@ -68,9 +68,9 @@ if( MxI )
     if( Nm > 2 & varMxI ) {
        # CE - model OK
       iri <- droplevels(interaction(item,repl))
-      
+
        m1 <- lme( y ~ item - 1,
-                  random = list( one = pdBlocked(list(pdIdent(~ iri-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),                
+                  random = list( one = pdBlocked(list(pdIdent(~ iri-1), pdIdent(~ meth-1))), item=pdDiag( ~ meth-1 )),
                   weights = varIdent( form = ~1 | meth ),
                   control = lmecontrol )
 
@@ -191,7 +191,7 @@ if( IxR ) omega <- as.numeric( vc[grep("^iri(.+)",rownames(vc)),2][1] )
 
 # The residual variances
 sig <- attr(m1$residuals,"std")
-sigma <- tapply( sig, names(sig), unique )
+sigma <- tapply( sig, names(sig), unique )[Mn]
 # Collect variance components
 dnam <- list( Mn, c("IxR","MxI","M","res") )
 vcmp <- array( 0, dim=sapply(dnam,length), dimnames=dnam )

@@ -123,7 +123,7 @@ B Carstensen: Comparing methods of measurement: Extending the LoA by
   }
 \author{
   Bendix Carstensen \email{bxc@steno.dk},
-  \url{http://www.biostat.ku.dk/~bxc}.
+  \url{http://BendixCarstensen.com}.
   }
 \seealso{
   \code{\link{BA.plot}}, \code{\link{MCmcmc}}.

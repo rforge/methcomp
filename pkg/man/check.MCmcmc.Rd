@@ -86,7 +86,7 @@
 \author{
   Bendix Carstensen, Steno Diabetes Center,
   \email{bxc@steno.dk},
-  \url{http://www.biostat.ku.dk/~bxc}.
+  \url{http://BendixCarstensen.com}.
 }
 \seealso{\code{\link{MCmcmc}},
          \code{\link{plot.MCmcmc}},

@@ -47,8 +47,8 @@ for( i in 1:(Nm-1) ) for( j in (i+1):Nm )
    sb <- Meth( data[data$meth %in% Mnam[c(i,j)],c("meth","item","repl","y")], print=FALSE )
    cf <- do.DA.reg( sb, random.raters = random.raters,
                              DA.slope = DA.slope )
-   cv <- cbind( DA2y(cf[1:3]), rbind(c(cf[4], cf[1:3],cf[5:7]),
-                                     c(cf[4],-cf[1:3],cf[5:7])), matrix(NA,2,2) )
+   cv <- cbind( DA2y(cf[1:3]), rbind(c(cf[4], cf[1:3],cf[5:7], cf[8:9]),
+                                     c(cf[4],-cf[1:3],cf[5:7],-cf[9:8])) )
    conv[i,j,] <- cv[1,]
    conv[j,i,] <- cv[2,]
    }
@@ -77,17 +77,19 @@ else
 D <-  wd[,Mnam[1]]-wd[,Mnam[2]]
 A <- (wd[,Mnam[1]]+wd[,Mnam[2]])/2
 m0 <- if( random.raters ) lm( D ~ -1 )
-      else if( DA.slope ) lm( D ~ A )
-           else lm( D ~ 1 )
+      else if( DA.slope ) lm( D ~  A )
+           else           lm( D ~  1 )
+mc <- lm( D ~ 1 )
 ms <- lm( abs(residuals(m0)) ~ A )
 cf <- if( random.raters ) cbind(c(0,0),matrix(NA,2,3))
       else if( DA.slope ) summary(m0)$coef
            else rbind( summary(m0)$coef, c(0,NA,NA,1) )
 res <- c(cf[,1],                              # a, b regressing D on A
-         summary(m0)$sigma,                   # residula sd
+         summary(m0)$sigma,                   # residual sd
          cf[2,4],                             # pvalue for b=0
          summary(ms)$coef[1:2,1]*sqrt(pi/2),  # alpha, beta for sd regressed on means
-         summary(ms)$coef[2,4] )              # pvalue for beta=0
+         summary(ms)$coef[2,4],               # pvalue for beta=0
+         mc$coef + c(-2,2)*summary(mc)$sigma) # Limits of agreement from mc
 return( invisible( res ) )
 }
 }

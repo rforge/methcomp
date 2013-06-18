@@ -13,13 +13,13 @@ using \code{\link{MCmcmc}}, with \code{n.iter=100000} on the dataset
 }
 \details{
   The basic data are measurements of systolic blood pressure from the
-  \code{\link{sbp}} dataset. Measurements are taked to be linked within replicate.
+  \code{\link{sbp}} dataset. Measurements are taken to be linked within replicate.
   The code used to generate the object was:
   \preformatted{
   library(MethComp)
   data( sbp )
   spb <- Meth( sbp )
-  sbp.MC <- MCmcmc( sbp, linked=TRUE, n.iter=100000 ) )
+  sbp.MC <- MCmcmc( sbp, linked=TRUE, n.iter=100000, program="JAGS" ) )
   }
   }
 \examples{
@@ -32,20 +32,21 @@ trace.MCmcmc(sbp.MC)
 trace.MCmcmc(sbp.MC,"beta")
 
 # A MCmcmc object also has class mcmc.list, so we can use the
-# standard coda functions for covergence diagnostics:
+# standard coda functions for convergence diagnostics:
 acfplot( subset.MCmcmc(sbp.MC,subset="sigma") )
 
 # Have a look at the correlation between the 9 variance parameters
 pairs.MCmcmc( sbp.MC )
 
-# Have a look at whether the MxI variance componnts are the same between methods:
-pairs.MCmcmc( sbp.MC, subset=c("ir"), eq=TRUE,
+# Have a look at whether the MxI variance components are the same between methods:
+\dontrun{
+pairs.MCmcmc( sbp.MC, subset=c("mi"), eq=TRUE,
               panel=function(x,y,...)
                     {
                     abline(0,1)
                     abline(v=median(x),h=median(y),col="gray")
                     points(x,y,...)
                     }
-             )
+             ) }
 }
 \keyword{datasets}

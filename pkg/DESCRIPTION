@@ -1,50 +1,13 @@
 Package: MethComp
-Version: 1.19
+Version: 1.22
+Date: 2013-06-05
+Version: 1.22
 Date: 2013-05-08
 Title: Functions for analysis of agreement in method comparison studies.
 Author: Bendix Carstensen, Lyle Gurrin, Claus Ekstrom, Michal Figurski
 Maintainer: Bendix Carstensen <bxc@steno.dk>
-Depends:
-    R (>= 2.10),
-    nlme
-Suggests:
-    R2WinBUGS,
-    BRugs,
-    rjags,
-    coda,
-    lattice,
-    lme4
-Description: Methods (standard and advanced) for analysis of agreement between
-    measurement methods.
+Depends: R (>= 3.0.0), nlme
+Suggests:  R2WinBUGS, BRugs, rjags, coda, lattice, lme4
+Description: Methods (standard and advanced) for analysis of agreement between measurement methods.
 License: GPL (>= 2)
 URL: http://BendixCarstensen.com/MethComp/
-Collate:
-    'AltReg.R'
-    'BA.est.R'
-    'BA.plot.r'
-    'BlandAltman.R'
-    'DA.reg.r'
-    'Deming.R'
-    'FL.R'
-    'MCmcmc.R'
-    'Meth.r'
-    'Meth.sim.R'
-    'MethComp.r'
-    'TDI.R'
-    'VC.est.R'
-    'VC.est.fixed.R'
-    'VC.est.random.R'
-    'abconv.R'
-    'bothlines.R'
-    'check.MCmcmc.R'
-    'corr.measures.R'
-    'pbreg.R'
-    'perm.repl.R'
-    'plot.MCmcmc.R'
-    'plot.Meth.R'
-    'plot.VarComp.R'
-    'sample.Meth.r'
-    'subset.MCmcmc.R'
-    'summary.MCmcmc.R'
-    'summary.Meth.R'
-    'to.wide.R'

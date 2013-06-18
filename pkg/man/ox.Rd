@@ -35,9 +35,10 @@ data(ox)
 str(ox)
 ox <- Meth(ox)
 with( ox, table(table(item)) )
+summary( ox )
 # The effect of basing LoA on means over replicates:
 par( mfrow=c(1,2), mar=c(4,4,1,4) )
-BA.plot( ox, ymax=20 )
-BA.plot( ox, ymax=20, mean.repl=TRUE )
+BA.plot(      ox , diflim=c(-20,20), axlim=c(20,100), repl.conn=TRUE )
+BA.plot( mean(ox), diflim=c(-20,20), axlim=c(20,100) )
 }
 \keyword{datasets}

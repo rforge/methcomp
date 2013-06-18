@@ -22,8 +22,9 @@ if( inherits( obj, "MCmcmc" ) )
   # Store the array in a different layout
   # [This is crazy! the layout of the MCmcmc summary should be changed]
   Conv <- array( NA, dimnames=dnam, dim=sapply(dnam,length) )
+  Nm <- dim(Conv)[1]
   for( i in 1:3 ) Conv[,,i] <- t(ca[,,i])
-  for( i in 1:2 ) for( j in 1:2 ) Conv[i,j,4:6] <- y2DA( Conv[i,j,1:3] )
+  for( i in 1:Nm ) for( j in 1:Nm ) Conv[i,j,4:6] <- y2DA( Conv[i,j,1:3] )
   VarComp <- Obj$VarComp[,-4,1]
   names(dimnames(VarComp)) <- c("Method","s.d.")
   cls <- c("MethComp","fromMCmcmc")
@@ -78,6 +79,7 @@ plot.MethComp <-
 function( x,
       wh.comp = 1:2,
       pl.type = "conv",
+     dif.type = "lin",
       sd.type = "const",
         axlim = range(x$data$y,na.rm=TRUE),
        diflim = axlim-mean(axlim),
@@ -102,10 +104,12 @@ function( x,
 {
 # Set the options
 if( is.numeric(wh.comp) ) wh.comp <- levels( x$data$meth )[wh.comp]
- pl.type <- ifelse( substr(tolower(pl.type),1,1) == "c", "conv" , "BA" )
- sd.type <- ifelse( substr(tolower(sd.type),1,1) == "c", "const", "lin" )
+ pl.type <- ifelse( substr(tolower( pl.type),1,1) == "c", "conv" , "BA" )
+dif.type <- ifelse( substr(tolower(dif.type),1,1) == "c", "const", "lin" )
+ sd.type <- ifelse( substr(tolower( sd.type),1,1) == "c", "const", "lin" )
 options( MethComp.wh.comp = wh.comp,
          MethComp.pl.type = pl.type,
+        MethComp.dif.type = dif.type,
          MethComp.sd.type = sd.type )
 Mn <- wh.comp
 
@@ -298,6 +302,7 @@ lines.MethComp <-
 function( x,
       wh.comp = getOption("MethComp.wh.comp"),
       pl.type = getOption("MethComp.pl.type"),
+     dif.type = getOption("MethComp.dif.type"),
       sd.type = getOption("MethComp.sd.type"),
     col.lines = "black",
           lwd = c(3,1,1),
@@ -352,7 +357,6 @@ trm1 <- trf( m1 )
   df <- nlevels(x$data$item)-1
 # If alpha is not given, use 2, otherwise the t quantile
  qnt <- if( is.null(alpha) ) 2 else qt(1-alpha/2,df)
-print( qnt )
 trm2 <- if( substr(sd.type,1,1) == "c" )
             cbind( A+B*trm1, S ) %*% rbind( c(1, 1, 1),
                                             c(0,-1, 1)*qnt )
@@ -377,6 +381,7 @@ if( !no.tr ) is.log.tr <- max( abs( attr(x,"Transform")$trans(1:10)-log(1:10) ) 
 
 if( pl.type=="BA" &
     sd.type=="const" &
+    dif.type=="const" &
     inherits(x,c("DA.reg","BA.est")) &
     ( no.tr | ( mult & is.log.tr ) ) )
   {

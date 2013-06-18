@@ -40,7 +40,7 @@
   of measurement, Biostatistics, 5, pp 399-413, 2004
 }
 \author{Bendix Carstensen, Steno Diabetes Center,
-        \url{http://www.biostat.ku.dk/~bxc}}
+        \url{http://BendixCarstensen.com}}
 \seealso{\code{\link{BA.plot}}, \code{\link{MCmcmc}}}
 \examples{
 abconv( 0.3, 0.9, 0.8, 0.8 )

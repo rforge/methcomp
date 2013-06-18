@@ -6,21 +6,22 @@
   result of Passing-Bablok regression.
 }
 \usage{
-\method{predict}{PBreg}(object, newdata = object$model$x, interval="confidence", 
-  level=0.95)
+\method{predict}{PBreg}(object, newdata = object$model$x, interval="confidence",
+  level=0.95,...)
 }
 \arguments{
   \item{object}{an object of class \code{"PBreg"}}
-  \item{newdata}{an optional vector of new values of \code{x} to make predictions for. 
+  \item{newdata}{an optional vector of new values of \code{x} to make predictions for.
     If omitted, the fitted values will be used.}
-  \item{interval}{type of interval calculation - either \code{confidence} or \code{none}. 
+  \item{interval}{type of interval calculation - either \code{confidence} or \code{none}.
     The former is the default.}
   \item{level}{tolerance/confidence level.}
+  \item{...}{Not used.}
 }
 \value{
-  If \code{interval} is \code{"confidence"} this function returns a data frame with 
+  If \code{interval} is \code{"confidence"} this function returns a data frame with
   three columns: "fit", "lwr" and "upr" - similarly to \code{predict.lm}.
-  
+
   If \code{interval} is \code{"none"} a vector of predicted values is returned.
 }
 \references{Passing, H. and Bablok, W. (1983), A New Biometrical Procedure

@@ -80,7 +80,7 @@
   \url{http://www.epi.unimelb.edu.au/about/staff/gurrin-lyle}
   
   Bendix Carstensen, Steno Diabetes Center,
-  \url{http://www.biostat.ku.dk/~bxc}
+  \url{http://BendixCarstensen.com}
   }
 \seealso{\code{\link{summary.Meth}},
          \code{\link{plot.Meth}},

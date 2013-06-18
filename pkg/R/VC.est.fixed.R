@@ -2,9 +2,10 @@ VC.est.fixed <-
 function( data,
            IxR = has.repl(data), linked = IxR,
            MxI = has.repl(data), matrix = MxI,
+        corMxI = FALSE, # matrix effects are correlated within items
         varMxI = TRUE,  # variance of matrix effect varies across methods
           bias = TRUE,  # Estimate a bias between methods
-         print = FALSE,  # Print bias and variance?
+         print = FALSE, # Print bias and variance?
     lmecontrol = lmeControl(msMaxIter=300)  # Control options for lme
         )
 # A utility function to fit the relevant variance component model with
@@ -13,6 +14,14 @@ function( data,
 {
 # Is the supplied dataframe a Meth object? If not make it!
 if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
+
+# Check the consistency of the MxI specification
+if( corMxI & !varMxI )
+  {
+  cat("Correlated meth x item (MxI) effects not meaningful with identical variances\n",
+      "Hence, the varMxI==FALSE is ignored and varMxI assumed TRUE")
+  varMxI <- TRUE
+  }
 
 # Fill in the variance components arguments:
 if( missing(MxI) ) MxI <- matrix
@@ -50,9 +59,15 @@ if( MxI )
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
-    if( Nm > 2 & varMxI )
+    if( Nm > 2 & varMxI & !corMxI )
       m1 <- lme( y ~ item - 1 + meth,
                  random = list( item = pdDiag( ~ meth-1 ),
+                                repl = ~1 ),
+                weights = varIdent( form = ~1 | meth ),
+                control = lmecontrol )
+    if( Nm > 2 & varMxI & corMxI )
+      m1 <- lme( y ~ item - 1 + meth,
+                 random = list( item = pdSymm( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
@@ -65,9 +80,14 @@ if( MxI )
                  random = list( item = pdIdent( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
-    if( Nm > 2 & varMxI )
+    if( Nm > 2 & varMxI & !corMxI )
       m1 <- lme( y ~ item - 1 + meth,
                  random = list( item = pdDiag( ~ meth-1 ) ),
+                weights = varIdent( form = ~1 | meth ),
+                control = lmecontrol )
+    if( Nm > 2 & varMxI & corMxI )
+      m1 <- lme( y ~ item - 1 + meth,
+                 random = list( item = pdSymm( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
     }
@@ -102,9 +122,15 @@ if( MxI )
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
-    if( Nm > 2 & varMxI )
+    if( Nm > 2 & varMxI & !corMxI )
       m1 <- lme( y ~ item - 1,
                  random = list( item = pdDiag( ~ meth-1 ),
+                                repl = ~1 ),
+                weights = varIdent( form = ~1 | meth ),
+                control = lmecontrol )
+    if( Nm > 2 & varMxI & corMxI )
+      m1 <- lme( y ~ item - 1,
+                 random = list( item = pdSymm( ~ meth-1 ),
                                 repl = ~1 ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
@@ -117,9 +143,14 @@ if( MxI )
                  random = list( item = pdIdent( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
-    if( Nm > 2 & varMxI )
+    if( Nm > 2 & varMxI & !corMxI )
       m1 <- lme( y ~ item - 1,
                  random = list( item = pdDiag( ~ meth-1 ) ),
+                weights = varIdent( form = ~1 | meth ),
+                control = lmecontrol )
+    if( Nm > 2 & varMxI & corMxI )
+      m1 <- lme( y ~ item - 1,
+                 random = list( item = pdSymm( ~ meth-1 ) ),
                 weights = varIdent( form = ~1 | meth ),
                 control = lmecontrol )
     }
@@ -156,20 +187,25 @@ Mu <- summ[grep("item",rownames(summ)),1]
 
 # The two-way random interactions
 vc <- nlme:::VarCorr( m1 )
-if(        MxI )   tau <- as.numeric( vc[grep("meth",rownames(vc)),2] )
+tau <- matrix( NA, Nm, if(corMxI) Nm else 1 )
+tau.ch <- vc[grep("meth",rownames(vc)),-1,drop=FALSE]
+if(        MxI )                  tau[    ,1] <- as.numeric( tau.ch[    ,1] )
+if(     corMxI ) for( m in 2:Nm ) tau[m:Nm,m] <- as.numeric( tau.ch[m:Nm,m] )
 if( IxR &  MxI ) omega <- as.numeric( vc[grep("Inte",rownames(vc)),2] )
 if( IxR & !MxI ) omega <- as.numeric( vc[grep("repl",rownames(vc)),2][1] )
 
 # The residual variances
 sig <- attr(m1$residuals,"std")
-sigma <- tapply( sig, names(sig), unique )
+# Note that tepply will return the sigmas alphabetically ordered, and we
+# need them ordered as the levels of meth, hence the "[Mn]".
+sigma <- tapply( sig, names(sig), unique )[Mn]
 
 # Collect variance components
-dnam <- list( Mn, c("IxR","MxI","res") )
+dnam <- list( Mn, c("IxR","MxI",if(corMxI) Mn[-Nm],"res") )
 vcmp <- array( 0, dim=sapply(dnam,length), dimnames=dnam )
-vcmp[,"IxR"] <- if(IxR) omega else 0
-vcmp[,"MxI"] <- if(MxI) tau   else 0
-vcmp[,"res"] <-         sigma
+vcmp[,"IxR"]            <- if(IxR) omega else 0
+vcmp[,-c(1,ncol(vcmp))] <- if(MxI) tau   else 0
+vcmp[,"res"]            <-         sigma
 
 # List of up to two vectors of random effects (posteriors)
           RanEff <- list( )

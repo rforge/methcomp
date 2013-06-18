@@ -11,12 +11,12 @@
   \method{print}{PBreg}(x,...)
 }
 \arguments{
-  \item{x}{a \code{\link{Meth}} object, alternatively a numeric vector of 
-    measurements by method A, or a data frame of exactly two columns, first 
-    column with measurements by method A, second column with measurements 
+  \item{x}{a \code{\link{Meth}} object, alternatively a numeric vector of
+    measurements by method A, or a data frame of exactly two columns, first
+    column with measurements by method A, second column with measurements
     by method B. }
   \item{y}{a numeric vector of measurements by method B - must be of
-    the same length as \code{x}. If not provided, \code{x} must be the 
+    the same length as \code{x}. If not provided, \code{x} must be the
     \code{\link{Meth}} object or a data frame of exactly 2 columns.}
   \item{conf.level}{confidence level for calculation of confidence
     boundaries - 0.05 is the default. }
@@ -59,7 +59,7 @@
   \item{S}{A vector of all slope estimates.}
   \item{I}{A vector of all intercept estimates.}
   \item{adj}{A vector of fit parameters, where \emph{Ss} is the number of
-    estimated slopes (\code{length(S)}), \emph{K} is the offset for slopes <(-1), 
+    estimated slopes (\code{length(S)}), \emph{K} is the offset for slopes <(-1),
     \emph{M1} and \emph{M2} are the locations of confidence boundaries
     in \code{S}, and  \emph{l} and \emph{L} are the numbers of points above and
     below the fitted line, used in cusum calculation.}
@@ -90,7 +90,7 @@
   data(milk)
   milk <- Meth(milk)
   summary(milk)
-  PBmilk <- PBreg(milk) 
+  PBmilk <- PBreg(milk)
   par(mfrow=c(2,2))
   plot(PBmilk, s=1:4)
 }
