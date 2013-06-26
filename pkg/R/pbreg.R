@@ -68,7 +68,7 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
                         class="PBreg"))
 }
 
-predict.PBreg <- function(object, newdata = object$model$x, interval="confidence", level=0.95,...) {
+predict.PBreg <- function(object, newdata = object$model$x, interval="none", level=0.95,...) {
     S    = object$S
     ch   = object$adj["Ss"]
     x    = newdata
