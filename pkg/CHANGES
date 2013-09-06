@@ -1,3 +1,8 @@
+Version 1.23
+
+o Argument cex.points was redundant in BA.plot. Now added and properly
+  propagated through plot.MethComp and points.Methcomp.
+
 Version 1.22
 
 o Platform checking in MCmcmc updated, and checks for platform and
@@ -23,12 +28,12 @@ o A *SERIOUS* bug in VC.est.fixed and VC.est.random have been
 
 Version 1.19
 
-o New 'predict' method for Passing-Bablok regression (PBreg). It 
+o New 'predict' method for Passing-Bablok regression (PBreg). It
   follows the syntax of predict.lm (to an extent) and allows for
   calculation of confidence intervals.
 
 o Updated plot method for PBreg - now shows correct confidence boundaries
-  for the fit.  
+  for the fit.
 
 o DA.reg updated so that the LoA is included too. Documentation
   accordingly updated.

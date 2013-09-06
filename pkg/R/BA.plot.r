@@ -19,7 +19,7 @@ function( y1, y2, meth.names = NULL,
                          lwd = c(3,1,1),
                    col.lines = "blue",
                    repl.conn = FALSE,
-                    col.conn = "gray",
+                    col.conn = col.points,
                     lwd.conn = 1,
                         xlab = NULL,
                         ylab = NULL,
@@ -66,7 +66,7 @@ if( is.data.frame( y1 ) )
   obj <- Meth( y1[y1$meth %in% wh.comp,], print=FALSE )
   }
 
-else stop("Wrong data structrue for y1 supplied: str(y1):", str(y1) )
+else stop("Wrong data structure for y1 supplied: str(y1):", str(y1) )
 
 # So we turn this into a MethComp object
 if( is.null(model) )
@@ -100,6 +100,7 @@ plot.MethComp( M.obj,
            col.lines = col.lines,
           col.points = col.points,
           pch.points = pch.points,
+          cex.points = cex.points,
            repl.conn = repl.conn,
             col.conn = col.conn,
             lwd.conn = lwd.conn,

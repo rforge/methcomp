@@ -94,6 +94,7 @@ function( x,
     col.lines = "black",
    col.points = "black",
    pch.points = 16,
+   cex.points = 1,
           eqn = is.null(attr(x,"Transform")),
       col.eqn = col.lines,
      font.eqn = 2,
@@ -287,6 +288,7 @@ cat( "Relationships between methods:\n",
                                         ... )
 if( points ) points.MethComp( x, col.points = col.points,
                                  pch.points = pch.points,
+                                 cex.points = cex.points,
                                   repl.conn = repl.conn,
                                    col.conn = col.conn,
                                    lwd.conn = lwd.conn,
@@ -401,6 +403,7 @@ function( x,
       pl.type = getOption("MethComp.pl.type"),
    col.points = "black",
    pch.points = 16,
+   cex.points = 1,
     repl.conn = FALSE,
      col.conn = "gray",
      lwd.conn = 1,
@@ -419,6 +422,7 @@ if( pl.type!="BA" )
   # Conversion plot
   points( wide[,wh.comp[2]], wide[,wh.comp[1]],
           col = col.points,
+          cex = cex.points,
           pch = pch.points, ... )
   }
 else
@@ -430,6 +434,7 @@ else
           else
            wide[,wh.comp[1]]-wide[,wh.comp[2]],
            col = col.points,
+           cex = cex.points,
            pch = pch.points, ... )
   }
 }

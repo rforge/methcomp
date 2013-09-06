@@ -34,6 +34,7 @@ MethComp(obj)
     col.lines = "black",
    col.points = "black",
    pch.points = 16,
+   cex.points = 1,
           eqn = is.null(attr(x,"Transform")),
       col.eqn = col.lines,
      font.eqn = 2,
@@ -57,6 +58,7 @@ MethComp(obj)
                     pl.type = getOption("MethComp.pl.type"),
                  col.points = "black",
                  pch.points = 16,
+                 cex.points = 1,
                   repl.conn = FALSE,
                    col.conn = "gray",
                    lwd.conn = 1,
@@ -91,6 +93,7 @@ MethComp(obj)
   \item{lwd}{Numerical vector of length 3. Width of the conversion line and the
     prediction limits.}
   \item{pch.points}{Plot character for points.}
+  \item{cex.points}{Character expansion for points.}
   \item{col.points}{Color of the points.}
   \item{eqn}{Logical. Should the conversion equation be printed on the plot.}
   \item{col.eqn}{Color of the conversion formula}
