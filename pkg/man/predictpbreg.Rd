@@ -6,7 +6,7 @@
   result of Passing-Bablok regression.
 }
 \usage{
-\method{predict}{PBreg}(object, newdata = object$model$x, interval="confidence",
+\method{predict}{PBreg}(object, newdata = object$model$x, interval="none",
   level=0.95,...)
 }
 \arguments{

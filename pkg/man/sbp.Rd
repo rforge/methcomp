@@ -31,9 +31,9 @@ Blood pressure measurement. Amsterdam: Elsevier, 1991: 287-314.
 \examples{
 data(sbp)
 par( mfrow=c(2,2), mar=c(4,4,1,4) )
-BA.plot( sbp, comp=1:2 )
-BA.plot( sbp, comp=2:3 )
-BA.plot( sbp, comp=c(1,3) )
+BA.plot( sbp, wh.comp=1:2 )
+BA.plot( sbp, wh.comp=2:3 )
+BA.plot( sbp, wh.comp=c(1,3) )
 \dontrun{ BA.est( sbp, linked=TRUE ) }
 }
 \keyword{datasets}

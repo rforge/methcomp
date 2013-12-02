@@ -14,7 +14,7 @@ Nm <- length( mnam )
 
 dnam <- list( "From:" = mnam,
                 "To:" = mnam,
-                        c("alpha","beta","sd.pred") )
+                        c("alpha","beta","sd.pr") )
 conv.array <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 qnt <- t( apply( as.matrix( object ),
                  2,
@@ -30,14 +30,14 @@ for( ff in 1:Nm ) for( tt in 1:Nm )
    if( ff != tt )
      {
      conv.array[ff,tt,] <-
-     medians[c(paste(  "alpha[",mnam[tt],".",mnam[ff],"]",sep=""),
-               paste(   "beta[",mnam[tt],".",mnam[ff],"]",sep=""),
-               paste("sd.pred[",mnam[tt],".",mnam[ff],"]",sep=""))]
+     medians[c(paste("alpha[",mnam[tt],".",mnam[ff],"]",sep=""),
+               paste( "beta[",mnam[tt],".",mnam[ff],"]",sep=""),
+               paste("sd.pr[",mnam[tt],".",mnam[ff],"]",sep=""))]
 
      } else
      conv.array[ff,tt,] <-
      c( 0, 1,
-     medians[paste("sd.pred[",mnam[tt],".",mnam[ff],"]",sep="")] )
+     medians[paste("sd.pr[",mnam[tt],".",mnam[ff],"]",sep="")] )
 
 # Correction of the median intercepts to make translation
 # formulae that are the same both ways (i.e combine to the identity):
@@ -60,12 +60,19 @@ dnam <- list( method = mnam,
                   SD = c("IxR","MxI","res","tot"),
                  qnt = dimnames( qnt )[[2]] )
 VC.arr <- array( 0, dimnames=dnam, dim=lapply(dnam,length) )
+# Note that we have ordered the variance components by the name
+# delivered from MCmcmc, which are sigma.mi[zzz] etc., where the zzz
+# is the method name. Hence they are oredered ALPHABETICALLY, but in
+# order to get them in the same order as the method names we need the
+# alpahabetic ordering of the method names when we assign the
+# alphabetically ordered variance components in var.comp to the
+# method-level ordered VC.arr
 if( "IxR" %in% attr( object, "random" ) )
-  VC.arr[,"IxR",] <- var.comp[grep("sigma.ir" ,rownames(var.comp)),]
+  VC.arr[order(mnam),"IxR",] <- var.comp[grep("sigma.ir" ,rownames(var.comp)),]
 if( "MxI" %in% attr( object, "random" ) )
-  VC.arr[,"MxI",] <- var.comp[grep("sigma.mi" ,rownames(var.comp)),]
-VC.arr[,"res",] <- var.comp[grep("sigma.res",rownames(var.comp)),]
-VC.arr[,"tot",] <- var.comp[grep("sigma.tot",rownames(var.comp)),]
+  VC.arr[order(mnam),"MxI",] <- var.comp[grep("sigma.mi" ,rownames(var.comp)),]
+  VC.arr[order(mnam),"res",] <- var.comp[grep("sigma.res",rownames(var.comp)),]
+  VC.arr[order(mnam),"tot",] <- var.comp[grep("sigma.tot",rownames(var.comp)),]
 
 # The mean value parameters
 alphas <- cbind( qnt[grep("alpha",rownames(qnt)),],

@@ -18,9 +18,6 @@ if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
 if( missing(MxI) ) MxI <- matrix
 if( missing(IxR) ) IxR <- linked
 
-# Package needed for the fitting of the models
-require( nlme )
-
 # Make all variables local to the function environment
 meth <- factor(data$meth)
 item <- factor(data$item)
@@ -173,7 +170,7 @@ names( Bias ) <- levels( meth )
 Mu <- summ[grep("item",rownames(summ)),1]
 
 # The two-way random interactions
-vc <- nlme:::VarCorr( m1 )
+vc <- nlme::VarCorr( m1 )
 xi <- as.numeric( vc[grep("^meth(.+)",rownames(vc)),2][1] )
 
 if ( varMxI & MxI ) tau <- as.numeric( tail(vc[grep("^meth(.+)",rownames(vc)),2], nlevels(meth)) )

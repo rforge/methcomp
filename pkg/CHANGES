@@ -1,3 +1,19 @@
+Version 1.25
+
+o Example for sbp had an error that gave 3 identical plots.
+
+o A *SERIOUS* bug in summary.MCmcmc have been corrected: The estimated
+  residual variances were shown in alphabetical order of the method
+  names instead of in the same order as the method levels. Hence
+  summaries from MCmcmc in 1.24 earlier in datasets where method names
+  are not in alphabetical order will be wrongly labelled.
+
+Version 1.24
+
+o Labelling of the columns in output from DAreg has been compactified.
+
+o Documentation for predict.PBreg update to fit the code definintion.
+
 Version 1.23
 
 o Argument cex.points was redundant in BA.plot. Now added and properly

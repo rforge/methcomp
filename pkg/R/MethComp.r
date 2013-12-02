@@ -18,7 +18,7 @@ if( inherits( obj, "MCmcmc" ) )
   Obj <- summary( obj )
   ca  <- Obj$conv.array
   dnam <- dimnames(ca)[c(2,1,3)]
-  dnam[[3]] <- c( dnam[[3]], "int(t-f)","slope(t-f)","sd(t-f)" )
+  dnam[[3]] <- c( dnam[[3]], "in(t-f)","sl(t-f)","sd(t-f)" )
   # Store the array in a different layout
   # [This is crazy! the layout of the MCmcmc summary should be changed]
   Conv <- array( NA, dimnames=dnam, dim=sapply(dnam,length) )
@@ -55,11 +55,11 @@ if( !is.null( trans <- attr(x,"Transform") ) )
 if( !attr(x, "RandomRaters") )
   {
   cat("\n Conversion between methods:\n")
-  if( inherits(x,"DA.reg") ) pcols <- c("alpha","beta","sd.pred","beta=1",
-                                        "int(t-f)","slope(t-f)","sd(t-f)",
-                                        "int(sd)","slope(sd)","sd=K")
+  if( inherits(x,"DA.reg") ) pcols <- c("alpha","beta","sd.pr","beta=1",
+                                        "in(t-f)","sl(t-f)","sd(t-f)",
+                                        "in(sd)","sl(sd)","sd=K")
   else
-  if( inherits(x,"BA.est") ) pcols <- c("alpha","beta","sd.pred",
+  if( inherits(x,"BA.est") ) pcols <- c("alpha","beta","sd.pr",
                                         "LoA-lo", "LoA-up")
   else pcols <- 1:(dim(x$Conv)[3])
   print( round( ftable( x$Conv[,,pcols] ), digits ) )
@@ -165,16 +165,16 @@ if( eqn )
     {
     # The conversion formula is multiplicative in the SD,
     # but additivity is what is needed:
-    SL <- ( DA2y( x[["Conv"]][Mn[1],Mn[2],"int(t-f)"]+
-                  x[["Conv"]][Mn[1],Mn[2],"int(sd)" ],
-                  x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"]+
-                  x[["Conv"]][Mn[1],Mn[2],"slope(sd)" ] )
-          - DA2y( x[["Conv"]][Mn[1],Mn[2],"int(t-f)"],
-                  x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"] ) )
+    SL <- ( DA2y( x[["Conv"]][Mn[1],Mn[2],"in(t-f)"]+
+                  x[["Conv"]][Mn[1],Mn[2],"in(sd)" ],
+                  x[["Conv"]][Mn[1],Mn[2],"sl(t-f)"]+
+                  x[["Conv"]][Mn[1],Mn[2],"sl(sd)" ] )
+          - DA2y( x[["Conv"]][Mn[1],Mn[2],"in(t-f)"],
+                  x[["Conv"]][Mn[1],Mn[2],"sl(t-f)"] ) )
     }
-  A <- x[["Conv"]][Mn[1],Mn[2],  "alpha"]
-  B <- x[["Conv"]][Mn[1],Mn[2],   "beta"]
-  S <- x[["Conv"]][Mn[1],Mn[2],"sd.pred"]
+  A <- x[["Conv"]][Mn[1],Mn[2],"alpha"]
+  B <- x[["Conv"]][Mn[1],Mn[2], "beta"]
+  S <- x[["Conv"]][Mn[1],Mn[2],"sd.pr"]
   y.x <- paste( Mn[1], " = ",
                 formatC( A, format="f", digits=digits ), if( B>0 ) "+",
      if( B!=1 ) formatC( B, format="f", digits=digits ),
@@ -185,9 +185,9 @@ if( sd.type=="lin"   ) paste( formatC( SL["y1|2",  "int"], format="f", digits=di
                               formatC( SL["y1|2","slope"], format="f", digits=digits ),
                               Mn[2], sep="" ),
                 ")", sep="" )
-  A <- x[["Conv"]][Mn[2],Mn[1],  "alpha"]
-  B <- x[["Conv"]][Mn[2],Mn[1],   "beta"]
-  S <- x[["Conv"]][Mn[2],Mn[1],"sd.pred"]
+  A <- x[["Conv"]][Mn[2],Mn[1],"alpha"]
+  B <- x[["Conv"]][Mn[2],Mn[1], "beta"]
+  S <- x[["Conv"]][Mn[2],Mn[1],"sd.pr"]
   x.y <- paste( Mn[2], " = ",
                 formatC( A, format="f", digits=digits ), if( B>0 ) "+",
      if( B!=1 ) formatC( B, format="f", digits=digits ),
@@ -198,13 +198,13 @@ if( sd.type=="lin"   ) paste( formatC( SL["y2|1",  "int"], format="f", digits=di
                               formatC( SL["y2|1","slope"], format="f", digits=digits ),
                               Mn[1], sep="" ),
                 ")", sep="" )
-  A <- x[["Conv"]][Mn[1],Mn[2],  "int(t-f)"]
-  B <- x[["Conv"]][Mn[1],Mn[2],"slope(t-f)"]
-  S <- x[["Conv"]][Mn[1],Mn[2],   "sd(t-f)"]
+  A <- x[["Conv"]][Mn[1],Mn[2],"in(t-f)"]
+  B <- x[["Conv"]][Mn[1],Mn[2],"sl(t-f)"]
+  S <- x[["Conv"]][Mn[1],Mn[2],"sd(t-f)"]
   if( sd.type=="lin" )
     {
-    Sa <- x[["Conv"]][Mn[1],Mn[2],   "int(sd)"]
-    Sb <- x[["Conv"]][Mn[1],Mn[2], "slope(sd)"]
+    Sa <- x[["Conv"]][Mn[1],Mn[2],"in(sd)"]
+    Sb <- x[["Conv"]][Mn[1],Mn[2],"sl(sd)"]
     }
   D.A <- paste( Mn[1], "-", Mn[2], " = ",
                               formatC( A , format="f", digits=digits ), if( B>0 ) "+",
@@ -323,14 +323,14 @@ else
   }
 
 # The slope and the sd, used to plot the lines
- A <- x$Conv[wh.comp[1],wh.comp[2],  "alpha"]
- B <- x$Conv[wh.comp[1],wh.comp[2],   "beta"]
- S <- x$Conv[wh.comp[1],wh.comp[2],"sd.pred"]
+ A <- x$Conv[wh.comp[1],wh.comp[2],"alpha"]
+ B <- x$Conv[wh.comp[1],wh.comp[2], "beta"]
+ S <- x$Conv[wh.comp[1],wh.comp[2],"sd.pr"]
 # The same for the differences
-if( "int(t-f)" %in% dimnames(x$Conv)[[3]] )
+if( "in(t-f)" %in% dimnames(x$Conv)[[3]] )
   { # Is the Conv out of DA.reg?
- a <- x$Conv[wh.comp[1],wh.comp[2],  "int(t-f)"]
- b <- x$Conv[wh.comp[1],wh.comp[2],"slope(t-f)"]
+ a <- x$Conv[wh.comp[1],wh.comp[2],"in(t-f)"]
+ b <- x$Conv[wh.comp[1],wh.comp[2],"sl(t-f)"]
   }
 else
   { # If not assume constant difference and constant SD
@@ -338,10 +338,10 @@ else
  b <- 0
   }
 # And the same for the sd
-if( "int(sd)" %in% dimnames(x$Conv)[[3]] )
+if( "in(sd)" %in% dimnames(x$Conv)[[3]] )
   { # Is the Conv out of DA.reg?
-Sa <- x$Conv[wh.comp[1],wh.comp[2],   "int(sd)"]
-Sb <- x$Conv[wh.comp[1],wh.comp[2], "slope(sd)"]
+Sa <- x$Conv[wh.comp[1],wh.comp[2],"in(sd)"]
+Sb <- x$Conv[wh.comp[1],wh.comp[2],"sl(sd)"]
   }
 else
   {

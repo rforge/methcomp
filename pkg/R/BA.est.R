@@ -86,9 +86,9 @@ rownames( RC ) <- Mnam
 
 dnam <- list( "To:" = Mnam,
             "From:" = Mnam,
-                      c("alpha","beta","sd.pred","beta=1",
-                        "int(t-f)", "slope(t-f)", "sd(t-f)",
-                        "int(sd)","slope(sd)","sd=K",
+                      c("alpha","beta","sd.pr","beta=1",
+                        "in(t-f)", "sl(t-f)", "sd(t-f)",
+                        "in(sd)","sl(sd)","sd=K",
                         "LoA-lo", "LoA-up") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 Conv[,,"alpha"] <- outer( Bias, Bias, "-" )
@@ -98,19 +98,19 @@ Conv[,, "beta"] <- 1
 # plus variation betrween replicates if required
 for( i in 1:Nm ) for( j in 1:Nm )
    {
-   Conv[i,j,"sd.pred"] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)          "MxI",
-                                                 if(i==j & IxR.pr) "IxR",
-                                                                   "res")]^2))
+   Conv[i,j,"sd.pr"] <- sqrt(sum(Vcmp[c(i,j),c(if(i!=j)          "MxI",
+                                               if(i==j & IxR.pr) "IxR",
+                                                                 "res")]^2))
    Conv[i,j,c("LoA-lo","LoA-up")] <- Conv[i,j,1]+c(-1,1)*cl.fact*Conv[i,j,3]
    }
 # Fill in columns corresponding to those from a DA.reg
-Conv[,,    "beta=1"] <- 1
-Conv[,,  "int(t-f)"] <- Conv[,,  "alpha"]
-Conv[,,"slope(t-f)"] <- 0
-Conv[,,   "sd(t-f)"] <-
-Conv[,,   "int(sd)"] <- Conv[,,"sd.pred"]
-Conv[,, "slope(sd)"] <- 0
-Conv[,,      "sd=K"] <- 1
+Conv[,, "beta=1"] <- 1
+Conv[,,"in(t-f)"] <- Conv[,,"alpha"]
+Conv[,,"sl(t-f)"] <- 0
+Conv[,,"sd(t-f)"] <-
+Conv[,, "in(sd)"] <- Conv[,,"sd.pr"]
+Conv[,, "sl(sd)"] <- 0
+Conv[,,   "sd=K"] <- 1
 
 # Compute the LoA for the random raters situation
 if (random.raters) {

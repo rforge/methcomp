@@ -438,7 +438,7 @@ if( MxI ) var.conv <- var.conv +
                       sim.mat[,paste("sigma.mi[", i, "]", sep="" )]^2
 sd.conv <- sqrt( var.conv )
 ab.conv <- cbind( ab.conv, sd.conv )
-names( ab.conv ) = paste( c("alpha","beta","id.int","sd.pred"),
+names( ab.conv ) = paste( c("alpha","beta","id.int","sd.pr"),
                           "[", j, "].[", i, "]", sep="" )
 ab.conv <- as.matrix( ab.conv )
 if( i == j ) ab.conv[,4,drop=FALSE]
@@ -454,10 +454,10 @@ function( aa )
 zz <- list(list())
 for( i in 1:(dim(aa)[2]) )
    {
-   tmp <- coda:::mcmc( aa[,i,] )
+   tmp <- coda::mcmc( aa[,i,] )
    zz <- c( zz, list(tmp) )
    }
-return( coda:::mcmc.list( zz[-1] ) )
+return( coda::mcmc.list( zz[-1] ) )
 }
 
 ################################################################################
@@ -472,10 +472,10 @@ if( floor(n.sims)!=n.sims)
   stop( "Matrix supplied does not have nrows a multiple of n.chains" )
 for( i in 1:n.chains )
 {
-tmp <- coda:::mcmc( mm[(i-1)*n.sims+(1:n.sims),] )
+tmp <- coda::mcmc( mm[(i-1)*n.sims+(1:n.sims),] )
 zz <- c( zz, list(tmp) )
 }
-return( coda:::mcmc.list( zz[-1] ) )
+return( coda::mcmc.list( zz[-1] ) )
 }
 
 ################################################################################

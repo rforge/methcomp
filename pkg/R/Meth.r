@@ -239,7 +239,7 @@ return( invisible( Meth( tmp, print=FALSE ) ) )
 subset.Meth <-
 function( x, ... )
 {
-y <- base:::subset.data.frame(x, ...)
+y <- base::subset.data.frame(x, ...)
 # In order to reduce the factor levels to the ones actually present, use Meth()
 return( Meth(y,keep.vars=TRUE,print=FALSE) )
 }
@@ -248,7 +248,7 @@ transform.Meth <-
 function( `_data`, ...)
 {
     save.at <- attributes(`_data`)
-    y <- base:::transform.data.frame(`_data`, ...)
+    y <- base::transform.data.frame(`_data`, ...)
     save.at[["names"]] <- attr(y, "names")
     attributes(y) <- save.at
     y

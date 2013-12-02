@@ -177,8 +177,8 @@ names( dimnames( cr ) ) <- c("To","From")
 # Construct array to hold the conversion parameters
 dnam <- list( "To:" = Mn,
             "From:" = Mn,
-                      c("alpha","beta","sd.pred",
-                        "int(t-f)","slope(t-f)","sd(t-f)") )
+                      c("alpha","beta","sd.pr",
+                        "in(t-f)","sl(t-f)","sd(t-f)") )
 Conv <- array( NA, dim=sapply( dnam, length ), dimnames=dnam )
 # Fill in the values realting methods
 Conv[,,1] <- cr[1:Nm,1:Nm]

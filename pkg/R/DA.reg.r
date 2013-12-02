@@ -29,9 +29,9 @@ Nm   <- nlevels( data$meth )
 # Array to hold the conversion parameters
 dnam <- list( "To:" = Mnam,
             "From:" = Mnam,
-                      c("alpha","beta","sd.pred","beta=1",
-                        "int(t-f)", "slope(t-f)", "sd(t-f)",
-                        "int(sd)","slope(sd)","sd=K",
+                      c("alpha","beta","sd.pr","beta=1",
+                        "in(t-f)","sl(t-f)","sd(t-f)",
+                        "in(sd)","sl(sd)","sd=K",
                         "LoA-lo", "LoA-up") )
 conv <- array( NA, dim=sapply(dnam,length), dimnames=dnam )
 
@@ -43,7 +43,7 @@ for( i in 1:Nm ) conv[i,i,] <- c(0,1,NA,NA,0,0,rep(NA,6))
 for( i in 1:(Nm-1) ) for( j in (i+1):Nm )
    {
 #  Note we need to use Meth() here, in order to reduce the no. of
-#  levels of mteh in the subsetted dataframe
+#  levels of meth in the subsetted dataframe
    sb <- Meth( data[data$meth %in% Mnam[c(i,j)],c("meth","item","repl","y")], print=FALSE )
    cf <- do.DA.reg( sb, random.raters = random.raters,
                              DA.slope = DA.slope )
@@ -124,6 +124,6 @@ if( length(A)>1 )
   A <- A[1]
   }
 res <- c( 2*A, 2*(B-1), 2*S )/(B+1)
-names( res ) <- c("int(t-f)","slope(t-f)","sd(t-f)")
+names( res ) <- c("in(t-f)","sl(t-f)","sd(t-f)")
 invisible( res )
 }
