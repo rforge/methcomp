@@ -88,7 +88,7 @@ function( x,
      col.conn = "gray",
      lwd.conn = 1,
          grid = TRUE,
-       N.grid = 10,
+       h.grid = TRUE,
      col.grid = grey(0.9),
           lwd = c(3,1,1),
     col.lines = "black",
@@ -122,15 +122,17 @@ if( sd.type == "lin" )
     cat("Variable SD not possible, use DA.reg() or specify model=FALSE\n")
     }
 
+if( is.logical(grid) ) if( grid ) grid <- 10
 if( pl.type == "conv" )
   # Conversion plot
   {
   plot( NA, xlim=axlim, ylim=axlim, type="n",
             xlab=Mn[2], ylab=Mn[1], ... )
   # Grid?
-  if( is.logical( grid ) ) if( grid )
-    grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim, n=N.grid )
-  abline( h=grid, v=grid, col=col.grid )
+  if( grid[1] ) hgrid <-
+                vgrid <-
+                if( length(grid)>1 ) grid else pretty( axlim, n=grid )
+  abline( h=hgrid, v=vgrid, col=col.grid )
   }
 else
   # Bland-Altman type plot
@@ -142,19 +144,14 @@ else
                              Mn[2], ") / 2" ),
             ylab=paste( Mn[1], if(mult) "/" else "-", Mn[2] ), ... )
   # Grid?
-  if( is.logical( grid ) )
-    if( grid )
-      {
-       grid <- if( length(N.grid)>1 ) N.grid else pretty( axlim,
-                                                         n=N.grid )
-      if( mult )
-      hgrid <- 1:20/10
-      else
-      hgrid <- pretty( axlim-mean(axlim),
-                       n = if( length(N.grid)>1 ) length(N.grid)
-                           else N.grid )
-      abline( h=hgrid, v=grid, col=col.grid )
-      }
+  if( grid[1] )
+    {
+    vgrid <- if( length(grid)>1 ) grid else pretty( axlim, n=grid )
+    if( h.grid[1] & length(h.grid)>1 ) hgrid <- h.grid
+    else if( h.grid & !mult ) hgrid <- pretty( axlim-mean(axlim), n = h.grid )
+         else if( h.grid & mult ) hgrid <- 5:20/10
+    abline( h=hgrid, v=vgrid, col=col.grid )
+    }
   }
 box()
 

@@ -2,8 +2,6 @@ export(
 AltReg,
 BA.est,
 BA.plot,
-AB.plot,
-BlandAltman,
 Deming,
 DA.reg,
 y2DA,

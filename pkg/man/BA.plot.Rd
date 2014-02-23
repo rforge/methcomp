@@ -17,13 +17,13 @@ BA.plot( y1, y2, meth.names = NULL,
                      pl.type = "BA",
                     dif.type = "const",
                      sd.type = "const",
-                       model = if( inherits(y1,"Meth") & has.repl(y1) ) "exch"
+                       model = if( inherits(y1,"Meth") & has.repl(y1) ) "linked"
                                else NULL,
                         eqax = FALSE,
                        axlim = if( is.data.frame(y1) ) range(y1$y) else range(c(y1,y2)),
                       diflim = NULL,
                         grid = TRUE,
-                      N.grid = 10,
+                      h.grid = TRUE,
                     col.grid = grey(0.9),
                       points = TRUE,
                   col.points = "black",
@@ -64,16 +64,19 @@ BA.plot( y1, y2, meth.names = NULL,
   \item{     model}{Should a variance component model be used to compute
   the limits of agreement? If \code{NULL} a simple analysis is made;
   other possibilities are \code{"exch"} or \code{"linked"} for
-  exchangeable or linked replicates.}
+  exchangeable or linked replicates. If a \code{\link{Meth}} object with
+  replicate measurements is supplied, the default is to assume linked
+  replicates.}
   \item{      eqax}{Should the axes be identical? If a Bland-Altman plot
   is drawn, the axis for the differences will have the same extent as the
   axis for the averages, but centered on 0 (see \code{diflim}).}
   \item{     axlim}{The limits of the axes.}
   \item{    diflim}{The limits of the difference axis.}
-  \item{      grid}{Should a grid be drawn? If numeric it indicates the
-    places where the grid is drawn.}
-  \item{    N.grid}{How many grid-lines should be drawn.}
-  \item{  col.grid}{What should be the color of the grid?}
+  \item{      grid}{Should there be a grid? If numeric, how many gridlines? If
+    a vector of length>1, it will be taken as the position of the
+    vertical gridlines.}
+  \item{    h.grid}{Position of the horizontal gridlines. Ignored if \code{pl.type="conv"}.}
+  \item{  col.grid}{Color of the gridlines.}
   \item{    points}{Logical. Should the observed points be drawn?}
   \item{col.points}{What color should they have?}
   \item{cex.points}{How large should they be?}

@@ -28,7 +28,7 @@ MethComp(obj)
      col.conn = "gray",
      lwd.conn = 1,
          grid = TRUE,
-       N.grid = 10,
+       h.grid = TRUE,
      col.grid = grey(0.9),
           lwd = c(3,1,1),
     col.lines = "black",
@@ -84,10 +84,10 @@ MethComp(obj)
     this assumes linked replicates.}
   \item{col.conn}{Color of the lines connecting replicates.}
   \item{lwd.conn}{Width of the connection lines.}
-  \item{grid}{Should there be a grid? If numerical, gridlines are drawn
-    at these locations.}
-  \item{N.grid}{Numeric. How many gridlines? If a vector of length>1, it will
-                be taken as the position of the gridlines.}
+  \item{grid}{Should there be a grid? If numeric, how many gridlines? If
+    a vector of length>1, it will be taken as the position of the
+    vertical gridlines.}
+  \item{h.grid}{Position of the horizontal gridlines. Ignored if \code{pl.type="conv"}.}
   \item{col.grid}{Color of the gridlines.}
   \item{col.lines}{Color of the conversion lines.}
   \item{lwd}{Numerical vector of length 3. Width of the conversion line and the

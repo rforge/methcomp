@@ -5,11 +5,11 @@
 \alias{subset.MCmcmc}
 \alias{mcmc.MCmcmc}
 \title{Fit a model for method comparison studies using WinBUGS}
-\description{
-  A model linking each of a number of methods of measurement linearly to the
-  "true" value is set up in BUGS and run via the function
-  \code{\link[R2WinBUGS]{bugs}} from the \code{R2WinBUGS} package.
-  }
+\description{A model linking each of a number of methods of measurement
+  linearly to the "true" value is set up in BUGS and run via the
+  functions \code{\link[rjags]{jags.model}} and
+  \code{\link[rjags]{coda.samples}} form the \code{rjags} packgae or
+  \code{\link[R2WinBUGS]{bugs}} from the \code{R2WinBUGS} package.  }
 \usage{
   MCmcmc( data,
           bias = "linear",
@@ -20,17 +20,17 @@
         n.iter = 2000,
       n.burnin = n.iter/2,
         n.thin = ceiling((n.iter-n.burnin)/1000),
-bugs.directory = getOption("bugs.directory"),
-         debug = FALSE,
 bugs.code.file = "model.txt",
        clearWD = TRUE,
      code.only = FALSE,
       ini.mult = 2,
       list.ini = TRUE,
            org = FALSE,
-       program = "JAGS",
      Transform = NULL,
      trans.tol = 1e-6,
+       program = "JAGS",
+bugs.directory = getOption("bugs.directory"),
+         debug = FALSE,
            ... )
 \method{summary}{MCmcmc}( object, alpha=0.05, \dots)
 \method{print}{MCmcmc}( x, digits=3, alpha=0.05, \dots )
@@ -60,12 +60,6 @@ bugs.code.file = "model.txt",
   \item{n.iter}{How many total iterations --- passed on to \code{bugs}.}
   \item{n.burnin}{How many of these should be burn-in --- passed on to \code{bugs}.}
   \item{n.thin}{How many should be sampled --- passed on to \code{bugs}.}
-  \item{bugs.directory}{Where is WinBUGS (>=1.4) installed --- passed on
-    to \code{bugs}. The default is to use a parameter from
-    options(). If you use this routinely, this is most conveniently set in
-    your \code{.Rprofile} file.}
-  \item{debug}{Should WinBUGS remain open after running --- passed on to
-    \code{bugs}.}
   \item{clearWD}{Should the working directory be cleared for junk files after
                  the running of WinBUGS --- passed on to \code{bugs}.}
   \item{bugs.code.file}{Where should the bugs code go?}
@@ -96,6 +90,10 @@ bugs.code.file = "model.txt",
              returned too? If \code{TRUE}, the \code{MCmcmc} object will have
              an attribute, \code{original}, with the posterior of the parameters
              in the model actually simulated.}
+  \item{Transform}{Transformation of data (\code{y}) before analysis.
+                   See \code{\link{choose.trans}}.}
+  \item{trans.tol}{The tolerance used to check whether the supplied
+                   transformation and its inverse combine to the identity.}
   \item{program}{Which program should be used for the MCMC simulation.
                  Possible values are "\code{BRugs}", "\code{openbugs}",
 		 "\code{ob}" (openBUGS/BRugs), "\code{winbugs}",
@@ -103,10 +101,12 @@ bugs.code.file = "model.txt",
 		 insensitive. Defaults to "\code{JAGS}" since: 1) JAGS
 		 is available on all platforms and 2) JAGS seems to be
 		 faster than BRugs on (some) windows machines.}
-  \item{Transform}{Transformation of data (\code{y}) before analysis.
-                   See \code{\link{choose.trans}}.}
-  \item{trans.tol}{The tolerance used to check whether the supplied
-                   transformation and its inverse combine to the identity.}
+  \item{bugs.directory}{Where is \code{WinBUGS} (>=1.4) installed --- passed on
+    to \code{bugs}. The default is to use a parameter from
+    options(). If you use this routinely, this is most conveniently set in
+    your \code{.Rprofile} file.}
+  \item{debug}{Should \code{WinBUGS} remain open after running --- passed on to
+    \code{bugs}.}
   \item{...}{Additional arguments passed on to \code{\link[R2WinBUGS]{bugs}}.}
   \item{object}{An \code{MCmcmc} object}
   \item{alpha}{1 minus the the confidence level}
@@ -180,7 +180,8 @@ bugs.code.file = "model.txt",
   \item{Transform}{The transformation used to the measurements before the
                    analysis.}
   If \code{code.only==TRUE}, a list containing the initial values is
-           generated.
+  generated, and the generated \code{BUGS} code is printed to the
+  console.
   }
 \references{
   B Carstensen: Comparing and predicting between several methods
@@ -205,8 +206,8 @@ ox <- Meth( ox )
 MCmcmc( ox, MI=TRUE, IR=TRUE, code.only=TRUE, bugs.code.file="" )
 
 ### What is written here is not necessarily correct on your machine.
-# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100, program="JAGS" )
-# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100 )
+# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100, program="WinBUGS" )
+# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100 ) # runs JAGS
 #  data( ox.MC )
 #   str( ox.MC )
 # print( ox.MC )
