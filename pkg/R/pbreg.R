@@ -2,7 +2,7 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
     meths  = c("Method A","Method B")
     if (is.null(y)) {
         if (inherits(x, "Meth"))  {
-            meths    = c(levels(x$meth)[wh.meth])
+            meths    = rev(levels(x$meth)[wh.meth])
             a        = to.wide(x)[,meths]
             names(a) = c("x","y")
             }
@@ -18,14 +18,14 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
     n     = nrow(a)
     ch    = choose(n,2)
     nn    = combn(n,2)
-    S     = I = NULL
+    S     = I = vector(mode="numeric", length=ch)
     for (i1 in 1:ch)
         {
         data  = a[nn[,i1],]
         slope = (data$y[2]-data$y[1])/(data$x[2]-data$x[1])
         int   = data$y[2] - slope * data$x[2]
-        S     = c(S, slope)
-        I     = c(I, int)
+        S[i1] = slope
+        I[i1] = int
         }
     S    = S[order(S)]
     I    = I[order(S)]

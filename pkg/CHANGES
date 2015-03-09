@@ -1,3 +1,8 @@
+Version 1.28
+
+o Performance improvement for PBreg().
+
+
 Version 1.27
 
 o Arguments to MCmcmc() is more logically arranged
