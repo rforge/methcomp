@@ -118,8 +118,10 @@ list.ini <- make.inits( data=data, Nm=Nm,
 # If we want to execute the BUGS code --- well, then get on with it:
 if( !code.only ) 
 {
-if( !requireNamespace( "rjags" ) ) stop( "rjags not available")
-if( !requireNamespace( "coda"  ) ) stop( "coda not available")
+# These requires are here because we do not want extensive
+# spaghetti-code when calling functions from rjas and coda 
+if( !require( rjags ) ) stop( "rjags not available")
+if( !require( coda  ) ) stop( "coda not available")
 # Construct the data input data to JAGS
 # First convert the variables to numerical 1,2,3,... for the sake of BUGS
 bdat <- data

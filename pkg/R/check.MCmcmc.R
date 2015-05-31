@@ -46,8 +46,7 @@ find.vars <-
 function( obj,
        layout = "col" )
 {
-require( coda )
-# Find where all the variance estimates are
+require( coda )# Find where all the variance estimates are
 wh <- grep("sigma",Nam <- varnames(obj))
 # Get the names of these
 nam <- varnames(obj)[wh]
@@ -78,8 +77,7 @@ function( obj,
        layout = "col",
      par.type = "beta" )
 {
-require( coda )
-# Build up the subset indices by method in the right order
+require( coda )# Build up the subset indices by method in the right order
 m.nam <- attributes(obj)$methods
 Nm <- length( m.nam )
 sb <- numeric(0)
