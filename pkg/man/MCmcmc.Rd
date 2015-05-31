@@ -5,11 +5,12 @@
 \alias{subset.MCmcmc}
 \alias{mcmc.MCmcmc}
 \title{Fit a model for method comparison studies using WinBUGS}
-\description{A model linking each of a number of methods of measurement
+\description{
+  A model linking each of a number of methods of measurement
   linearly to the "true" value is set up in BUGS and run via the
   functions \code{\link[rjags]{jags.model}} and
-  \code{\link[rjags]{coda.samples}} form the \code{rjags} packgae or
-  \code{\link[R2WinBUGS]{bugs}} from the \code{R2WinBUGS} package.  }
+  \code{\link[rjags]{coda.samples}} from the \code{rjags} package.
+}
 \usage{
   MCmcmc( data,
           bias = "linear",
@@ -27,11 +28,7 @@ bugs.code.file = "model.txt",
       list.ini = TRUE,
            org = FALSE,
      Transform = NULL,
-     trans.tol = 1e-6,
-       program = "JAGS",
-bugs.directory = getOption("bugs.directory"),
-         debug = FALSE,
-           ... )
+     trans.tol = 1e-6 )
 \method{summary}{MCmcmc}( object, alpha=0.05, \dots)
 \method{print}{MCmcmc}( x, digits=3, alpha=0.05, \dots )
 \method{subset}{MCmcmc}( x, subset=NULL, allow.repl=FALSE, chains=NULL, \dots )
@@ -55,72 +52,60 @@ bugs.directory = getOption("bugs.directory"),
  \item{matrix}{Logical, alias for \code{MxI}.}
  \item{varMxI}{Logical, should the method by item effect have method-specific
    variances. Ignored if only two methods are compared.}
-  \item{n.chains}{How many chains should be run by WinBUGS --- passed on
-    to \code{bugs}.}
-  \item{n.iter}{How many total iterations --- passed on to \code{bugs}.}
-  \item{n.burnin}{How many of these should be burn-in --- passed on to \code{bugs}.}
-  \item{n.thin}{How many should be sampled --- passed on to \code{bugs}.}
-  \item{clearWD}{Should the working directory be cleared for junk files after
-                 the running of WinBUGS --- passed on to \code{bugs}.}
-  \item{bugs.code.file}{Where should the bugs code go?}
-  \item{code.only}{Should \code{MCmcmc} just create a bugs code file and a set
-                   of inits? See the \code{list.ini} argument.}
-  \item{ini.mult}{Numeric. What factor should be used to randomly perturb the
-                  initial values for the variance components, see below in details.}
-  \item{list.ini}{List of lists of starting values for the chains, or logical
-        indicating whether starting values should be generated.
-        If \code{TRUE} (the default), the function \code{\link{VC.est}} will
-        be used to generate
-        initial values for the chains. \code{list.ini} is a list of length
-        \code{n.chains}. Each element of which is a list with the following
-        vectors as elements:
-        \describe{
-         \item{\code{mu}}{- length I}
-         \item{\code{alpha}}{- length M}
-         \item{\code{beta}}{- length M}
-         \item{\code{sigma.mi}}{- length M - if M is 2 then length 1}
-         \item{\code{sigma.ir}}{- length 1}
-         \item{\code{sigma.mi}}{- length M}
-         \item{\code{sigma.res}}{- length M}}
-        If \code{code.only==TRUE}, \code{list.ini} indicates
-        whether a list of initial values is returned (invisibly) or not.
-        If \code{code.only==FALSE}, \code{list.ini==FALSE} is ignored.
-        }
-  \item{org}{Logical. Should the posterior of the original model parameters be
-             returned too? If \code{TRUE}, the \code{MCmcmc} object will have
-             an attribute, \code{original}, with the posterior of the parameters
-             in the model actually simulated.}
-  \item{Transform}{Transformation of data (\code{y}) before analysis.
-                   See \code{\link{choose.trans}}.}
-  \item{trans.tol}{The tolerance used to check whether the supplied
-                   transformation and its inverse combine to the identity.}
-  \item{program}{Which program should be used for the MCMC simulation.
-                 Possible values are "\code{BRugs}", "\code{openbugs}",
-		 "\code{ob}" (openBUGS/BRugs), "\code{winbugs}",
-		 "\code{wb}" (WinBUGS), "\code{jags}" (JAGS). Case
-		 insensitive. Defaults to "\code{JAGS}" since: 1) JAGS
-		 is available on all platforms and 2) JAGS seems to be
-		 faster than BRugs on (some) windows machines.}
-  \item{bugs.directory}{Where is \code{WinBUGS} (>=1.4) installed --- passed on
-    to \code{bugs}. The default is to use a parameter from
-    options(). If you use this routinely, this is most conveniently set in
-    your \code{.Rprofile} file.}
-  \item{debug}{Should \code{WinBUGS} remain open after running --- passed on to
-    \code{bugs}.}
-  \item{...}{Additional arguments passed on to \code{\link[R2WinBUGS]{bugs}}.}
-  \item{object}{An \code{MCmcmc} object}
-  \item{alpha}{1 minus the the confidence level}
-  \item{x}{An \code{MCmcmc} object}
-  \item{digits}{Number of digits after the decimal point when printing.}
-  \item{subset}{Numerical, character or list giving the variables to keep.
-                If numerical, the variables in the \code{MCmcmc} object with
-                these numbers are selected. If character, each element of the
-                character vector is "grep"ed against the variable names, and
-                the matches are selected to the subset. If a list each element
-                is used in turn, numerical and character elements can be mixed.}
-  \item{allow.repl}{Should duplicate columns be allowed in the result?}
-  \item{chains}{Numerical vector giving the number of the chains to keep.}
-  }
+ \item{n.chains}{How many chains should be run by WinBUGS --- passed on
+   to \code{bugs}.}
+ \item{n.iter}{How many total iterations --- passed on to \code{bugs}.}
+ \item{n.burnin}{How many of these should be burn-in --- passed on to \code{bugs}.}
+ \item{n.thin}{How many should be sampled --- passed on to \code{bugs}.}
+ \item{clearWD}{Should the working directory be cleared for junk files after
+                the running of WinBUGS --- passed on to \code{bugs}.}
+ \item{bugs.code.file}{Where should the bugs code go?}
+ \item{code.only}{Should \code{MCmcmc} just create a bugs code file and a set
+                  of inits? See the \code{list.ini} argument.}
+ \item{ini.mult}{Numeric. What factor should be used to randomly perturb the
+                 initial values for the variance components, see below in details.}
+ \item{list.ini}{List of lists of starting values for the chains, or logical
+       indicating whether starting values should be generated.
+       If \code{TRUE} (the default), the function \code{\link{VC.est}} will
+       be used to generate
+       initial values for the chains. \code{list.ini} is a list of length
+       \code{n.chains}. Each element of which is a list with the following
+       vectors as elements:
+       \describe{
+        \item{\code{mu}}{- length I}
+        \item{\code{alpha}}{- length M}
+        \item{\code{beta}}{- length M}
+        \item{\code{sigma.mi}}{- length M - if M is 2 then length 1}
+        \item{\code{sigma.ir}}{- length 1}
+        \item{\code{sigma.mi}}{- length M}
+        \item{\code{sigma.res}}{- length M}}
+       If \code{code.only==TRUE}, \code{list.ini} indicates
+       whether a list of initial values is returned (invisibly) or not.
+       If \code{code.only==FALSE}, \code{list.ini==FALSE} is ignored.
+       }
+ \item{org}{Logical. Should the posterior of the original model parameters be
+            returned too? If \code{TRUE}, the \code{MCmcmc} object will have
+            an attribute, \code{original}, with the posterior of the parameters
+            in the model actually simulated.}
+ \item{Transform}{Transformation of data (\code{y}) before analysis.
+                  See \code{\link{choose.trans}}.}
+ \item{trans.tol}{The tolerance used to check whether the supplied
+                  transformation and its inverse combine to the identity.}
+ \item{object}{An \code{MCmcmc} object}
+ \item{alpha}{1 minus the the confidence level}
+ \item{\dots}{Arguments passed on to other methods}
+ \item{x}{An \code{MCmcmc} object}
+ \item{digits}{Number of digits after the decimal point when printing.}
+ \item{subset}{Numerical, character or list giving the variables to keep.
+               If numerical, the variables in the \code{MCmcmc} object with
+               these numbers are selected. If character, each element of the
+               character vector is "grep"ed against the variable names, and
+               the matches are selected to the subset. If a list each element
+               is used in turn, numerical and character elements can be mixed.}
+ \item{allow.repl}{Should duplicate columns be allowed in the result?}
+ \item{chains}{Numerical vector giving the number of the chains to
+   keep.}
+ }
 \details{
   The model set up for an observation \eqn{y_{mir}}{y_mir} is:
   \deqn{y_{mir} = \alpha_m + \beta_m(\mu_i+b_{ir} + c_{mi}) +
@@ -203,11 +188,10 @@ data( ox )
 str( ox )
 ox <- Meth( ox )
 # Writes the BUGS program to your console
-MCmcmc( ox, MI=TRUE, IR=TRUE, code.only=TRUE, bugs.code.file="" )
+MCmcmc( ox, MxI=TRUE, IxR=TRUE, code.only=TRUE, bugs.code.file="" )
 
-### What is written here is not necessarily correct on your machine.
-# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100, program="WinBUGS" )
-# ox.MC <- MCmcmc( ox, MI=TRUE, IR=TRUE, n.iter=100 ) # runs JAGS
+## Run JAGS
+# ox.MC <- MCmcmc( ox, MxI=TRUE, IxR=TRUE, n.iter=100 )
 #  data( ox.MC )
 #   str( ox.MC )
 # print( ox.MC )

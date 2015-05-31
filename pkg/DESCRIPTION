@@ -1,11 +1,18 @@
 Package: MethComp
-Version: 1.28
-Date: 2015-03-09
-Title: Analysis of Method Comparison studies.
-Author: Bendix Carstensen, Lyle Gurrin, Claus Ekstrom, Michal Figurski
+Version: 2.0
+Date: 2015-05-31
+Title: Analysis of Method Comparison studies
+Authors@R: c(person("Bendix", "Carstensen", role = c("aut", "cre"),
+                    email = "bxc@steno.dk"),
+             person("Lyle", "Gurrin", role = "ctb",
+                    email = "lgurrin@unimelb.edu.au"),
+             person("Claus", "Ekstrom", role = "ctb",
+                    email = "ekstrom@sund.ku.dk"),
+             person("Michal", "Figurski", role = "ctb",
+                    email = "mfigrs@gmail.com"))
 Maintainer: Bendix Carstensen <bxc@steno.dk>
-Depends: R (>= 3.0.0), nlme
-Suggests:  R2WinBUGS, BRugs, rjags, coda, lattice, lme4
+Depends: R (>= 3.0.0), lattice, nlme
+Suggests: rjags, coda, lme4
 Description: Methods (standard and advanced) for analysis of agreement between measurement methods.
 License: GPL (>= 2)
 URL: http://BendixCarstensen.com/MethComp/

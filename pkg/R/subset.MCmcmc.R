@@ -66,8 +66,8 @@ function( x, ... )
 # mcmc.list to a MCmcmc object that inherits from mcmc by
 # lumping together the chains
 if( !inherits( x, "MCmcmc" ) ) stop( "The argument (here:",
-                                       deparse( substitute( x ) ),
-                                       ") must be a MCmcmc object." )
+                                     deparse( substitute( x ) ),
+                                     ") must be a MCmcmc object." )
 res <- as.mcmc( as.matrix( x ) )
 attributes( res ) <- attributes( x )
 class( res ) <- c("MCmcmc","mcmc")

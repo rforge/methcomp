@@ -1,12 +1,7 @@
 summary.MCmcmc <-
-function( object, alpha=0.05,
-          ... )
+function( object, alpha=0.05, ... )
 {
-Got.coda <- require( coda )
-if( !Got.coda )
-  stop( "Using the summary.MCmcmc function requires that\n",
-        "the package 'coda' is installed.\n",
-        "All installed packages are shown if you type 'library()'." )
+requireNamespace( "coda" )
 
 MI <- ( "MxI" %in% attr( object, "random" ) )
 mnam <- attr( object, "methods" )
@@ -95,11 +90,7 @@ function( x,
       alpha = 0.05,
         ... )
 {
-Got.coda <- require( coda )
-if( !Got.coda )
-  stop( "Using the print.MCmcmc function requires that\n",
-        "the package 'coda' is installed.\n",
-        "All installed packages are shown if you type 'library()'." )
+requireNamespace( "coda" )
 
 # Check
 if( !inherits( x, "MCmcmc" ) )

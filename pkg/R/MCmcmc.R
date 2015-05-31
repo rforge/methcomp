@@ -15,11 +15,7 @@ bugs.code.file = "model.txt",
       list.ini = TRUE,
            org = FALSE,
      Transform = NULL,
-     trans.tol = 1e-6,
-       program = "JAGS",
-bugs.directory = getOption("bugs.directory"),
-         debug = FALSE,
-           ... )
+     trans.tol = 1e-6 )
 {
 # Is the supplied dataframe a Meth object? If not make it!
 if( !inherits( data, "Meth" ) ) data <- Meth( data, print=FALSE )
@@ -42,13 +38,8 @@ if( !( substr(tolower(bias),1,3) %in% c("non","con","lin","pro") ) )
 int   <- substr(bias,1,3) %in% c("con","lin")
 slope <- substr(bias,1,3) %in% c("lin","pro")
 
-# Make program choice case-insensitive
-program <- tolower( program )
-program <- if(        program %in% c("brugs","openbugs","ob") ) "openbugs"
-           else { if( program %in% c(         "winbugs","wb") )  "winbugs"
-           else { if( program %in% c(      "jags","jag","jg") )     "jags"
-           else stop( "\n\nProgram '", program, "' not supported!" )
-           } }
+# Use jags
+program <- "jags"
 
 # Fill in the variance components arguments:
 if( missing(MxI) ) MxI <- matrix
@@ -100,7 +91,7 @@ cat( if( code.only ) "\nBugs program for a model with"
                  "\n- giving a posterior sample of",
                  round( n.chains*(n.iter-n.burnin)/n.thin ), "observations.\n\n" )
      )
-# Make sure that it is printed before WinBUGS is fired up
+# Make sure that it is printed before JAGS is fired up
 flush.console()
 
 # Compute the range of the y's, and expand it to the range
@@ -125,9 +116,11 @@ list.ini <- make.inits( data=data, Nm=Nm,
                         n.chains=n.chains, ini.mult=ini.mult )
 
 # If we want to execute the BUGS code --- well, then get on with it:
-if( !code.only )
+if( !code.only ) 
 {
-# Construct the data input data to WinBUGS
+if( !requireNamespace( "rjags" ) ) stop( "rjags not available")
+if( !requireNamespace( "coda"  ) ) stop( "coda not available")
+# Construct the data input data to JAGS
 # First convert the variables to numerical 1,2,3,... for the sake of BUGS
 bdat <- data
 bdat$meth <- as.integer( bdat$meth )
@@ -139,48 +132,7 @@ data.list <- c( list( N=N, Ni=Ni, Nm=Nm ),
 flush.console()
 
 ######################################################################
-# Run bugs
-
-# Check the availability of required package
-Got.coda  <- require( coda )
-Got.r2win <-
-Got.brugs <-
-Got.jags  <-
-Got.pr    <- FALSE
-if( tolower(substr(program,1,1)) %in% c("b","o","w") ) Got.r2win <- require( R2WinBUGS, quietly=TRUE )
-if( tolower(substr(program,1,1)) %in% c("b","o"    ) ) Got.brugs <- require( BRugs    , quietly=TRUE )
-if( tolower(substr(program,1,1)) %in% c("j"        ) ) Got.jags  <- require( rjags    , quietly=TRUE )
-if( !Got.coda |
-    !( Got.jags | Got.r2win ) )
-  stop( "Using the MCmcmc function for estimation requires that\n",
-        "the packages 'R2WinBUGS' or 'rjags' as well as 'coda' are installed.\n",
-        "In addition WinBUGS, JAGS or openBugs is required too.\n",
-        "(All installed packages are shown if you type 'library()'.)" )
-
-# Is the location of WinBUGS supplied if needed ?
-if( !code.only & is.null( bugs.directory ) & program=="winbugs" ) stop(
-"\nYou must supply the name of the folder where WinBUGS is installed,",
-"\neither by using the parameter bugs.directory=...,",
-"\n    or by setting options(bugs.directory=...).",
-"\nThe latter will last you for the rest of your session.\n" )
-
-if( !Got.brugs & program=="openbugs" )
-  stop( "Using the MCmcmc function with BRugs / openbugs option requires",
-        "that the BRugs package is installed\n" )
-
-# If we are using BRugs we only continue if on a windows system:
-if( .Platform$OS.type != "windows" & !Got.jags )
-  {
-  cat( "The MCmcmc function only works on non-Windows systems if you have JAGS\n" )
-  return( NULL )
-  }
-
-if(  is.null(bugs.directory) &&
-    !is.null(bugs.dir <- getOption("R2WinBUGS.bugs.directory")) )
-  bugs.directory <- bugs.dir
-
-if( program == "jags"  )
-{
+# Run JAGS
 cat("Initialization and burn-in:\n")
 m <- jags.model( file = bugs.code.file,
                  data = data.list,
@@ -192,28 +144,6 @@ res <- coda.samples( m,
        variable.names = names( list.ini[[1]] ),
                n.iter = n.iter-n.burnin,
                  thin = n.thin )
-}
-
-if( program %in% c("winbugs","openbugs")  )
-res <- bugs(  data = data.list,
-parameters.to.save = names( list.ini[[1]] ),
-             inits = list.ini,
-        model.file = bugs.code.file,
-          n.chains = n.chains,
-            n.iter = n.iter,
-          n.burnin = n.burnin,
-            n.thin = n.thin,
-    bugs.directory = bugs.directory,
-             debug = debug,
-           program = program,
-           codaPkg = TRUE )
-
-# and read the result into an mcmc.list object
-# --- different approach for WinBUGS and OpenBUGS
-if( program == "winbugs"  )
-  res <- read.bugs( res, quiet=TRUE )
-if( program == "openbugs" )
-  res <- sims.array.2.mcmc.list( res$sims.array )
 
 # Now produce a mcmc object with the relevant parameters
 
@@ -379,10 +309,10 @@ if( MxI ) paste( "
                              if( Nm>2 & varMxI ) "tau.mi[m]" else "tau.mi", " ) }
            }" ),
 if( IxR ) paste("
-                sigma.ir ~ dunif(0,", ceiling(10*u.range[2]), ") ;  tau.ir <- pow( sigma.ir,-2)" ),
+                sigma.ir ~ dunif(0,", ceiling(10*u.range[2]), ") ; tau.ir <- pow(sigma.ir,-2)" ),
 if( MxI & ( Nm == 2 | !varMxI ) )
       paste("
-                sigma.mi ~ dunif(0,", ceiling(10*u.range[2]), ") ; tau.mi  <- pow(sigma.mi,-2)" ),
+                sigma.mi ~ dunif(0,", ceiling(10*u.range[2]), ") ; tau.mi <- pow(sigma.mi,-2)" ),
       "
        for( m in 1:Nm )
           { ",

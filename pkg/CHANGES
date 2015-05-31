@@ -1,7 +1,11 @@
+Version 2.0
+
+o Support for WinBUGS and OpenBUGS dropped. Only the cross-platform
+  JAGS is used. Details at http://mcmc-jags.sourceforge.net/
+
 Version 1.28
 
 o Performance improvement for PBreg().
-
 
 Version 1.27
 

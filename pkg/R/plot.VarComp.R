@@ -12,11 +12,7 @@ function( x,
      VC.names = "first",
           ... )
 {
-Got.coda <- require( coda )
-if( !Got.coda )
-  stop( "Using the plot.VarComp function requires that\n",
-        "the package 'coda' is installed.\n",
-        "All installed packages are shown if you type 'library()'." )
+requireNamespace( "coda" )
 
 # A function to plot the posterior densities of the
 # estimated variance components.

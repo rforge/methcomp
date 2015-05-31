@@ -9,11 +9,7 @@ function( x,
       col.pts = "black", pch.pts = 16, cex.pts = 0.8,
           ... )
 {
-Got.coda <- require( coda )
-if( !Got.coda )
-  stop( "Using the plot.MCmcmc function requires that\n",
-        "the package 'coda' is installed.\n",
-        "All installed packages are shown if you type 'library()'." )
+requireNamespace( "coda" )
 
 # Extract the conversion formulae
 conv.array <- summary.MCmcmc(x)$conv.array
