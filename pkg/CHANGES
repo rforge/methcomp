@@ -1,3 +1,8 @@
+Version 2.0.1
+
+o Added warning about negative numbers to PBreg().
+
+
 Version 2.0
 
 o Support for WinBUGS and OpenBUGS dropped. Only the cross-platform

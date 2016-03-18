@@ -1,6 +1,6 @@
 Package: MethComp
-Version: 2.0
-Date: 2015-05-31
+Version: 2.0.1
+Date: 2016-03-18
 Title: Analysis of Method Comparison studies
 Authors@R: c(person("Bendix", "Carstensen", role = c("aut", "cre"),
                     email = "bxc@steno.dk"),

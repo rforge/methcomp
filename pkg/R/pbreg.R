@@ -13,6 +13,7 @@ PBreg <- function(x, y=NULL, conf.level=0.05, wh.meth=1:2) {
             }
         }
     else    a        = data.frame(x=x, y=y)
+	if (any(a<0)) warning("Passing-Bablok regression requires positive numbers.")
     nread = nrow(a)
     a     = a[complete.cases(a$x,a$y),]
     n     = nrow(a)
