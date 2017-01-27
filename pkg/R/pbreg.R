@@ -109,29 +109,30 @@ print.PBreg <- function(x,...) {
     cat("Linearity test not fully implemented in this version.\n\n")
 }
 
-plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model)), ylim=c(0, max(x$model)),
+plot.PBreg <- function(x, pch=21, bg="#2200aa33", xlim=c(0, max(x$model, na.rm=T)), ylim=c(0, max(x$model, na.rm=T)),
     xlab=x$meths[1], ylab=x$meths[2], subtype=1, colors = list(CI="#ccaaff50", fit="blue",
-    ref="#99999955", bars="gray", dens="#8866aaa0", ref2=c("#1222bb99","#bb221299") ), ...)
+    ident = "black", ref="#99999955", bars="gray", dens="#8866aaa0", ref2=c("#1222bb99","#bb221299") ), ...)
     {
     ints    = c(x$coefficients[3],x$coefficients[1],x$coefficients[5])
     slos    = c(x$coefficients[4],x$coefficients[2],x$coefficients[6])
     if (any(subtype==1)) {
-        m       = max(x$model, na.rm=T)
-        xs      = seq(-0.1*m, 1.1*m, length=70)
+        mx      = max(xlim)
+        my      = max(ylim)
+        xs      = seq(-0.1*mx, 1.1*mx, length=70)
         cis     = cbind(x=xs, predict(x, newdata=xs, interval="confidence"))
         plot(x$model, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="n", ...)
-        px = c(-.1*m, cis$x, 1.1*m, 1.1*m, rev(cis$x), -.1*m)
-        py = c(-.1*m, cis$upr, 1.1*m, 1.1*m, rev(cis$lwr), -.1*m)
+        px = c(-.1*mx, cis$x, 1.1*mx, 1.1*mx, rev(cis$x), -.1*mx)
+        py = c(-.1*my, cis$upr, 1.1*my, 1.1*my, rev(cis$lwr), -.1*my)
         polygon(px,py,col=colors[["CI"]], border=NA)
-        abline(0,1, lwd=0.5, lty=2)
+        abline(0,1, lwd=0.5, lty=2, col=colors[["ident"]])
         points(x$model, pch=pch, bg=bg)
         abline(ints[2], slos[2], lwd=2, col=colors[["fit"]])
 
-        text(m*0.10,m*0.94, "Intercept =", adj=c(1,0), cex=0.8)
-        text(m*0.12,m*0.94, paste(formatC(ints[2], digits=4, format="g"), " [", formatC(ints[1], digits=4, format="g"),
+        text(mx*0.10,my*0.94, "Intercept =", adj=c(1,0), cex=0.8)
+        text(mx*0.12,my*0.94, paste(formatC(ints[2], digits=4, format="g"), " [", formatC(ints[1], digits=4, format="g"),
             " : ", formatC(ints[3], digits=4, format="g"), "]", sep=""), adj=c(0,0), cex=0.8)
-        text(m*0.10,m*0.90, "Slope =", adj=c(1,0), cex=0.8)
-        text(m*0.12,m*0.90, paste(formatC(slos[2], digits=4, format="g"), " [", formatC(slos[1], digits=4, format="g"),
+        text(mx*0.10,my*0.90, "Slope =", adj=c(1,0), cex=0.8)
+        text(mx*0.12,my*0.90, paste(formatC(slos[2], digits=4, format="g"), " [", formatC(slos[1], digits=4, format="g"),
             " : ", formatC(slos[3], digits=4, format="g"), "]", sep="")  , adj=c(0,0), cex=0.8)
     }
     if (any(subtype==2)) {
